@@ -1,5 +1,5 @@
-#ifndef RASTERIZATIONCPP_WINDOWFRAMECLASS_H
-#define RASTERIZATIONCPP_WINDOWFRAMECLASS_H
+#ifndef RASTERIZER_WINDOWFRAMECLASS_H
+#define RASTERIZER_WINDOWFRAMECLASS_H
 
 #define WIN32_LEAN_AND_MEAN
 /*
@@ -51,7 +51,7 @@ public:
 	int RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd);
 
 	//主要的程序循环
-	inline int Run();
+	int Run();
 };
 
 //骗Win的消息处理函数

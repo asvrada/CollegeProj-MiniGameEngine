@@ -1,5 +1,5 @@
-#ifndef RASTERIZATIONCPP_DECLARATIONS_H
-#define RASTERIZATIONCPP_DECLARATIONS_H
+#ifndef RASTERIZER_DECLARATIONS_H
+#define RASTERIZER_DECLARATIONS_H
 
 /********************************
 整个项目规则定义：

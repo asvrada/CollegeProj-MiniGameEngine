@@ -1,5 +1,5 @@
-﻿#ifndef RASTERIZATIONCPP_INPUT_H
-#define RASTERIZATIONCPP_INPUT_H
+﻿#ifndef RASTERIZER_INPUT_H
+#define RASTERIZER_INPUT_H
 
 #include "Declarations.h"
 
