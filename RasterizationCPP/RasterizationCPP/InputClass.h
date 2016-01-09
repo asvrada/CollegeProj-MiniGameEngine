@@ -5,16 +5,20 @@
 
 class InputClass {
 private:
-	bool *KeyPressed;
+	bool *m_KeyPressed;
+	HWND m_hWnd;
 public:
 	InputClass();
 	~InputClass();
 
-	void Initialize();
-	void Press(char);
-	void Release(char);
+	void Initialize(HWND);
+	void Press(int);
+	void Release(int);
 
-	bool IsKeyPressed(char);
+	//根据已按下的按键做出反应
+	int ReactToKeyPressed();
+
+	inline bool IsKeyPressed(int);
 };
 
 #endif

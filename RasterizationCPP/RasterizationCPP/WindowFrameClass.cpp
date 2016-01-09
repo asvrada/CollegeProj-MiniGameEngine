@@ -26,7 +26,6 @@ void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
 	m_centerCursor = false;
 	m_quitSoftware = false;
 	m_Input = new InputClass;
-	m_Input->Initialize();
 
 	m_Render = new RenderClass();
 }
@@ -67,15 +66,16 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 		ShowWindow(m_hWnd, nShowCmd);
 		UpdateWindow(m_hWnd);
 
-		//最后初始化渲染类
+		//最后初始化类
 		m_Render->Initialize(m_rectRenderScreen, GetDC(m_hWnd));
+		m_Input->Initialize(m_hWnd);
 		return OK;
 }
 
 int WindowFrameClass::Run() {
 	MSG msg;
-	//退出程序的条件
-	while (!m_quitSoftware && !m_Input->IsKeyPressed(VK_ESCAPE)) {
+	//退出程序
+	while(!m_quitSoftware) {
 		while (1) {
 			if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) break;
 			if (!GetMessage(&msg, NULL, 0, 0)) break;
@@ -107,6 +107,7 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 
 	case WM_KEYDOWN:
 		m_Input->Press(wParam);
+		m_Input->ReactToKeyPressed();
 		break;
 	case WM_KEYUP:
 		m_Input->Release(wParam);
@@ -126,7 +127,6 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 }
 
 //无视
-LRESULT CALLBACK CustomWinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
-{
+LRESULT CALLBACK CustomWinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 	return AppHandler->WinProc(hWnd, Msg, wParam, lParam);
 }

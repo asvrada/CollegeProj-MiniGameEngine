@@ -5,7 +5,6 @@ RenderClass::RenderClass() {
 	
 	m_hdcBuffer = m_hdcScreen = nullptr;
 	m_bmpBackgroundImage = nullptr;
-	m_brushBackgroundImage = nullptr;
 }
 
 RenderClass::RenderClass(RECT rectWindow) {
@@ -13,7 +12,6 @@ RenderClass::RenderClass(RECT rectWindow) {
 
 	m_hdcBuffer = m_hdcScreen = nullptr;
 	m_bmpBackgroundImage = nullptr;
-	m_brushBackgroundImage = nullptr;
 }
 
 
@@ -35,7 +33,6 @@ void RenderClass::ShutDown() {
 void RenderClass::DeleteResources() {
 	DeleteDC(m_hdcBuffer);
 	DeleteObject(m_bmpBackgroundImage);
-	DeleteObject(m_brushBackgroundImage);
 }
 
 void RenderClass::UpdateSettings(RECT rectNew) {
@@ -55,10 +52,8 @@ void RenderClass::RenderAFrame() {
 	//TODO
 
 
-
-
-
-
+	//输出文字信息
+	OutputText(L"Debug Infomation Here");
 	//最后交换缓存
 	SwapBufferToScreen();
 }
@@ -67,13 +62,20 @@ void RenderClass::SwapBufferToScreen() {
 	BitBlt(m_hdcScreen, 0, 0, m_rectRenderArea.right, m_rectRenderArea.bottom, m_hdcBuffer, 0, 0, SRCCOPY);
 }
 
+void RenderClass::OutputText(wchar_t text[]) {
+	TextOut(m_hdcBuffer, 0, 0, text, wcslen(text));
+}
+
 void RenderClass::m_UpdateSettings() {
-	DeleteResources();
+	if (m_hdcBuffer) {
+		DeleteResources();
+	}
 
 	//载入本地图片
-	m_bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("ImageResources\\Background.bmp"), IMAGE_BITMAP, m_rectRenderArea.right, m_rectRenderArea.bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
-	m_brushBackgroundImage = CreatePatternBrush(m_bmpBackgroundImage);
+	m_bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("ImageResources\\Materials\\Background.bmp"), IMAGE_BITMAP, m_rectRenderArea.right, m_rectRenderArea.bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	m_hdcBuffer = CreateCompatibleDC(m_hdcScreen);
 	SelectObject(m_hdcBuffer, m_bmpBackgroundImage);
+
+	SetBkMode(m_hdcBuffer, TRANSPARENT);
 }

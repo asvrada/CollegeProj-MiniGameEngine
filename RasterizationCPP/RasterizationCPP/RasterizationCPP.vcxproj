@@ -151,12 +151,11 @@
     <ClInclude Include="Declarations.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="RenderClass.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="WindowFrameClass.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="ImageResources\ApertureTexture.bmp" />
-    <Image Include="ImageResources\Background.bmp" />
-    <Image Include="ImageResources\CheckbroadTexture.bmp" />
+    <ResourceCompile Include="Rasterizer.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

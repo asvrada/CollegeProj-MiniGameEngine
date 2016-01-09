@@ -41,16 +41,13 @@
     <ClInclude Include="RenderClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="ImageResources\ApertureTexture.bmp">
+    <ResourceCompile Include="Rasterizer.rc">
       <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="ImageResources\Background.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="ImageResources\CheckbroadTexture.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

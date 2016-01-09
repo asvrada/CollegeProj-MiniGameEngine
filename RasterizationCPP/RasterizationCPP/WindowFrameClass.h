@@ -7,7 +7,6 @@ Class Function :
 Create and display window
 */
 
-#include <Windows.h>
 #include "Declarations.h"
 #include "RenderClass.h"
 #include "InputClass.h"
