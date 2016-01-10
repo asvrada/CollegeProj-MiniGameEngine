@@ -7,17 +7,17 @@ WindowFrameClass::WindowFrameClass() {
 	m_AppName = TEXT("Reasterizer");
 
 	AppHandler = this;
-	m_Input = NULL;
-	m_MainRenderer = NULL;
+	m_Input = nullptr;
+	m_Render = nullptr;
 }
 
 WindowFrameClass::~WindowFrameClass() {
-	m_AppName = NULL;
+	m_AppName = nullptr;
 	delete m_Input;
-	m_Input = NULL;
+	m_Input = nullptr;
 
-	delete m_MainRenderer;
-	m_MainRenderer = NULL;
+	delete m_Render;
+	m_Render = nullptr;
 }
 
 void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
@@ -25,24 +25,16 @@ void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
 	m_rectRenderScreen.top = 0; m_rectRenderScreen.left = 0; m_rectRenderScreen.bottom = RENDER_Y; m_rectRenderScreen.right = RENDER_X;
 	m_centerCursor = false;
 	m_quitSoftware = false;
+	m_Input = new InputClass;
 
-	m_Input = new InputClass();
-
-	m_MainRenderer = new RenderClass();
+	m_Render = new RenderClass();
 }
 
-void WindowFrameClass::Shutdown() {
-	m_MainRenderer->Shutdown();
-	delete m_MainRenderer;
-	m_MainRenderer = NULL;
-
-	delete m_Input;
-	m_Input = NULL;
+void WindowFrameClass::ShutDown() {
+	m_Render->ShutDown();
 }
 
 int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
-	//获取桌面分辨率
-	//用于居中显示窗口
 	int m_WINDOW_X = GetSystemMetrics(SM_CXSCREEN);
 	int m_WINDOW_Y = GetSystemMetrics(SM_CYSCREEN);
 	WNDCLASSEX wnd = { 0 };
@@ -69,15 +61,14 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 		if (!m_hWnd) {
 			return ERROR;
 		}
-		//从系统申请到窗口句柄后
-		//用它初始化各个类
-		m_MainRenderer->Initialize(m_rectRenderScreen, GetDC(m_hWnd));
-		m_Input->Initialize(m_hWnd);
 
 		//显示窗口
 		ShowWindow(m_hWnd, nShowCmd);
 		UpdateWindow(m_hWnd);
 
+		//最后初始化类
+		m_Render->Initialize(m_rectRenderScreen, GetDC(m_hWnd));
+		m_Input->Initialize(m_hWnd);
 		return OK;
 }
 
@@ -93,7 +84,7 @@ int WindowFrameClass::Run() {
 		}
 
 		//进行一帧渲染
-		m_MainRenderer->RenderAFrame();
+		m_Render->RenderAFrame();
 	}
 	return msg.message;
 }
@@ -107,7 +98,11 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 		m_rectRenderScreen.right = LOWORD(lParam);
 		m_rectRenderScreen.bottom = HIWORD(lParam);
 
-		m_MainRenderer->UpdateCanvasSettings(m_rectRenderScreen);
+		m_Render->UpdateSettings(m_rectRenderScreen);
+		break;
+
+	case WM_PAINT:
+		m_Render->SwapBufferToScreen();
 		break;
 
 	case WM_KEYDOWN:

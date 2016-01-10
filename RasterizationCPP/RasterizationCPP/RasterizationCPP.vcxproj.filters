@@ -24,9 +24,6 @@
     <ClCompile Include="InputClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CanvasClass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="RenderClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -41,13 +38,10 @@
     <ClInclude Include="InputClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CanvasClass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="RenderClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -55,8 +49,5 @@
     <ResourceCompile Include="Rasterizer.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

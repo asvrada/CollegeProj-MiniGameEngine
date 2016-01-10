@@ -10,7 +10,7 @@
 
 //主函数
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
-	WindowFrameClass *mainWindow = new WindowFrameClass();
+	WindowFrameClass *mainWindow = new WindowFrameClass;
 
 	//初始化
 	mainWindow->Initialize(800, 600);
@@ -23,11 +23,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int
 	mainWindow->Run();
 
 	//关闭
-	mainWindow->Shutdown();
+	mainWindow->ShutDown();
 
 	//善后处理
 	delete mainWindow;
-	mainWindow = NULL;
+	mainWindow = nullptr;
 
 	return OK;
 }

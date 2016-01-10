@@ -7,8 +7,9 @@ Class Function :
 Create and display window
 */
 
-#include "InputClass.h"
+#include "Declarations.h"
 #include "RenderClass.h"
+#include "InputClass.h"
 
 class WindowFrameClass {
 private:
@@ -28,8 +29,8 @@ private:
 
 //用到的类
 private:
-	//渲染类
-	RenderClass *m_MainRenderer;
+	//进行渲染的类
+	RenderClass *m_Render;
 
 	//记录当前按下的按键
 	InputClass *m_Input;
@@ -43,7 +44,7 @@ public:
 
 	//Initialize parameters
 	void Initialize(int,int);
-	void Shutdown();
+	void ShutDown();
 
 	//在系统中注册窗口
 	int RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd);
@@ -54,6 +55,6 @@ public:
 
 //骗Win的消息处理函数
 LRESULT CALLBACK CustomWinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-static WindowFrameClass *AppHandler = NULL;
+static WindowFrameClass *AppHandler = nullptr;
 
 #endif
