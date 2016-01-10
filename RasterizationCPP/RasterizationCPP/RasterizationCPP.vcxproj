@@ -144,18 +144,23 @@
   <ItemGroup>
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="CanvasClass.cpp" />
     <ClCompile Include="RenderClass.cpp" />
     <ClCompile Include="WindowFrameClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Declarations.h" />
     <ClInclude Include="InputClass.h" />
+    <ClInclude Include="CanvasClass.h" />
     <ClInclude Include="RenderClass.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="WindowFrameClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Rasterizer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

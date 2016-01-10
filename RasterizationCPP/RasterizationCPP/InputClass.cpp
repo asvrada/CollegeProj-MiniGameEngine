@@ -1,14 +1,14 @@
 #include "InputClass.h"
 
 InputClass::InputClass() {
-	m_KeyPressed = nullptr;
+	m_KeyPressed = NULL;
 	m_hWnd = 0;
 }
 
 
 InputClass::~InputClass() {
 	delete []m_KeyPressed;
-	m_KeyPressed = nullptr;
+	m_KeyPressed = NULL;
 	m_hWnd = 0;
 }
 
