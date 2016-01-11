@@ -3,8 +3,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 /*
-Class Function :
-Create and display window
+类的功能：
+创建具有窗口界面的程序
 */
 
 #include "InputClass.h"

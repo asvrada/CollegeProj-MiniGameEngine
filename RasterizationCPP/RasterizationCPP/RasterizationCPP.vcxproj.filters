@@ -30,6 +30,9 @@
     <ClCompile Include="RenderClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MathCollection.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowFrameClass.h">
@@ -50,13 +53,13 @@
     <ClInclude Include="RenderClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="MathCollection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Rasterizer.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

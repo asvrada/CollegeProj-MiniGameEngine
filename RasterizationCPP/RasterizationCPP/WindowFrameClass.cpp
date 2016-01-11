@@ -45,6 +45,9 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 	//用于居中显示窗口
 	int m_WINDOW_X = GetSystemMetrics(SM_CXSCREEN);
 	int m_WINDOW_Y = GetSystemMetrics(SM_CYSCREEN);
+
+	//窗口注册相关
+	//不必太在意
 	WNDCLASSEX wnd = { 0 };
 	wnd.cbClsExtra = 0;
 	wnd.cbSize = sizeof(WNDCLASSEX);
@@ -71,8 +74,11 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 		}
 		//从系统申请到窗口句柄后
 		//用它初始化各个类
+		//初始化主渲染类
 		m_MainRenderer->Initialize(m_rectRenderScreen, GetDC(m_hWnd));
+		//初始化输入类
 		m_Input->Initialize(m_hWnd);
+
 
 		//显示窗口
 		ShowWindow(m_hWnd, nShowCmd);
@@ -82,9 +88,10 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 }
 
 int WindowFrameClass::Run() {
-	MSG msg;
-	//退出程序
+	MSG msg = { 0 };
+	//主要程序循环
 	while(!m_quitSoftware) {
+		//无消息时退出以下循环
 		while (1) {
 			if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) break;
 			if (!GetMessage(&msg, NULL, 0, 0)) break;
@@ -107,6 +114,7 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 		m_rectRenderScreen.right = LOWORD(lParam);
 		m_rectRenderScreen.bottom = HIWORD(lParam);
 
+		//并更改画布的大小
 		m_MainRenderer->UpdateCanvasSettings(m_rectRenderScreen);
 		break;
 

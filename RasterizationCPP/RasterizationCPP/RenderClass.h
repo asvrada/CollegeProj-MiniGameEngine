@@ -2,7 +2,7 @@
 #define RASTERIZER_RENDERCLASS_H
 /*
 渲染类
-进行数学计算并将生成的图案输出至buffer
+进行数学计算并将生成的图案输出至Canvas
 
 包含类:
 画布类
@@ -14,7 +14,7 @@ TODO 摄像机类
 ////////////
 
 #include "Declarations.h"
-
+#include "MathCollection.h"
 #include "CanvasClass.h"
 
 class RenderClass
