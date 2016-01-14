@@ -14,7 +14,6 @@ TODO ÉãÏñ»úÀà
 ////////////
 
 #include "Declarations.h"
-#include "MathCollection.h"
 #include "CanvasClass.h"
 
 class RenderClass

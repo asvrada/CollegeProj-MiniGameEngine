@@ -28,6 +28,8 @@ z : Roll
 #include "resource.h"
 #include <Windows.h>
 
+#include "MathComplement.h"
+
 /////////
 //∫Í∂®“Â//
 /////////

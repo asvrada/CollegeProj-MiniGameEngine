@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RasterizationCPP", "RasterizationCPP\RasterizationCPP.vcxproj", "{A70B284D-CBB1-43FA-A33F-EC9131228BFB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rasterizer", "RasterizationCPP\RasterizationCPP.vcxproj", "{A70B284D-CBB1-43FA-A33F-EC9131228BFB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestUnit", "TestUnit\TestUnit.vcxproj", "{05712D68-54EC-4A3A-89D4-F945AB74F23E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{A70B284D-CBB1-43FA-A33F-EC9131228BFB}.Release|x64.Build.0 = Release|x64
 		{A70B284D-CBB1-43FA-A33F-EC9131228BFB}.Release|x86.ActiveCfg = Release|Win32
 		{A70B284D-CBB1-43FA-A33F-EC9131228BFB}.Release|x86.Build.0 = Release|Win32
+		{05712D68-54EC-4A3A-89D4-F945AB74F23E}.Debug|x64.ActiveCfg = Debug|x64
+		{05712D68-54EC-4A3A-89D4-F945AB74F23E}.Debug|x64.Build.0 = Debug|x64
+		{05712D68-54EC-4A3A-89D4-F945AB74F23E}.Debug|x86.ActiveCfg = Debug|Win32
+		{05712D68-54EC-4A3A-89D4-F945AB74F23E}.Debug|x86.Build.0 = Debug|Win32
+		{05712D68-54EC-4A3A-89D4-F945AB74F23E}.Release|x64.ActiveCfg = Release|x64
+		{05712D68-54EC-4A3A-89D4-F945AB74F23E}.Release|x64.Build.0 = Release|x64
+		{05712D68-54EC-4A3A-89D4-F945AB74F23E}.Release|x86.ActiveCfg = Release|Win32
+		{05712D68-54EC-4A3A-89D4-F945AB74F23E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
