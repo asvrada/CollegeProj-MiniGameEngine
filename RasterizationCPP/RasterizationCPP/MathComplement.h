@@ -19,12 +19,13 @@
 矩阵与数字的乘法
 */
 
+#include <cmath>
 #include "Declarations.h"
 
 class Vector3;
 class Vector4;
-class Martix3;
-class Martix4;
+class Matrix3;
+class Matrix4;
 
 
 //三维空间向量
@@ -52,14 +53,25 @@ public:
 	}
 	~Vector3(){}
 
+	//向量的归一化
+	void VectorUnify();
+
 	//向量叉乘
 	Vector3 CrossProduct(const Vector3);
 
 	//向量点乘
 	float DotProduct(const Vector3);
 
+	//返回根据当前向量生成的平移矩阵
+	Matrix4 GetTransitonMatrix();
+
+
+	/////////////////////
+	//运算符重载部分  //
+	////////////////////
+
 	//3阶向量乘以3阶矩阵
-	Vector3 operator * (const Martix3);
+	Vector3 operator * (const Matrix3);
 	
 	//加的运算符重载
 	Vector3 operator + (const Vector3);
@@ -69,52 +81,93 @@ public:
 
 /*
 矩阵
-3 3
+3 x 3
 
 由于3阶矩阵在使用过程中不是很常见
-所以暂不添加求逆矩阵的功能
+所以暂不添加求逆矩阵等的"高级"功能
 */
-class Martix3 {
+class Matrix3 {
 public:
 	float var[3][3];
 
-	Martix3();
-	Martix3(const Martix3&);
-	~Martix3() {}
+	Matrix3();
+	Matrix3(const Matrix3&);
+	~Matrix3() {}
 
 	void SetZero();
 
+
+	/////////////////////
+	//运算符重载部分  //
+	////////////////////
+
 	//重载乘法
-	Martix3 operator * (const Martix3&);
-	Martix3 operator * (const float&);
+	Matrix3 operator * (const Matrix3&);
+	Matrix3 operator * (const float&);
 };
 
 
-/*
+/***************************
 矩阵
-4 4
-*/
+4 x 4
+***************************/
 
-class Martix4 {
+class Matrix4 {
 public:
 	float var[4][4];
 
-	Martix4();
-	Martix4(float);
-	Martix4(const Martix4&);
-	~Martix4() {}
+	//常见的构造矩阵
+	Matrix4();
+	Matrix4(const Matrix4&);
+	~Matrix4() {}
 	void SetZero();
 
+
+	/////////////////////////
+	// 特殊用处的构造矩阵 //
+	/////////////////////////
+
+	//创建对角线元素为给定数值的矩阵
+	//其他元素为0
+	Matrix4(float);
+
+	//创建平移矩阵
+	Matrix4(const Vector3&);
+	//todo
+	//MAtrix4(float x,float y,float z);
+
+	//创建旋转矩阵
+	//旋转单位为 度数
+	//比如 +90 度
+	//绕单一轴的旋转
+	Matrix4(char axis, float degree);
+	//给定所有三个轴的旋转参数
+	//todo
+	Matrix4(float degreeX, float degreeY, float degreeZ);
+
+	////////////////以上是构造函数////////////////
+
+	//根据向量生成平移矩阵
+	void TransitionMatrix(const Vector3 &);
+
+	//fixme
+	//根据旋转的参数将当前矩阵设置成为旋转矩阵
+	//void GetRotateSingleAxis(char axis, float degree);
+	
 	//求余子式
-	float Determinant(Martix3&);
+	float Determinant(Matrix3&);
 	//求逆矩阵
 	void Invert();
 
+	/////////////////////
+	//运算符重载部分  //
+	////////////////////
+
 	//重载乘法
 	//矩阵 x 矩阵
-	Martix4 operator * (const  Martix4 &);
+	Matrix4 operator * (const  Matrix4&);
 	//矩阵 x 数字
-	Martix4 operator * (const float&);
+	Matrix4 operator * (const float&);
 };
 
 #endif

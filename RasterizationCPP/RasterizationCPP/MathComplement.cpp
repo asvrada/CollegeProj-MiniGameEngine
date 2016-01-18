@@ -1,8 +1,18 @@
 #include "MathComplement.h"
 
-/*
-FLOAT3D
-*/
+
+/*************************
+Vector3D
+*************************/
+
+void Vector3::VectorUnify() {
+	float length = x * x + y * y + z * z;
+	length = sqrtf(length);
+	x /= length;
+	y /= length;
+	z /= length;
+}
+
 Vector3 Vector3::CrossProduct(Vector3 b)
 {
 	Vector3 output;
@@ -17,7 +27,23 @@ float Vector3::DotProduct(Vector3 b)
 	return x*b.x + y*b.y + z*b.z;
 }
 
-Vector3 Vector3::operator*(const Martix3 b)
+Matrix4 Vector3::GetTransitonMatrix()
+{
+	Matrix4 matrix_T;
+
+	matrix_T.var[0][0] = 1.0f;
+	matrix_T.var[1][1] = 1.0f;
+	matrix_T.var[2][2] = 1.0f;
+	matrix_T.var[3][3] = 1.0f;
+
+	matrix_T.var[3][0] = x;
+	matrix_T.var[3][1] = y;
+	matrix_T.var[3][2] = z;
+
+	return matrix_T;
+}
+
+Vector3 Vector3::operator*(const Matrix3 b)
 {
 	return Vector3(
 		x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0],
@@ -36,27 +62,27 @@ Vector3 Vector3::operator-(const Vector3 b)
 }
 
 
-/*
+/************************
 MARTIX
 3 x 3
-*/
-Martix3::Martix3() {
+*************************/
+Matrix3::Matrix3() {
 	memset(var, 0, 3 * 3 * sizeof(float));
 }
 
-Martix3::Martix3(const Martix3 &old)
+Matrix3::Matrix3(const Matrix3 &old)
 {
 	memcpy(var, old.var, 3 * 3 * sizeof(float));
 }
 
-void Martix3::SetZero()
+void Matrix3::SetZero()
 {
 	memset(var, 0, 3 * 3 * sizeof(float));
 }
 
-Martix3 Martix3::operator*(const Martix3 &b)
+Matrix3 Matrix3::operator*(const Matrix3 &b)
 {
-	Martix3 martix;
+	Matrix3 martix;
 	for (int lop = 0; lop < 3; lop++)
 	{
 		for (int lop2 = 0; lop2 < 3; lop2++)
@@ -70,9 +96,9 @@ Martix3 Martix3::operator*(const Martix3 &b)
 	return martix;
 }
 
-Martix3 Martix3::operator*(const float &multi)
+Matrix3 Matrix3::operator*(const float &multi)
 {
-	Martix3 tmp = *this;
+	Matrix3 tmp = *this;
 	tmp.var[0][0] *= multi;
 	tmp.var[1][1] *= multi;
 	tmp.var[2][2] *= multi;
@@ -80,28 +106,159 @@ Martix3 Martix3::operator*(const float &multi)
 	return tmp;
 }
 
-Martix4::Martix4()
+
+/****************************
+Martix 
+4 x 4
+**********************/
+
+Matrix4::Matrix4()
 {
 	memset(var, 0, 4 * 4 * sizeof(float));
 }
 
-Martix4::Martix4(float input)
+Matrix4::Matrix4(const Vector3& transition ) {
+	SetZero();
+	var[0][0] = 1.0f;
+	var[1][1] = 1.0f;
+	var[2][2] = 1.0f;
+	var[3][3] = 1.0f;
+
+	var[3][0] = transition.x;
+	var[3][1] = transition.y;
+	var[3][2] = transition.z;
+}
+
+Matrix4::Matrix4(char axis, float degree) {
+	var[0][0] = 1.0f;
+	var[1][1] = 1.0f;
+	var[2][2] = 1.0f;
+	var[3][3] = 1.0f;
+
+	//如果没进行旋转
+	if (-0.001f <= degree && degree <= 0.001f) {
+		return;
+	}
+
+	degree = DEGREE(degree);
+	float c = cosf(degree);
+	float s = sinf(degree);
+
+	switch (axis)
+	{
+	case 'x':
+	case 'X':
+		var[1][1] = c;
+		var[2][2] = c;
+		var[1][2] = s;
+		var[2][1] = -s;
+		break;
+	case 'y':
+	case 'Y':
+		var[0][0] = c;
+		var[2][2] = c;
+		var[2][0] = s;
+		var[0][2] = -s;
+		break;
+	case 'z':
+	case 'Z':
+		var[0][0] = c;
+		var[1][1] = c;
+		var[0][1] = s;
+		var[1][0] = -s;
+		break;
+	//Should never reach here
+	default:
+		break;
+	}
+}
+
+Matrix4::Matrix4(float x, float y, float z) {
+	//todo
+}
+
+Matrix4::Matrix4(float input)
 {
 	memset(var, 0, 4 * 4 * sizeof(float));
 	var[0][0] = var[1][1] = var[2][2] = var[3][3] = input;
 }
 
-Martix4::Martix4(const Martix4 &old)
+Matrix4::Matrix4(const Matrix4 &old)
 {
 	memcpy(var, old.var, 4 * 4 * sizeof(float));
 }
 
-void Martix4::SetZero()
+void Matrix4::SetZero()
 {
 	memset(var, 0, 4 * 4 * sizeof(float));
 }
 
-float Martix4::Determinant(Martix3 &input)
+void Matrix4::TransitionMatrix(const Vector3 &transition) {
+	//SetZero
+
+
+	var[0][0] = 1.0f;
+	var[1][1] = 1.0f;
+	var[2][2] = 1.0f;
+	var[3][3] = 1.0f;
+
+	var[3][0] = transition.x;
+	var[3][1] = transition.y;
+	var[3][2] = transition.z;
+}
+
+/*
+void Matrix4::GetRotateSingleAxis(char axis, float degree) {
+	//最后将当前的矩阵与这个生成的旋转矩阵相乘
+	Matrix4 matrix_R;
+
+	matrix_R.var[0][0] = 1.0f;
+	matrix_R.var[1][1] = 1.0f;
+	matrix_R.var[2][2] = 1.0f;
+	matrix_R.var[3][3] = 1.0f;
+
+	//如果没进行旋转
+	if (-0.001f <= degree && degree <= 0.001f)
+	{
+		return ;
+	}
+
+	degree = DEGREE(degree);
+	float c = cosf(degree);
+	float s = sinf(degree);
+
+	switch (axis)
+	{
+	case 'x':
+	case 'X':
+		matrix_R.var[1][1] = c;
+		matrix_R.var[2][2] = c;
+		matrix_R.var[1][2] = s;
+		matrix_R.var[2][1] = -s;
+		return matrix_R;
+	case 'y':
+	case 'Y':
+		matrix_R.var[0][0] = c;
+		matrix_R.var[2][2] = c;
+		matrix_R.var[2][0] = s;
+		matrix_R.var[0][2] = -s;
+		return matrix_R;
+	case 'z':
+	case 'Z':
+		matrix_R.var[0][0] = c;
+		matrix_R.var[1][1] = c;
+		matrix_R.var[0][1] = s;
+		matrix_R.var[1][0] = -s;
+		return matrix_R;
+	}
+
+	//Should never reach here;
+	return matrix_R;
+}
+*/
+
+
+float Matrix4::Determinant(Matrix3 &input)
 {
 	return
 		(input.var[0][0] * input.var[1][1] * input.var[2][2]) +
@@ -112,11 +269,11 @@ float Martix4::Determinant(Martix3 &input)
 		(input.var[0][0] * input.var[1][2] * input.var[2][1]);
 }
 
-void Martix4::Invert()
+void Matrix4::Invert()
 {
-	Martix4 output;
+	Matrix4 output;
 	//用于储存每次的余子式
-	Martix3 tmp;
+	Matrix3 tmp;
 
 	float firstPart;
 	//先算分母，再求倒
@@ -171,13 +328,10 @@ void Martix4::Invert()
 	*this = output;
 }
 
-Martix4 Martix4::operator*(const Martix4 &b)
-{
-	Martix4 martix;
-	for (int lop = 0; lop < 4; lop++)
-	{
-		for (int lop2 = 0; lop2 < 4; lop2++)
-		{
+Matrix4 Matrix4::operator*(const Matrix4 &b) {
+	Matrix4 martix;
+	for (int lop = 0; lop < 4; lop++) {
+		for (int lop2 = 0; lop2 < 4; lop2++) {
 			martix.var[lop][lop2] =
 				(var[lop][0] * b.var[0][lop2]) +
 				(var[lop][1] * b.var[1][lop2]) +
@@ -188,9 +342,8 @@ Martix4 Martix4::operator*(const Martix4 &b)
 	return martix;
 }
 
-Martix4 Martix4::operator*(const float &multi)
-{
-	Martix4 tmp = *this;
+Matrix4 Matrix4::operator*(const float &multi) {
+	Matrix4 tmp = *this;
 	tmp.var[0][0] *= multi;
 	tmp.var[1][1] *= multi;
 	tmp.var[2][2] *= multi;

@@ -52,7 +52,7 @@ void CanvasClass::UpdateSettings(RECT rectNew) {
 
 	m_brushBackground = CreatePatternBrush(bmpBackgroundImage);
 
-	//选入后HBRUSH就可以删了
+	//选入后 bmp 就可以删了
 	DeleteObject(bmpBackgroundImage);
 
 	SetBkMode(m_hdcBuffer, TRANSPARENT);

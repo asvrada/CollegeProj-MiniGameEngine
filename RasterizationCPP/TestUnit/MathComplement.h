@@ -25,8 +25,8 @@
 
 class Vector3;
 class Vector4;
-class Martix3;
-class Martix4;
+class Matrix3;
+class Matrix4;
 
 
 //三维空间向量
@@ -61,7 +61,7 @@ public:
 	float DotProduct(const Vector3);
 
 	//3阶向量乘以3阶矩阵
-	Vector3 operator * (const Martix3);
+	Vector3 operator * (const Matrix3);
 	
 	//加的运算符重载
 	Vector3 operator + (const Vector3);
@@ -76,19 +76,19 @@ public:
 由于3阶矩阵在使用过程中不是很常见
 所以暂不添加求逆矩阵的功能
 */
-class Martix3 {
+class Matrix3 {
 public:
 	float var[3][3];
 
-	Martix3();
-	Martix3(const Martix3&);
-	~Martix3() {}
+	Matrix3();
+	Matrix3(const Matrix3&);
+	~Matrix3() {}
 
 	void SetZero();
 
 	//重载乘法
-	Martix3 operator * (const Martix3&);
-	Martix3 operator * (const float&);
+	Matrix3 operator * (const Matrix3&);
+	Matrix3 operator * (const float&);
 };
 
 
@@ -97,26 +97,26 @@ public:
 4 4
 */
 
-class Martix4 {
+class Matrix4 {
 public:
 	float var[4][4];
 
-	Martix4();
-	Martix4(float);
-	Martix4(const Martix4&);
-	~Martix4() {}
+	Matrix4();
+	Matrix4(float);
+	Matrix4(const Matrix4&);
+	~Matrix4() {}
 	void SetZero();
 
 	//求余子式
-	float Determinant(Martix3&);
+	float Determinant(Matrix3&);
 	//求逆矩阵
 	void Invert();
 
 	//重载乘法
 	//矩阵 x 矩阵
-	Martix4 operator * (const  Martix4 &);
+	Matrix4 operator * (const  Matrix4 &);
 	//矩阵 x 数字
-	Martix4 operator * (const float&);
+	Matrix4 operator * (const float&);
 };
 
 #endif
