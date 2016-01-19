@@ -29,6 +29,7 @@ void RenderClass::Shutdown() {
 
 void RenderClass::UpdateCanvasSettings(RECT newRect) {
 	m_Canvas->UpdateSettings(newRect);
+	m_Camera->Update(newRect.right / newRect.bottom, 0.0f);
 }
 
 void RenderClass::RenderAFrame() {

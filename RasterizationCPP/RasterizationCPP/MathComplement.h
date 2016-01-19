@@ -26,6 +26,7 @@ using std::memset;
 #include "MarcoDefinition.h"
 
 class Vector3;
+//todo
 class Vector4;
 class Matrix3;
 class Matrix4;

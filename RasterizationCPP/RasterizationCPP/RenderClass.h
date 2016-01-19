@@ -15,6 +15,7 @@ TODO 摄像机类
 #include "ProjectHeader.h"
 #include "CanvasClass.h"
 #include "CameraClass.h"
+#include "ObjectClass.h"
 
 class RenderClass
 {
@@ -35,6 +36,10 @@ public:
 
 	//渲染一帧
 	void RenderAFrame();
+
+	//模型数据
+public:
+	Object Triangle;
 
 //提前声明
 //大量用到的计算中间数据

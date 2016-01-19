@@ -147,6 +147,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="CanvasClass.cpp" />
     <ClCompile Include="MathComplement.cpp" />
+    <ClCompile Include="ObjectClass.cpp" />
     <ClCompile Include="RenderClass.cpp" />
     <ClCompile Include="WindowFrameClass.cpp" />
   </ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="CanvasClass.h" />
     <ClInclude Include="MathComplement.h" />
+    <ClInclude Include="ObjectClass.h" />
     <ClInclude Include="ProjectHeader.h" />
     <ClInclude Include="RenderClass.h" />
     <ClInclude Include="resource.h" />
