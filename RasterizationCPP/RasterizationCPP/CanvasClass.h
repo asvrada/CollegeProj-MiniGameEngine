@@ -5,8 +5,7 @@
 该类输出渲染的图像到屏幕
 */
 
-#include <Windows.h>
-#include "Declarations.h"
+#include "ProjectHeader.h"
 
 class CanvasClass
 {

@@ -1,7 +1,7 @@
 ﻿#ifndef RASTERIZER_INPUT_H
 #define RASTERIZER_INPUT_H
 
-#include "Declarations.h"
+#include "ProjectHeader.h"
 
 class InputClass {
 private:

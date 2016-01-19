@@ -33,12 +33,12 @@
     <ClCompile Include="MathComplement.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CameraClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowFrameClass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Declarations.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="InputClass.h">
@@ -54,6 +54,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MathComplement.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MarcoDefinition.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

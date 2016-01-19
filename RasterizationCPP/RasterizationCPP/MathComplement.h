@@ -20,15 +20,28 @@
 */
 
 #include <cmath>
-#include "Declarations.h"
+#include <memory>
+using std::memset;
+
+#include "MarcoDefinition.h"
 
 class Vector3;
 class Vector4;
 class Matrix3;
 class Matrix4;
 
+//交换
+template <typename T>
+void swap(T &a, T &b) {
+	T tmp = a;
+	a = b;
+	b = tmp;
+}
 
-//三维空间向量
+/*******************************
+Vector 3
+用于表示三维空间的点、旋转参数
+*******************************/
 class Vector3 {
 public:
 	//值
@@ -71,13 +84,20 @@ public:
 	////////////////////
 
 	//3阶向量乘以3阶矩阵
-	Vector3 operator * (const Matrix3);
+	Vector3 operator * (const Matrix3&);
 	
 	//加的运算符重载
-	Vector3 operator + (const Vector3);
+	Vector3 operator + (const Vector3&);
 	//减的运算符重载
-	Vector3 operator - (const Vector3);
+	Vector3 operator - (const Vector3&);
 };
+
+
+/****************
+Vector 4
+
+用于齐次剪彩空间的相应运算
+*******************/
 
 /*
 矩阵
@@ -120,7 +140,9 @@ public:
 	Matrix4();
 	Matrix4(const Matrix4&);
 	~Matrix4() {}
-	void SetZero();
+	void SetZero() {
+		memset(var, 0, 4 * 4 * sizeof(float));
+	}
 
 
 	/////////////////////////
@@ -128,36 +150,37 @@ public:
 	/////////////////////////
 
 	//创建对角线元素为给定数值的矩阵
-	//其他元素为0
+	//用于缩放
 	Matrix4(float);
 
 	//创建平移矩阵
 	Matrix4(const Vector3&);
-	//todo
-	//MAtrix4(float x,float y,float z);
+	Matrix4(float x, float y, float z);
 
 	//创建旋转矩阵
 	//旋转单位为 度数
-	//比如 +90 度
+	//比如 正90 度
 	//绕单一轴的旋转
 	Matrix4(char axis, float degree);
 	//给定所有三个轴的旋转参数
-	//todo
-	Matrix4(float degreeX, float degreeY, float degreeZ);
+	Matrix4(char ThisUseless, const Vector3&);
+	Matrix4(char ThisUseless, float degreeX, float degreeY, float degreeZ);
+
+	//根据 缩放、旋转、平移 生成矩阵
+	Matrix4(float scale, Vector3 Rotation, Vector3 Position);
+
+	//矩阵相乘
+	Matrix4(Matrix4&, Matrix4&);
 
 	////////////////以上是构造函数////////////////
 
 	//根据向量生成平移矩阵
 	void TransitionMatrix(const Vector3 &);
 
-	//fixme
-	//根据旋转的参数将当前矩阵设置成为旋转矩阵
-	//void GetRotateSingleAxis(char axis, float degree);
-	
 	//求余子式
 	float Determinant(Matrix3&);
 	//求逆矩阵
-	void Invert();
+	Matrix4 Invert();
 
 	/////////////////////
 	//运算符重载部分  //
@@ -169,5 +192,15 @@ public:
 	//矩阵 x 数字
 	Matrix4 operator * (const float&);
 };
+
+
+///////////////////
+// 非类成员函数 //
+//////////////////
+
+//todo
+//这个有必要吗
+Matrix4 RotationSingleAxis(char axis, float degree);
+//Matrix4 Rotation(float x, float y, float z);
 
 #endif

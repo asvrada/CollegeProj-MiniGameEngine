@@ -119,11 +119,11 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 		break;
 
 	case WM_KEYDOWN:
-		m_Input->Press(wParam);
+		m_Input->Press((int)wParam);
 		m_Input->ReactToKeyPressed();
 		break;
 	case WM_KEYUP:
-		m_Input->Release(wParam);
+		m_Input->Release((int)wParam);
 		break;
 
 	//¹Ø±Õ³ÌÐò

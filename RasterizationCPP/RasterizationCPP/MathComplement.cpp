@@ -43,7 +43,7 @@ Matrix4 Vector3::GetTransitonMatrix()
 	return matrix_T;
 }
 
-Vector3 Vector3::operator*(const Matrix3 b)
+Vector3 Vector3::operator*(const Matrix3 &b)
 {
 	return Vector3(
 		x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0],
@@ -51,12 +51,12 @@ Vector3 Vector3::operator*(const Matrix3 b)
 		x*b.var[0][2] + y*b.var[1][2] + z*b.var[2][2]);
 }
 
-Vector3 Vector3::operator+(const Vector3 b)
+Vector3 Vector3::operator+(const Vector3 &b)
 {
 	return Vector3(x + b.x, y + b.y, z + b.z);
 }
 
-Vector3 Vector3::operator-(const Vector3 b)
+Vector3 Vector3::operator-(const Vector3 &b)
 {
 	return Vector3(x - b.x, y - b.y, z - b.z);
 }
@@ -114,11 +114,13 @@ Martix
 
 Matrix4::Matrix4()
 {
-	memset(var, 0, 4 * 4 * sizeof(float));
+	SetZero();
 }
 
-Matrix4::Matrix4(const Vector3& transition ) {
+//平移矩阵
+Matrix4::Matrix4(const Vector3& transition) {
 	SetZero();
+
 	var[0][0] = 1.0f;
 	var[1][1] = 1.0f;
 	var[2][2] = 1.0f;
@@ -129,7 +131,23 @@ Matrix4::Matrix4(const Vector3& transition ) {
 	var[3][2] = transition.z;
 }
 
+Matrix4::Matrix4(float x, float y, float z) {
+	SetZero();
+
+	var[0][0] = 1.0f;
+	var[1][1] = 1.0f;
+	var[2][2] = 1.0f;
+	var[3][3] = 1.0f;
+
+	var[3][0] = x;
+	var[3][1] = y;
+	var[3][2] = z;
+}
+
+//单轴旋转矩阵
 Matrix4::Matrix4(char axis, float degree) {
+	SetZero();
+
 	var[0][0] = 1.0f;
 	var[1][1] = 1.0f;
 	var[2][2] = 1.0f;
@@ -173,29 +191,40 @@ Matrix4::Matrix4(char axis, float degree) {
 	}
 }
 
-Matrix4::Matrix4(float x, float y, float z) {
-	//todo
+Matrix4::Matrix4(char ThisUseless, const Vector3 &b) {
+	*this = Matrix4('x', b.x)*Matrix4('y', b.y)*Matrix4('z', b.z);
 }
 
+//全方向的旋转矩阵
+Matrix4::Matrix4(char useless, float x, float y, float z) {
+	*this = Matrix4('x', x)*Matrix4('y', y)*Matrix4('z', z);
+}
+
+Matrix4::Matrix4(float scale, Vector3 Rotation, Vector3 Position) {
+	*this = Matrix4(scale) * Matrix4('a', Rotation) * Matrix4(Position);
+}
+
+Matrix4::Matrix4(Matrix4 &a, Matrix4 &b) {
+	*this = a*b;
+}
+
+//对角线矩阵
+//缩放矩阵
 Matrix4::Matrix4(float input)
 {
-	memset(var, 0, 4 * 4 * sizeof(float));
+	SetZero();
 	var[0][0] = var[1][1] = var[2][2] = var[3][3] = input;
 }
 
+//复制构造函数
 Matrix4::Matrix4(const Matrix4 &old)
 {
 	memcpy(var, old.var, 4 * 4 * sizeof(float));
 }
 
-void Matrix4::SetZero()
-{
-	memset(var, 0, 4 * 4 * sizeof(float));
-}
-
+//将当前矩阵设为平移矩阵
 void Matrix4::TransitionMatrix(const Vector3 &transition) {
 	//SetZero
-
 
 	var[0][0] = 1.0f;
 	var[1][1] = 1.0f;
@@ -257,7 +286,6 @@ void Matrix4::GetRotateSingleAxis(char axis, float degree) {
 }
 */
 
-
 float Matrix4::Determinant(Matrix3 &input)
 {
 	return
@@ -269,7 +297,8 @@ float Matrix4::Determinant(Matrix3 &input)
 		(input.var[0][0] * input.var[1][2] * input.var[2][1]);
 }
 
-void Matrix4::Invert()
+//求逆矩阵
+Matrix4 Matrix4::Invert()
 {
 	Matrix4 output;
 	//用于储存每次的余子式
@@ -326,8 +355,11 @@ void Matrix4::Invert()
 	}
 	output = output * firstPart;
 	*this = output;
+
+	return output;
 }
 
+//矩阵相乘
 Matrix4 Matrix4::operator*(const Matrix4 &b) {
 	Matrix4 martix;
 	for (int lop = 0; lop < 4; lop++) {
@@ -342,6 +374,7 @@ Matrix4 Matrix4::operator*(const Matrix4 &b) {
 	return martix;
 }
 
+//矩阵乘以数字
 Matrix4 Matrix4::operator*(const float &multi) {
 	Matrix4 tmp = *this;
 	tmp.var[0][0] *= multi;
@@ -349,4 +382,60 @@ Matrix4 Matrix4::operator*(const float &multi) {
 	tmp.var[2][2] *= multi;
 	tmp.var[3][3] *= multi;
 	return tmp;
+}
+
+
+
+///////////////////
+// 非类成员函数 //
+//////////////////
+
+Matrix4 RotationSingleAxis(char axis, float degree)
+{
+	Matrix4 matrix_R;
+
+	matrix_R.var[0][0] = 1.0f;
+	matrix_R.var[1][1] = 1.0f;
+	matrix_R.var[2][2] = 1.0f;
+	matrix_R.var[3][3] = 1.0f;
+
+	//如果没进行旋转
+	if (-0.001f <= degree && degree <= 0.001f)
+	{
+		return matrix_R;
+	}
+
+	degree = DEGREE(degree);
+	float c = cosf(degree);
+	float s = sinf(degree);
+
+	switch (axis)
+	{
+	case 'x':
+	case 'X':
+		matrix_R.var[1][1] = c;
+		matrix_R.var[2][2] = c;
+		matrix_R.var[1][2] = s;
+		matrix_R.var[2][1] = -s;
+		return matrix_R;
+	case 'y':
+	case 'Y':
+		matrix_R.var[0][0] = c;
+		matrix_R.var[2][2] = c;
+		matrix_R.var[2][0] = s;
+		matrix_R.var[0][2] = -s;
+		return matrix_R;
+	case 'z':
+	case 'Z':
+		matrix_R.var[0][0] = c;
+		matrix_R.var[1][1] = c;
+		matrix_R.var[0][1] = s;
+		matrix_R.var[1][0] = -s;
+		return matrix_R;
+	default:
+		return matrix_R;
+	}
+
+	//Should never reach here;
+	return matrix_R;
 }

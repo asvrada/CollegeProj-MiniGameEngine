@@ -66,13 +66,12 @@ void CanvasClass::SwapBufferToScreen() {
 	BitBlt(m_hdcScreen, 0, 0, m_rectRenderArea.right, m_rectRenderArea.bottom, m_hdcBuffer, 0, 0, SRCCOPY);
 }
 
-void CanvasClass::ClearCanvas()
-{
+void CanvasClass::ClearCanvas() {
 	//”√±≥æ∞ª≠À¢ÃÓ≥‰±≥æ∞
 	//FillRect(hdcBuffer, &rectRender, brushBackground);
 	FillRect(m_hdcBuffer, &m_rectRenderArea, m_brushBackground);
 }
 
-void CanvasClass::OutputText(wchar_t text[],int line) {
-	TextOut(m_hdcBuffer, 0, 20*line, text, wcslen(text));
+void CanvasClass::OutputText(wchar_t text[], int line) {
+	TextOut(m_hdcBuffer, 0, 20 * line, text, (int)wcslen(text));
 }

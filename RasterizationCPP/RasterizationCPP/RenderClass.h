@@ -12,16 +12,17 @@ TODO 摄像机类
 ////////////
 // 包含类 //
 ////////////
-
-#include "Declarations.h"
+#include "ProjectHeader.h"
 #include "CanvasClass.h"
+#include "CameraClass.h"
 
 class RenderClass
 {
 private:
 	//画布类
 	CanvasClass *m_Canvas;
-
+	//摄像机类
+	CameraClass *m_Camera;
 public:
 	RenderClass();
 	~RenderClass();
@@ -34,6 +35,12 @@ public:
 
 	//渲染一帧
 	void RenderAFrame();
+
+//提前声明
+//大量用到的计算中间数据
+private:
+	Matrix4 WorldToView;
+	//ViewToHomo 在摄像机类里
 };
 
 #endif
