@@ -33,17 +33,16 @@ void RenderClass::UpdateCanvasSettings(RECT newRect) {
 }
 
 void RenderClass::RenderAFrame() {
+	fps.computeTime();
+	m_Canvas->OutputText(fps.getFPSInfo(), 0);
+
 	//todo
-	WorldToView = m_Camera->GetWorldToViewMatrix4();
+	//WorldToView = m_Camera->GetWorldToViewMatrix4();
 
 
 
 
-
-
-	//输出文字信息
-	m_Canvas->OutputText(L"Debug Infomation Here", 0);
-
+	
 	//将后台缓存交换至屏幕
 	m_Canvas->SwapBufferToScreen();
 	m_Canvas->ClearCanvas();

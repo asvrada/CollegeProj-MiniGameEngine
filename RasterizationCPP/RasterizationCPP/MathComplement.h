@@ -100,6 +100,34 @@ Vector 4
 用于齐次剪彩空间的相应运算
 *******************/
 
+class Vector4 {
+public:
+	//值
+	float x, y, z, w;
+
+	//构造函数
+	Vector4() {
+		x = y = z = w = 0.0f;
+	}
+	Vector4(float _both) {
+		x = y = z = w = _both;
+	}
+	Vector4(float _x, float _y, float _z, float _w) {
+		x = _x;
+		y = _y;
+		z = _z;
+		w = _w;
+	}
+	Vector4(const Vector4 &copy) {
+		x = copy.x;
+		y = copy.y;
+		z = copy.z;
+		w = copy.w;
+	}
+	~Vector4() {}
+};
+
+
 /*
 矩阵
 3 x 3

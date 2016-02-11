@@ -68,7 +68,6 @@ void CanvasClass::SwapBufferToScreen() {
 
 void CanvasClass::ClearCanvas() {
 	//”√±≥æ∞ª≠À¢ÃÓ≥‰±≥æ∞
-	//FillRect(hdcBuffer, &rectRender, brushBackground);
 	FillRect(m_hdcBuffer, &m_rectRenderArea, m_brushBackground);
 }
 

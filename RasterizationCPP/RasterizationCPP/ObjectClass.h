@@ -40,7 +40,7 @@ public:
 
 	//≥À…œæÿ’Û
 	//todo
-	Vector4 Transform(Matrix4);
+	//Vector4 Transform(Matrix4);
 
 private:
 	void Initial();
