@@ -29,6 +29,11 @@ public:
 	//可以提前算出来
 	//仅受高宽比 和 FOV 的影响
 	Matrix4 ViewToHomo;
+private:
+	//摄像机坐标转换到齐次剪彩空间坐标
+	//仅在摄像机属性变化时重新生成
+	//不包括位置和旋转的变化
+	void GetViewToHomoMatrix4();
 public:
 	//必须给出高宽比
 	CameraClass(float aspect, float fov);
@@ -42,8 +47,6 @@ public:
 	//世界坐标转换到摄像机坐标
 	//即视口坐标
 	Matrix4 GetWorldToViewMatrix4();
-	//摄像机坐标转换到齐次剪彩空间坐标
-	Matrix4 GetViewToHomoMatrix4();
 };
 
 #endif

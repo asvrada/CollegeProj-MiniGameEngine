@@ -86,7 +86,9 @@ public:
 
 	//3阶向量乘以3阶矩阵
 	Vector3 operator * (const Matrix3&);
-	
+	//3阶向量乘以4阶矩阵
+	Vector4 operator * (const Matrix4&);
+
 	//加的运算符重载
 	Vector3 operator + (const Vector3&);
 	//减的运算符重载

@@ -2,6 +2,21 @@
 
 
 
+Vector4 RenderClass::SingleVertexFromLocalToHomo(Vector3 vertex, Vector3 rotation, Vector3 transition)
+{
+	//Local TO World
+	Matrix4 LocalToView = Matrix4('a', rotation) * Matrix4(transition) * WorldToView;
+
+	return Vector4();
+}
+
+void RenderClass::DrawObjects() {
+	WorldToView = m_Camera->GetWorldToViewMatrix4();
+	for (Object singleObject : RenderObjects) {
+		Vector4 triangleList[3];
+	}
+}
+
 RenderClass::RenderClass() {
 	m_Canvas = NULL;
 	m_Camera = NULL;
@@ -36,8 +51,8 @@ void RenderClass::RenderAFrame() {
 	fps.computeTime();
 	m_Canvas->OutputText(fps.getFPSInfo(), 0);
 
-	//todo
-	//WorldToView = m_Camera->GetWorldToViewMatrix4();
+	
+	WorldToView = m_Camera->GetWorldToViewMatrix4();
 
 
 

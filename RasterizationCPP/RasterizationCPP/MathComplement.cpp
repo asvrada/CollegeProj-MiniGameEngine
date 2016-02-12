@@ -51,6 +51,12 @@ Vector3 Vector3::operator*(const Matrix3 &b)
 		x*b.var[0][2] + y*b.var[1][2] + z*b.var[2][2]);
 }
 
+Vector4 Vector3::operator*(const Matrix4 &b)
+{
+	//todo
+	return Vector4();
+}
+
 Vector3 Vector3::operator+(const Vector3 &b)
 {
 	return Vector3(x + b.x, y + b.y, z + b.z);

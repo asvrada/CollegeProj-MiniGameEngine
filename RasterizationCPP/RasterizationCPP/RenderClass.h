@@ -21,6 +21,8 @@ TODO 摄像机类
 using std::clock;
 #include <queue>
 using std::queue;
+#include <vector>
+using std::vector;
 
 class fpsClass {
 private:
@@ -35,11 +37,15 @@ private:
 	float previousRenderTime;
 public:
 	fpsClass() {
-		previousClock = currentClock = previousRenderTime = 0.0f;
+		previousClock = currentClock = 0.0f;
+		previousRenderTime = 1.0f / 60;
+		size = 60;
 
 		memset(charFPS, 0, sizeof(charFPS));
-		sumOfqueue = 0.01f;
-		size = 60;
+		sumOfqueue = size * previousRenderTime;
+		for (int lop = 0; lop < size; lop++) {
+			qFPS.push(previousRenderTime);
+		}
 	}
 
 	void computeTime() {
@@ -49,10 +55,8 @@ public:
 	}
 
 	void push(float gap) {
-		if ((int)qFPS.size() > size) {
-			sumOfqueue -= qFPS.front();
-			qFPS.pop();
-		}
+		sumOfqueue -= qFPS.front();
+		qFPS.pop();
 		sumOfqueue += gap;
 		qFPS.push(gap);
 	}
@@ -76,6 +80,15 @@ private:
 	CameraClass *m_Camera;
 	
 	fpsClass fps;
+
+	//提前声明
+	//大量用到的计算中间数据
+private:
+	Matrix4 WorldToView;
+	//ViewToHomo 在摄像机类里
+	//todo
+	Vector4 SingleVertexFromLocalToHomo(Vector3 vertex, Vector3 rotation, Vector3 transition);
+	void DrawObjects();
 public:
 	RenderClass();
 	~RenderClass();
@@ -91,13 +104,7 @@ public:
 
 	//模型数据
 public:
-	Object Triangle;
-
-//提前声明
-//大量用到的计算中间数据
-private:
-	Matrix4 WorldToView;
-	//ViewToHomo 在摄像机类里
+	vector<Object> RenderObjects;
 };
 
 #endif

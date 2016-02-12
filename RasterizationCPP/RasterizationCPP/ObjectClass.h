@@ -15,13 +15,12 @@ struct UV {
 	}
 };
 
-//一个Object就是一个三角形
+//目前一个Object就是一个三角形
 class Object {
 	//三角形的三点
 public:
 	Vector3 vertex[3];
-	Vector4 transformedVertex[3];
-	UV vertexUV[3];
+	//UV vertexUV[3];
 
 	Vector3 Position;
 	Vector3 Rotation;
@@ -36,12 +35,6 @@ public:
 	Object(Vector3);
 	//给出Pos 和 Rotation
 	Object(Vector3, Vector3);
-
-
-	//乘上矩阵
-	//todo
-	//Vector4 Transform(Matrix4);
-
 private:
 	void Initial();
 };
