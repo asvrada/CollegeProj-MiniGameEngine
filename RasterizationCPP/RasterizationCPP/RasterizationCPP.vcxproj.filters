@@ -62,9 +62,6 @@
     <ClInclude Include="CameraClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MarcoDefinition.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ProjectHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>

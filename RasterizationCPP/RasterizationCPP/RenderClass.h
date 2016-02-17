@@ -6,7 +6,10 @@
 
 包含类:
 画布类
-TODO 摄像机类
+摄像机类
+
+时间管理类
+计算每次渲染过去多少时间
 */
 
 ////////////
@@ -17,35 +20,32 @@ TODO 摄像机类
 #include "CameraClass.h"
 #include "ObjectClass.h"
 
-#include <ctime>
-using std::clock;
-#include <queue>
-using std::queue;
-#include <vector>
-using std::vector;
-
-class fpsClass {
+class TimeClass {
 private:
 	float sumOfqueue;
 	queue<float> qFPS;
 	int size;
-	wchar_t charFPS[30];
+	wstring InfoFPS;
 
 	//用于计算帧数的东西
 	float previousClock;
 	float currentClock;
-	float previousRenderTime;
+	//上次渲染一帧后过去的时间
+	float deltaTime;
 public:
-	fpsClass() {
+	TimeClass() {
 		previousClock = currentClock = 0.0f;
-		previousRenderTime = 1.0f / 60;
+		deltaTime = 1.0f / 60;
 		size = 60;
 
-		memset(charFPS, 0, sizeof(charFPS));
-		sumOfqueue = size * previousRenderTime;
+		sumOfqueue = size * deltaTime;
 		for (int lop = 0; lop < size; lop++) {
-			qFPS.push(previousRenderTime);
+			qFPS.push(deltaTime);
 		}
+	}
+
+	float getDeltaTime() {
+		return deltaTime;
 	}
 
 	void computeTime() {
@@ -61,13 +61,17 @@ public:
 		qFPS.push(gap);
 	}
 
-	int getFPS() {
-		return (int)((float)size / sumOfqueue);
+	float getFPS() {
+		return ((float)size / sumOfqueue);
 	}
 
-	wchar_t* getFPSInfo() {
-		wsprintf(charFPS, TEXT("FPS : %3d"), getFPS());
-		return charFPS;
+	wstring getFPSwstring() {
+		InfoFPS.clear();
+
+		wstringstream ws;
+		ws << TEXT("FPS : ") << getFPS();
+		InfoFPS = ws.str();
+		return InfoFPS;
 	}
 };
 
@@ -79,7 +83,7 @@ private:
 	//摄像机类
 	CameraClass *m_Camera;
 	
-	fpsClass fps;
+	TimeClass fps;
 
 	//提前声明
 	//大量用到的计算中间数据

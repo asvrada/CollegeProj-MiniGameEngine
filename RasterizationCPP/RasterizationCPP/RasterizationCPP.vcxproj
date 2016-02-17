@@ -153,7 +153,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
-    <ClInclude Include="MarcoDefinition.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="CanvasClass.h" />
     <ClInclude Include="MathComplement.h" />

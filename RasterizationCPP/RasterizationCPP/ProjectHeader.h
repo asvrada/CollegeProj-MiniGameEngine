@@ -30,13 +30,45 @@ z : Roll
 
 /////////////////////
 // System Header //
-////////////////////
+/////////////////////
 #include "resource.h"
 #include <Windows.h>
 
-////////////////////
+//////////////////////////////
+// STL and other Libraries //
+/////////////////////////////
+#include <queue>
+using std::queue;
+#include <vector>
+using std::vector;
+
+#include <string>
+using std::wstring;
+#include <sstream>
+using std::wstringstream;
+
+#include <ctime>
+using std::clock;
+#include <cmath>
+#include <memory>
+using std::memset;
+
+///////////////////
 // User Header //
 //////////////////
 #include "MathComplement.h"
 
+
+/////////////
+// Macros //
+/////////////
+
+//角度转换
+#define DEGREE(x) (0.01745f*(x))
+
+//求绝对值（Absolute）
+#define ABS(x) (((x) >= 0)?(x):-(x))
+
+//#define ERROR 0
+#define OK 1
 #endif

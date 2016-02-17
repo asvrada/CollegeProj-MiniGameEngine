@@ -49,7 +49,7 @@ public:
 //具体在画布上进行显示的函数
 public:
 	//输出一行字符串
-	void OutputText(wchar_t[],int line);
+	void OutputText(wstring,int line);
 	//设置单个像素的颜色
 	void Draw(int, int, COLORREF);
 };

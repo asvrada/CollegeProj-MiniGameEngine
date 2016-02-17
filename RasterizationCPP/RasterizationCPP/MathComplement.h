@@ -19,12 +19,6 @@
 矩阵与数字的乘法
 */
 
-#include <cmath>
-#include <memory>
-using std::memset;
-
-#include "MarcoDefinition.h"
-
 class Vector3;
 //todo
 class Vector4;

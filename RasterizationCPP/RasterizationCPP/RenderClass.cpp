@@ -49,7 +49,7 @@ void RenderClass::UpdateCanvasSettings(RECT newRect) {
 
 void RenderClass::RenderAFrame() {
 	fps.computeTime();
-	m_Canvas->OutputText(fps.getFPSInfo(), 0);
+	m_Canvas->OutputText(fps.getFPSwstring(), 0);
 
 	
 	WorldToView = m_Camera->GetWorldToViewMatrix4();
