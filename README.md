@@ -9,7 +9,7 @@ __Under Development...__
 1. ( NULL )  
 
 _Still working on adding all the basic functions_  
-_ETA one week_  
+_~~ETA one week~~_  
 
 ## -What is this ?
 
