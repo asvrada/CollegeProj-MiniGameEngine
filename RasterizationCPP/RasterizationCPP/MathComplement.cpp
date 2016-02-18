@@ -13,7 +13,7 @@ void Vector3::VectorUnify() {
 	z /= length;
 }
 
-Vector3 Vector3::CrossProduct(Vector3 b)
+Vector3 Vector3::CrossProduct(const Vector3& b)
 {
 	Vector3 output;
 	output.x = y*b.z - z*b.y;
@@ -22,7 +22,7 @@ Vector3 Vector3::CrossProduct(Vector3 b)
 	return output;
 }
 
-float Vector3::DotProduct(Vector3 b)
+float Vector3::DotProduct(const Vector3& b)
 {
 	return x*b.x + y*b.y + z*b.z;
 }
@@ -53,8 +53,8 @@ Vector3 Vector3::operator*(const Matrix3 &b)
 
 Vector4 Vector3::operator*(const Matrix4 &b)
 {
-	//todo
-	return Vector4();
+	Vector4 vertex(*this, true);
+	return vertex * b;
 }
 
 Vector3 Vector3::operator+(const Vector3 &b)
@@ -65,6 +65,11 @@ Vector3 Vector3::operator+(const Vector3 &b)
 Vector3 Vector3::operator-(const Vector3 &b)
 {
 	return Vector3(x - b.x, y - b.y, z - b.z);
+}
+
+wstringstream &operator << (wstringstream& ws, const Vector3& v) {
+	ws << "[ " << v.x << ", " << v.y << ", " << v.z << " ]" << endl;
+	return ws;
 }
 
 
@@ -210,7 +215,7 @@ Matrix4::Matrix4(float scale, Vector3 Rotation, Vector3 Position) {
 	*this = Matrix4(scale) * Matrix4('a', Rotation) * Matrix4(Position);
 }
 
-Matrix4::Matrix4(Matrix4 &a, Matrix4 &b) {
+Matrix4::Matrix4(const Matrix4 &a, const Matrix4 &b) {
 	*this = a*b;
 }
 
@@ -292,7 +297,7 @@ void Matrix4::GetRotateSingleAxis(char axis, float degree) {
 }
 */
 
-float Matrix4::Determinant(Matrix3 &input)
+float Matrix4::Determinant(const Matrix3 &input)
 {
 	return
 		(input.var[0][0] * input.var[1][1] * input.var[2][2]) +
@@ -444,4 +449,20 @@ Matrix4 RotationSingleAxis(char axis, float degree)
 
 	//Should never reach here;
 	return matrix_R;
+}
+
+Vector4 Vector4::operator*(const Matrix4 & b)
+{
+	//todo
+	Vector4 tmp;
+	tmp.x = x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0] + w * b.var[3][0];
+	tmp.y = x*b.var[0][1] + y*b.var[1][1] + z*b.var[2][1] + w * b.var[3][1];
+	tmp.z = x*b.var[0][2] + y*b.var[1][2] + z*b.var[2][2] + w * b.var[3][2];
+	tmp.w  = x*b.var[0][3] + y*b.var[1][3] + z*b.var[2][3] + w * b.var[3][3];
+	return tmp;
+}
+
+wstringstream &operator << (wstringstream& ws, const Vector4& v) {
+	ws << "[ " << v.x << ", " << v.y << ", " << v.z << ", " << v.w << " ]" << endl;
+	return ws;
 }

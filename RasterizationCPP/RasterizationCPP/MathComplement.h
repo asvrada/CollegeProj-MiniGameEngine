@@ -19,6 +19,8 @@
 矩阵与数字的乘法
 */
 
+#include "ProjectHeader.h"
+
 class Vector3;
 //todo
 class Vector4;
@@ -65,10 +67,10 @@ public:
 	void VectorUnify();
 
 	//向量叉乘
-	Vector3 CrossProduct(const Vector3);
+	Vector3 CrossProduct(const Vector3&);
 
 	//向量点乘
-	float DotProduct(const Vector3);
+	float DotProduct(const Vector3&);
 
 	//返回根据当前向量生成的平移矩阵
 	Matrix4 GetTransitonMatrix();
@@ -87,6 +89,9 @@ public:
 	Vector3 operator + (const Vector3&);
 	//减的运算符重载
 	Vector3 operator - (const Vector3&);
+
+	//输出流重载
+	friend wstringstream &operator << (wstringstream&,  const Vector3&);
 };
 
 
@@ -120,7 +125,27 @@ public:
 		z = copy.z;
 		w = copy.w;
 	}
+
+	//点 或 向量 转换至齐次坐标系
+	Vector4(const Vector3& old, bool isVertex) {
+		x = old.x;
+		y = old.y;
+		z = old.z;
+		if (isVertex) {
+			w = 1;
+		}
+		else {
+			w = 0;
+		}
+	}
+
 	~Vector4() {}
+
+	//齐次坐标系的变换
+	Vector4 operator* (const Matrix4& b);
+
+	//输出流重载
+	friend wstringstream &operator << (wstringstream&, const Vector4&);
 };
 
 
@@ -195,7 +220,7 @@ public:
 	Matrix4(float scale, Vector3 Rotation, Vector3 Position);
 
 	//矩阵相乘
-	Matrix4(Matrix4&, Matrix4&);
+	Matrix4(const Matrix4&, const Matrix4&);
 
 	////////////////以上是构造函数////////////////
 
@@ -203,7 +228,7 @@ public:
 	void TransitionMatrix(const Vector3 &);
 
 	//求余子式
-	float Determinant(Matrix3&);
+	float Determinant(const Matrix3&);
 	//求逆矩阵
 	Matrix4 Invert();
 

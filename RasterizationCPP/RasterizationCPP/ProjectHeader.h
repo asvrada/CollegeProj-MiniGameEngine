@@ -46,6 +46,7 @@ using std::vector;
 using std::wstring;
 #include <sstream>
 using std::wstringstream;
+using std::endl;
 
 #include <ctime>
 using std::clock;

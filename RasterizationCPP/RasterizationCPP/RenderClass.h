@@ -90,9 +90,7 @@ private:
 private:
 	Matrix4 WorldToView;
 	//ViewToHomo 在摄像机类里
-	//todo
-	Vector4 SingleVertexFromLocalToHomo(Vector3 vertex, Vector3 rotation, Vector3 transition);
-	void DrawObjects();
+	void Draw();
 public:
 	RenderClass();
 	~RenderClass();

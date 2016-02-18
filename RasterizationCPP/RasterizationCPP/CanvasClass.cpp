@@ -71,6 +71,6 @@ void CanvasClass::ClearCanvas() {
 	FillRect(m_hdcBuffer, &m_rectRenderArea, m_brushBackground);
 }
 
-void CanvasClass::OutputText(wstring text, int line) {
+void CanvasClass::OutputText(const wstring& text, int line) {
 	TextOut(m_hdcBuffer, 0, 20 * line, text.data(), text.size());
 }
