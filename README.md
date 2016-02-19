@@ -1,24 +1,26 @@
 # MiniRasterizer
-MiniRasterizer For Personal Education Purpose, feel free to use in any way you want.  
+The MiniRasterizer for personal study purpose, feel free to use in any way you want.  
 Student's work, terrible coding manner  
 Open for all feedback
   
-__Under Development...__  
+__Under Development since 2016/1/17...__ 
 
-### _Incoming New Features:_
-1. ( NULL )  
+## _Todo Lists:_
+1. Fix software crash when minimize window
+2. Add Vertex index list
+3. Camera control
+4. Merge CanvasClass and RenderClass
+5. Options for changing Background 
 
-_Still working on adding all the basic functions_  
-_~~ETA one week~~_  
 
-## -What is this ?
+### -What is this ?
 
 A Graphic Engine with minimum functions...  
 _or_  
 A dull implement of the Rasterization method, which is widely used in almost all the modern game engines to generate image.
 
-## -How to compile and run ?  
-__Make Sure the Rasterizer.exe is placed in the same folder with the "ImageResources"" folder, or Images will not be found__  
+### -How to compile and run ?  
+__Make sure the Rasterizer.exe is placed under the same directory as the "ImageResources"" folder, or images will not be found or even worse__  
 
 I'm using Visual Studio 2015 Community to make this project, so Visual Studio is highly recommended for compile work.  
 
