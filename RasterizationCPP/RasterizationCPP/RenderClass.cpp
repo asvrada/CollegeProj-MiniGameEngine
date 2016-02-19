@@ -66,7 +66,7 @@ void RenderClass::Shutdown() {
 void RenderClass::UpdateCanvasSettings(RECT newRect) {
 	m_rectRenderArea = newRect;
 	m_Canvas->UpdateSettings(newRect);
-	m_Camera->Update((float)(newRect.right / newRect.bottom), 0.0f);
+	m_Camera->Update((float)newRect.right / (float)newRect.bottom, 0.0f);
 }
 
 void RenderClass::RenderAFrame() {

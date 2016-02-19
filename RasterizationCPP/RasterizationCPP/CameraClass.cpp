@@ -36,6 +36,7 @@ Matrix4 CameraClass::GetWorldToViewMatrix4()
 }
 
 void CameraClass::GetViewToHomoMatrix4() {
+	ViewToHomo.SetZero();
 	float l, r, t, b;
 
 	r = NearZ*tanf(DEGREE(FOV) / 2.0f);
@@ -45,8 +46,6 @@ void CameraClass::GetViewToHomoMatrix4() {
 
 	ViewToHomo.var[0][0] = (2 * NearZ) / (r - l);
 	ViewToHomo.var[1][1] = (2 * NearZ) / (t - b);
-	//hMatrix4.var[2][0] = (r + l) / (r - l);
-	//hMatrix4.var[2][1] = (t + b) / (t - b);
 	ViewToHomo.var[2][2] = (FarZ + NearZ) / (FarZ - NearZ);
 	ViewToHomo.var[2][3] = 1.0f;
 	ViewToHomo.var[3][2] = -(2.0f*NearZ*FarZ) / (FarZ - NearZ);
