@@ -52,6 +52,10 @@ public:
 	void OutputText(const wstring&,int line);
 	//设置单个像素的颜色
 	void Draw(int, int, COLORREF);
+	//画完整的三角形
+	void DrawTriangle(const Vector4[], COLORREF);
+	//画线
+	void DrawLine(Vector2, Vector2, COLORREF);
 };
 
 #endif

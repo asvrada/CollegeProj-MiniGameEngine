@@ -9,6 +9,7 @@ CameraClass::CameraClass(float aspect,float fov) {
 	screenAspect = aspect;
 
 	Position.x = Position.y = Position.z = 0.0f;
+	Position.z = -250.0f;
 	Rotation.x = Rotation.y = Rotation.z = 0.0f;
 }
 
@@ -18,12 +19,8 @@ CameraClass::~CameraClass()
 }
 
 void CameraClass::Update(float newAspect, float fov) {
-	if (newAspect > 0.01f) {
-		screenAspect = newAspect;
-	}
-	if (fov > 1.0f) {
-		FOV = fov;
-	}
+	screenAspect = newAspect;
+	//FOV = fov;
 	GetViewToHomoMatrix4();
 }
 

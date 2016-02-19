@@ -88,6 +88,7 @@ private:
 	//提前声明
 	//大量用到的计算中间数据
 private:
+	RECT m_rectRenderArea;
 	Matrix4 WorldToView;
 	//ViewToHomo 在摄像机类里
 	void Draw();

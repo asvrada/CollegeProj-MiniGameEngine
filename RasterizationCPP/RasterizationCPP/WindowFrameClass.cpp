@@ -113,6 +113,7 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 		//取得新屏幕的大小
 		m_rectRenderScreen.right = LOWORD(lParam);
 		m_rectRenderScreen.bottom = HIWORD(lParam);
+		m_rectRenderScreen.left = m_rectRenderScreen.top = 0;
 
 		//并更改画布的大小
 		m_MainRenderer->UpdateCanvasSettings(m_rectRenderScreen);

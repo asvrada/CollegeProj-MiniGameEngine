@@ -21,8 +21,8 @@
 
 #include "ProjectHeader.h"
 
+class Vector2;
 class Vector3;
-//todo
 class Vector4;
 class Matrix3;
 class Matrix4;
@@ -34,6 +34,29 @@ void swap(T &a, T &b) {
 	a = b;
 	b = tmp;
 }
+
+class Vector2 {
+public:
+	float x, y;
+
+	Vector2() {
+		x = y = 0.0f;
+	}
+
+	Vector2(float all) {
+		x = y = all;
+	}
+
+	Vector2(float _x, float _y) {
+		x = _x;
+		y = _y;
+	}
+
+	Vector2(const Vector2& old) {
+		x = old.x;
+		y = old.y;
+	}
+};
 
 /*******************************
 Vector 3
@@ -220,7 +243,7 @@ public:
 	Matrix4(float scale, Vector3 Rotation, Vector3 Position);
 
 	//矩阵相乘
-	Matrix4(const Matrix4&, const Matrix4&);
+	Matrix4(Matrix4&, const Matrix4&);
 
 	////////////////以上是构造函数////////////////
 
@@ -241,6 +264,7 @@ public:
 	Matrix4 operator * (const  Matrix4&);
 	//矩阵 x 数字
 	Matrix4 operator * (const float&);
+
 };
 
 

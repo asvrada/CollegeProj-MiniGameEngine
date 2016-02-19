@@ -68,7 +68,7 @@ Vector3 Vector3::operator-(const Vector3 &b)
 }
 
 wstringstream &operator << (wstringstream& ws, const Vector3& v) {
-	ws << "[ " << v.x << ", " << v.y << ", " << v.z << " ]" << endl;
+	ws << "Vector3 : [ " << v.x << ", " << v.y << ", " << v.z << " ]";
 	return ws;
 }
 
@@ -215,8 +215,8 @@ Matrix4::Matrix4(float scale, Vector3 Rotation, Vector3 Position) {
 	*this = Matrix4(scale) * Matrix4('a', Rotation) * Matrix4(Position);
 }
 
-Matrix4::Matrix4(const Matrix4 &a, const Matrix4 &b) {
-	*this = a*b;
+Matrix4::Matrix4(Matrix4 &a, const Matrix4 &b) {
+	(*this) = a*b;
 }
 
 //¶Ô½ÇÏß¾ØÕó

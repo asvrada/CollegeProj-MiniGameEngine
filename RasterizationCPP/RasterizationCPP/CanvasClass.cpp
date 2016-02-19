@@ -36,7 +36,8 @@ void CanvasClass::UpdateSettings(RECT rectNew) {
 	m_hdcBuffer = CreateCompatibleDC(m_hdcScreen);
 
 	//载入本地背景图片
-	HBITMAP bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("ImageResources\\Materials\\Background.bmp"), IMAGE_BITMAP, m_rectRenderArea.right, m_rectRenderArea.bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	HBITMAP bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("ImageResources\\Materials\\white.bmp"), IMAGE_BITMAP,
+		m_rectRenderArea.right, m_rectRenderArea.bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	//如果载入失败
 	//创建灰色背景
 	if (bmpBackgroundImage == NULL) {
@@ -58,8 +59,57 @@ void CanvasClass::UpdateSettings(RECT rectNew) {
 	SetBkMode(m_hdcBuffer, TRANSPARENT);
 }
 
-void CanvasClass::Draw(int x , int y, COLORREF color) {
+void CanvasClass::Draw(int x, int y, COLORREF color) {
 	SetPixel(m_hdcBuffer, x, y, color);
+}
+
+void CanvasClass::DrawTriangle(const Vector4 set[], COLORREF color) {
+	Vector2 vertex[3];
+	for (int lop = 0; lop < 3; lop++) {
+		vertex[lop].x = (set[lop].x + 1.0f) * m_rectRenderArea.right / 2.0f;
+		vertex[lop].y = (set[lop].y + 1.0f) * m_rectRenderArea.bottom / 2.0f;
+	}
+	DrawLine(vertex[0], vertex[1], color);
+	DrawLine(vertex[1], vertex[2], color);
+	DrawLine(vertex[2], vertex[0], color);
+}
+
+void CanvasClass::DrawLine(Vector2 p0, Vector2 p1, COLORREF color) {
+	//直线斜率是否大于1
+	BOOL steep = ABS(p1.y - p0.y) > ABS(p1.x - p0.x);
+	//如果大于1
+	//将直线沿 y=x 翻转输出
+	if (steep) {
+		swap<float>(p0.x, p0.y);
+		swap<float>(p1.x, p1.y);
+	}
+	if (p0.x > p1.x) {
+		swap<float>(p0.x, p1.x);
+		swap<float>(p0.y, p1.y);
+	}
+	int dx = (int)(p1.x - p0.x);
+	int dy = (int)ABS(p1.y - p0.y);
+
+	int err = dx / 2;
+
+	//y的增量
+	int ystep = (p0.y < p1.y) ? 1 : -1;
+	//用于绘画的 y 数值
+	int painter_y = (int)p0.y;
+
+	for (int i = (int)p0.x; i <= p1.x; i++) {
+		if (steep) {
+			Draw(painter_y, m_rectRenderArea.bottom - i, color);
+		}
+		else {
+			Draw(i, m_rectRenderArea.bottom - painter_y, color);
+		}
+		err -= dy;
+		if (err < 0) {
+			painter_y += ystep;
+			err += dx;
+		}
+	}
 }
 
 void CanvasClass::SwapBufferToScreen() {
