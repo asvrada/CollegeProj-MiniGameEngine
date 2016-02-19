@@ -1,9 +1,7 @@
 # MiniRasterizer
 The MiniRasterizer for personal study purpose, feel free to use in any way you want.  
 Student's work, terrible coding manner  
-Open for all feedback
-  
-__Under Development since 2016/1/17...__ 
+Open for all feedback  
 
 ## _Todo Lists:_
 1. Fix software crash when minimize window
