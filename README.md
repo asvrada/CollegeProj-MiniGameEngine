@@ -4,11 +4,9 @@ Student's work, terrible coding manner
 Open for all feedback  
 
 ## _Todo Lists:_
-1. Fix software crash when minimize window
-2. Add Vertex index list
-3. Camera control
-4. Merge CanvasClass and RenderClass
-5. Options for changing Background 
+1. Add Vertex index list
+2. Camera control
+3. Options for changing Background 
 
 
 ### -What is this ?
