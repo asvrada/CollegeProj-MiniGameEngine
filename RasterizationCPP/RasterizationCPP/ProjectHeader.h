@@ -74,6 +74,6 @@ using std::memset;
 #define OK 1
 
 //Default Color
-#define COLOR_BLACK (RGB(0, 0, 0));
-#define COLOR_WHITE (RGB(255, 255, 255));
+#define COLOR_BLACK (RGB(0, 0, 0))
+#define COLOR_WHITE (RGB(255, 255, 255))
 #endif

@@ -20,7 +20,7 @@ CameraClass::~CameraClass()
 
 void CameraClass::Update(float newAspect, float fov) {
 	screenAspect = newAspect;
-	//FOV = fov;
+	FOV = fov;
 	GetViewToHomoMatrix4();
 }
 
@@ -36,7 +36,6 @@ Matrix4 CameraClass::GetWorldToViewMatrix4()
 }
 
 void CameraClass::GetViewToHomoMatrix4() {
-	ViewToHomo.SetZero();
 	float l, r, t, b;
 
 	r = NearZ*tanf(DEGREE(FOV) / 2.0f);

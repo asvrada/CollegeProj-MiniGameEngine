@@ -75,7 +75,7 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 		//从系统申请到窗口句柄后
 		//用它初始化各个类
 		//初始化主渲染类
-		m_MainRenderer->Initialize(m_rectRenderScreen, GetDC(m_hWnd));
+		m_MainRenderer->Initialize(&m_rectRenderScreen, &m_hWnd);
 		//初始化输入类
 		m_Input->Initialize(m_hWnd);
 
@@ -116,7 +116,7 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 		m_rectRenderScreen.left = m_rectRenderScreen.top = 0;
 
 		//并更改画布的大小
-		m_MainRenderer->UpdateCanvasSettings(m_rectRenderScreen);
+		m_MainRenderer->UpdateSettings();
 		break;
 
 	case WM_KEYDOWN:
