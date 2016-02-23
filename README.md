@@ -5,8 +5,9 @@ Open for all feedback
 
 ## _Todo Lists:_
 1. Add Vertex index list
-2. Camera control
-3. Options for changing Background 
+2. Load Model's vertex infomation from external file
+3. Camera control
+4. Options for changing Background 
 
 
 ### -What is this ?

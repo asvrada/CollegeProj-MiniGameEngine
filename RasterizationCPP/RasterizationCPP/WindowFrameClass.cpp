@@ -28,7 +28,7 @@ void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
 
 	m_Input = new InputClass();
 
-	m_MainRenderer = new RenderClass();
+	m_MainRenderer = new RenderClass(m_Input);
 }
 
 void WindowFrameClass::Shutdown() {
@@ -117,8 +117,28 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 
 		//并更改画布的大小
 		m_MainRenderer->UpdateSettings();
+		//重新设置鼠标的中心
+		m_Input->UpdateCursorCenterPostion(m_rectRenderScreen);
+		break;
+	case WM_MOVE:
+		m_Input->UpdateCursorCenterPostion(m_rectRenderScreen);
 		break;
 
+	//以下消息响应按键
+	case WM_LBUTTONDOWN:
+		m_Input->Press('l');
+		break;
+	case WM_LBUTTONUP:
+		m_Input->Release('l');
+		m_Input->lButtonUp = true;
+		break;
+	case WM_RBUTTONDOWN:
+		m_Input->Press('r');
+		break;
+	case WM_RBUTTONUP:
+		m_Input->Release('r');
+		m_Input->rButtonUp = true;
+		break;
 	case WM_KEYDOWN:
 		m_Input->Press((int)wParam);
 		m_Input->ReactToKeyPressed();

@@ -154,18 +154,15 @@ public:
 		x = old.x;
 		y = old.y;
 		z = old.z;
-		if (isVertex) {
-			w = 1;
-		}
-		else {
-			w = 0;
-		}
+		w = isVertex ? 1.0f : 0.0f;
 	}
 
 	~Vector4() {}
 
 	//齐次坐标系的变换
 	Vector4 operator* (const Matrix4& b);
+
+	void VectorUnify();
 
 	//输出流重载
 	friend wstringstream &operator << (wstringstream&, const Vector4&);
@@ -271,10 +268,6 @@ public:
 ///////////////////
 // 非类成员函数 //
 //////////////////
-
-//todo
-//这个有必要吗
 Matrix4 RotationSingleAxis(char axis, float degree);
-//Matrix4 Rotation(float x, float y, float z);
 
 #endif

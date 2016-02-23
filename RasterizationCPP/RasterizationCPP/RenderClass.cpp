@@ -1,6 +1,7 @@
 #include "RenderClass.h"
 
 void RenderClass::DrawObjects() {
+	WorldToView = m_Camera->GetWorldToViewMatrix4();
 	Matrix4 LocalToView;
 	Vector4 transformedVertexes[3];
 	for (Object object : RenderObjects) {
@@ -18,16 +19,15 @@ void RenderClass::DrawObjects() {
 			transformedVertexes[lop].x /= z_depth;
 			transformedVertexes[lop].y /= z_depth;
 			transformedVertexes[lop].z /= z_depth;
-			transformedVertexes[lop].w = 1;
 		}
 
 		//Draw
-		//m_Canvas->Draw(transformedVertexes[lop].x, transformedVertexes[lop].y, RGB(0, 0, 0));
 		DrawTriangle(transformedVertexes, COLOR_BLACK);
 	}
 }
 
-RenderClass::RenderClass() {
+RenderClass::RenderClass(InputClass *input) {
+	m_ptr_Input = input;
 	m_Camera = NULL;
 }
 
@@ -42,7 +42,7 @@ void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
 
 	m_hdcScreen = GetDC(*m_ptr_hwnd);
 
-	m_Camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f);
+	m_Camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f,m_ptr_Input);
 	m_Camera->Update();
 
 	//初始化物体
@@ -50,10 +50,6 @@ void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
 	RenderObjects.push_back(Object());
 	RenderObjects[1].vertex[2].x = 100.0f;
 	RenderObjects[1].vertex[2].y = 100.0f;
-	m_Camera->Rotation.y = 30.0f;
-	m_Camera->Position.x = -30.0f;
-	m_Camera->Position.y = 50.0f;
-	m_Camera->Update();
 }
 
 void RenderClass::DeleteResources() {
@@ -68,19 +64,44 @@ void RenderClass::Shutdown() {
 }
 
 void RenderClass::RenderAFrame() {
+	////////////////
+	// >每帧必做 //
+	////////////////
 	fps.computeTime();
+	GetCursorPos(&m_ptr_Input->rectCursor);
+	m_Camera->CameraControl();
+	////////////////
+	// <每帧必做 //
+	////////////////
+
+	//if (m_ptr_Input->IsKeyPressed('Z')) {
+	//}
+
+
 	OutputText(fps.getFPSwstring(), 0);
 
+	//
 	wstringstream ws;
 	ws << "[ " << m_ptr_rectRenderArea->right << ", " << m_ptr_rectRenderArea->bottom << " ]";
 	OutputText(ws.str(), 1);
 
-	WorldToView = m_Camera->GetWorldToViewMatrix4();
+	ws.str(L"");
+	ws << "Cursor Locked :" << (m_ptr_Input->isCenterSnapped ? "Yes" : "No");
+	OutputText(ws.str(), 2);
+
+	
+	////////////////
+	// >每帧必做 //
+	////////////////
+
 	DrawObjects();
 
-
+	m_ptr_Input->clearFlag();
 	SwapBufferToScreen();
 	ClearCanvas();
+	////////////////
+	// <每帧必做 //
+	////////////////
 }
 
 void RenderClass::UpdateSettings()

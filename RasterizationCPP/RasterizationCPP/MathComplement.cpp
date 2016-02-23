@@ -453,13 +453,21 @@ Matrix4 RotationSingleAxis(char axis, float degree)
 
 Vector4 Vector4::operator*(const Matrix4 & b)
 {
-	//todo
 	Vector4 tmp;
 	tmp.x = x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0] + w * b.var[3][0];
 	tmp.y = x*b.var[0][1] + y*b.var[1][1] + z*b.var[2][1] + w * b.var[3][1];
 	tmp.z = x*b.var[0][2] + y*b.var[1][2] + z*b.var[2][2] + w * b.var[3][2];
 	tmp.w  = x*b.var[0][3] + y*b.var[1][3] + z*b.var[2][3] + w * b.var[3][3];
 	return tmp;
+}
+
+void Vector4::VectorUnify()
+{
+	float length = x * x + y * y + z * z;
+	length = sqrtf(length);
+	x /= length;
+	y /= length;
+	z /= length;
 }
 
 wstringstream &operator << (wstringstream& ws, const Vector4& v) {

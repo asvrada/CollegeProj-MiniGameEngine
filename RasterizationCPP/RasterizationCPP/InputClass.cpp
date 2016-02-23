@@ -1,29 +1,62 @@
 #include "InputClass.h"
 
 InputClass::InputClass() {
-	m_KeyPressed = NULL;
+	rButtonUp = lButtonUp = false;
 	m_hWnd = 0;
 }
 
 
 InputClass::~InputClass() {
-	delete []m_KeyPressed;
-	m_KeyPressed = NULL;
 	m_hWnd = 0;
 }
 
 void InputClass::Initialize(HWND hWnd) {
-	m_KeyPressed = new bool[512];
-	memset(m_KeyPressed, 0, 512 * sizeof(char));
+	isCenterSnapped = false;
 	m_hWnd = hWnd;
 }
 
 void InputClass::Press(int input) {
-	m_KeyPressed[input] = true;
+	m_KeyPressed.m_KeyPressed[input] = true;
+}
+
+void InputClass::Press(char mouseButton) {
+	switch (mouseButton) {
+	case 'r':
+	case 'R':
+		m_KeyPressed.r = true;
+		break;
+	case 'l':
+	case 'L':
+		m_KeyPressed.l = true;
+		break;
+	default:
+		break;
+	}
 }
 
 void InputClass::Release(int input) {
-	m_KeyPressed[input] = false;
+	m_KeyPressed.m_KeyPressed[input] = false;
+}
+
+void InputClass::Release(char mouseButton)
+{
+	switch (mouseButton) {
+	case 'r':
+	case 'R':
+		m_KeyPressed.r = false;
+	case 'l':
+	case 'L':
+		m_KeyPressed.l = false;
+	default:
+		Release((int)mouseButton);
+	}
+}
+
+void InputClass::UpdateCursorCenterPostion(const RECT &rectRender)
+{
+	rectCursorCenterPostion.x = rectRender.right / 2;
+	rectCursorCenterPostion.y = rectRender.bottom / 2;
+	ClientToScreen(m_hWnd, &rectCursorCenterPostion);
 }
 
 int InputClass::ReactToKeyPressed() {
@@ -34,6 +67,26 @@ int InputClass::ReactToKeyPressed() {
 	return OK;
 }
 
-bool InputClass::IsKeyPressed(int input) {
-	return m_KeyPressed[input];
+void InputClass::clearFlag()
+{
+	rButtonUp = lButtonUp = false;
+}
+
+inline bool InputClass::IsKeyPressed(int input) {
+	return m_KeyPressed.m_KeyPressed[input];
+}
+
+bool InputClass::IsKeyPressed(char mouseButton)
+{
+	switch (mouseButton) {
+	case 'r':
+	case 'R':
+		return m_KeyPressed.r;
+	case 'l':
+	case 'L':
+		return m_KeyPressed.l;
+	default:
+		return IsKeyPressed((int)mouseButton);
+	}
+	return false;
 }

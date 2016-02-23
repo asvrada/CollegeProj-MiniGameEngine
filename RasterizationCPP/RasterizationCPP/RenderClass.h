@@ -18,6 +18,7 @@
 #include "ProjectHeader.h"
 #include "CameraClass.h"
 #include "ObjectClass.h"
+#include "InputClass.h"
 
 class TimeClass {
 private:
@@ -92,20 +93,21 @@ private:
 	//储存背景图案的画刷
 	HBRUSH m_brushBackground;
 
+
+	//输入类的指针
+	InputClass *m_ptr_Input;
 	//时间类
 	TimeClass fps;
 	//摄像机类
 	CameraClass *m_Camera;
-	//世界到视口的矩阵
-	//根据摄像机坐标生成
-	Matrix4 WorldToView;
-	//ViewToHomo 在摄像机类里
 
 //私有函数
 private:
+	//ViewToHomo 矩阵在摄像机类里
+	Matrix4 WorldToView;
 	void DrawObjects();
 public:
-	RenderClass();
+	RenderClass(InputClass*);
 	~RenderClass();
 
 	void Initialize(RECT*,HWND*);
