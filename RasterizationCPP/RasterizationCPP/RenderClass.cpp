@@ -42,7 +42,7 @@ void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
 
 	m_hdcScreen = GetDC(*m_ptr_hwnd);
 
-	m_Camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f,m_ptr_Input);
+	m_Camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f, m_ptr_Input, &fps);
 	m_Camera->Update();
 
 	//初始化物体
@@ -84,6 +84,10 @@ void RenderClass::RenderAFrame() {
 	wstringstream ws;
 	ws <<"Resolution : " << m_ptr_rectRenderArea->right << " * " << m_ptr_rectRenderArea->bottom;
 	OutputText(ws.str(), 1);
+
+	ws.str(L"");
+	ws << "Use W, A, S, D ,Q ,E and Arrow keys to move around";
+	OutputText(ws.str(), 2);
 
 	
 	////////////////
@@ -156,6 +160,10 @@ void RenderClass::DrawPixel(int x, int y, COLORREF color)
 
 void RenderClass::DrawTriangle(const Vector4 set[], COLORREF color)
 {
+	if (triangleBackcull(set)) {
+		return;
+	}
+
 	Vector2 vertex[3];
 	for (int lop = 0; lop < 3; lop++) {
 		vertex[lop].x = (set[lop].x + 1.0f) * m_ptr_rectRenderArea->right / 2.0f;

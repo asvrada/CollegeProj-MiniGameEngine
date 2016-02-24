@@ -1,5 +1,42 @@
 #include "MathComplement.h"
 
+/*
+int TriangleBackCull(FLOAT3D p0, FLOAT3D p1, FLOAT3D p2)
+{
+	//p1->p0
+	//p1->p2
+	FLOAT3D view = { 0.0f,0.0f,1.0f };
+	FLOAT3D a, b;
+	a.x = p0.x - p1.x;
+	a.y = p0.y - p1.y;
+	a.z = p0.z - p1.z;
+
+	b.x = p2.x - p1.x;
+	b.y = p2.y - p1.y;
+	b.z = p2.z - p1.z;
+
+	if (DotProduct(view, CrossProduct(a, b)) <= 0)
+	{
+		return 1;
+	}
+	return 0;
+}
+*/
+
+bool triangleBackcull(const Vector4 set[])
+{
+	Vector3 view(0.0f, 0.0f, 1.0f);
+	Vector3 a, b;
+	a.x = set[0].x - set[1].x;
+	a.y = set[0].y - set[1].y;
+	a.z = set[0].z - set[1].z;
+
+	b.x = set[2].x - set[1].x;
+	b.y = set[2].y - set[1].y;
+	b.z = set[2].z - set[1].z;
+
+	return (view.DotProduct(a.CrossProduct(b)) <= 0);
+}
 
 /*************************
 Vector3D

@@ -35,6 +35,9 @@ void swap(T &a, T &b) {
 	b = tmp;
 }
 
+//back face cull
+bool triangleBackcull(const Vector4 set[]);
+
 class Vector2 {
 public:
 	float x, y;

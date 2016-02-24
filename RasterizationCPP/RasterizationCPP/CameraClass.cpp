@@ -1,13 +1,14 @@
 #include "CameraClass.h"
 
-CameraClass::CameraClass(float aspect,float fov, InputClass *input) {
+CameraClass::CameraClass(float aspect,float fov, InputClass *input, TimeClass *time) {
 	m_ptr_Input = input;
+	m_ptr_time = time;
 
 	NearZ = 1.0f;
 	FarZ = 1500.0f;
 	FOV = fov;
-	moveSpeed = 1.0f;
-	rotateSpeed = 0.5f;
+	moveSpeed = 150.0f;
+	rotateSpeed = 70.0f;
 
 	screenAspect = aspect;
 
@@ -50,10 +51,10 @@ void CameraClass::CameraControl() {
 		Rotation.y += (float)pointCursorModify.x / 15.0f;
 	}
 
-	if (m_ptr_Input->IsKeyPressed(VK_UP)) { Rotation.x -= rotateSpeed; }
-	if (m_ptr_Input->IsKeyPressed(VK_DOWN)) { Rotation.x += rotateSpeed; }
-	if (m_ptr_Input->IsKeyPressed(VK_LEFT)) { Rotation.y -= rotateSpeed; }
-	if (m_ptr_Input->IsKeyPressed(VK_RIGHT)) { Rotation.y += rotateSpeed; }
+	if (m_ptr_Input->IsKeyPressed(VK_UP)) { Rotation.x -= rotateSpeed * m_ptr_time->getDeltaTime(); }
+	if (m_ptr_Input->IsKeyPressed(VK_DOWN)) { Rotation.x += rotateSpeed * m_ptr_time->getDeltaTime(); }
+	if (m_ptr_Input->IsKeyPressed(VK_LEFT)) { Rotation.y -= rotateSpeed * m_ptr_time->getDeltaTime(); }
+	if (m_ptr_Input->IsKeyPressed(VK_RIGHT)) { Rotation.y += rotateSpeed * m_ptr_time->getDeltaTime(); }
 
 	if (Rotation.x < -90.0f) { Rotation.x = -90.0f; }
 	if (Rotation.x > 90.0f) { Rotation.x = 90.0f; }
@@ -76,9 +77,9 @@ void CameraClass::CameraControl() {
 		MovingDirection = MovingDirection * (Matrix4('x', Rotation.x) * Matrix4('y', Rotation.y));
 		MovingDirection.VectorUnify();
 
-		Position.x += MovingDirection.x*moveSpeed;
-		Position.y += MovingDirection.y*moveSpeed;
-		Position.z += MovingDirection.z*moveSpeed;
+		Position.x += MovingDirection.x*moveSpeed * m_ptr_time->getDeltaTime();
+		Position.y += MovingDirection.y*moveSpeed * m_ptr_time->getDeltaTime();
+		Position.z += MovingDirection.z*moveSpeed * m_ptr_time->getDeltaTime();
 	}
 }
 
