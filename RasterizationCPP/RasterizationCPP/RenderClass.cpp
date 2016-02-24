@@ -3,14 +3,15 @@
 void RenderClass::DrawObjects() {
 	WorldToView = m_Camera->GetWorldToViewMatrix4();
 	Matrix4 LocalToView;
-	Vector4 transformedVertexes[3];
 	for (Object object : RenderObjects) {
+		vector<Vector4> transformedVertexes;
+
 		LocalToView = Matrix4('A', object.Rotation) * Matrix4(object.Position);
 		LocalToView = LocalToView * WorldToView;
 
-		for (int lop = 0; lop < 3; lop++) {
+		for (int lop = 0; lop < (int)object.vertices.size(); lop++) {
 			//Local To View transformation
-			transformedVertexes[lop] = object.vertex[lop] * LocalToView;
+			transformedVertexes.push_back(object.vertices[lop] * LocalToView);
 
 			//View To Homo transformation
 			transformedVertexes[lop] = transformedVertexes[lop] * m_Camera->ViewToHomo;
@@ -21,8 +22,10 @@ void RenderClass::DrawObjects() {
 			transformedVertexes[lop].z /= z_depth;
 		}
 
-		//Draw
-		DrawTriangle(transformedVertexes, COLOR_BLACK);
+		//Draw every face of that object
+		for (int lop = 0; lop < (int)object.indices.size(); lop += 3) {
+			DrawTriangle(transformedVertexes[lop], transformedVertexes[lop + 1], transformedVertexes[lop + 2], COLOR_BLACK);
+		}
 	}
 }
 
@@ -30,7 +33,6 @@ RenderClass::RenderClass(InputClass *input) {
 	m_ptr_Input = input;
 	m_Camera = NULL;
 }
-
 
 RenderClass::~RenderClass() {
 	delete m_Camera;
@@ -47,9 +49,7 @@ void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
 
 	//初始化物体
 	RenderObjects.push_back(Object());
-	RenderObjects.push_back(Object());
-	RenderObjects[1].vertex[2].x = 100.0f;
-	RenderObjects[1].vertex[2].y = 100.0f;
+	RenderObjects.push_back(Object(Vector3(100.f, 100.f, 0), Vector3(0, 0, 180.0f)));
 }
 
 void RenderClass::DeleteResources() {
@@ -114,7 +114,7 @@ void RenderClass::UpdateSettings()
 	m_hdcBuffer = CreateCompatibleDC(m_hdcScreen);
 
 	//载入本地背景图片
-	HBITMAP bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("ImageResources\\Materials\\Background.bmp"), IMAGE_BITMAP,
+	HBITMAP bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("Resources\\Materials\\Background.bmp"), IMAGE_BITMAP,
 		m_ptr_rectRenderArea->right, m_ptr_rectRenderArea->bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	//如果载入失败
 	//创建灰色背景
@@ -149,26 +149,26 @@ void RenderClass::ClearCanvas() {
 	FillRect(m_hdcBuffer, m_ptr_rectRenderArea, m_brushBackground);
 }
 
-void RenderClass::OutputText(const wstring & text, int line) {
+inline void RenderClass::OutputText(const wstring & text, int line) {
 	TextOut(m_hdcBuffer, 0, 20 * line, text.data(), text.size());
 }
 
-void RenderClass::DrawPixel(int x, int y, COLORREF color)
+void RenderClass::DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF color)
 {
-	SetPixel(m_hdcBuffer, x, y, color);
-}
-
-void RenderClass::DrawTriangle(const Vector4 set[], COLORREF color)
-{
-	if (triangleBackcull(set)) {
+	if (triangleBackcull(p0, p1, p2)) {
 		return;
 	}
 
 	Vector2 vertex[3];
-	for (int lop = 0; lop < 3; lop++) {
-		vertex[lop].x = (set[lop].x + 1.0f) * m_ptr_rectRenderArea->right / 2.0f;
-		vertex[lop].y = (set[lop].y + 1.0f) * m_ptr_rectRenderArea->bottom / 2.0f;
-	}
+	vertex[0].x = (p0.x + 1.0f) * m_ptr_rectRenderArea->right / 2.0f;
+	vertex[0].y = (p0.y + 1.0f) * m_ptr_rectRenderArea->bottom / 2.0f;
+
+	vertex[1].x = (p1.x + 1.0f) * m_ptr_rectRenderArea->right / 2.0f;
+	vertex[1].y = (p1.y + 1.0f) * m_ptr_rectRenderArea->bottom / 2.0f;
+
+	vertex[2].x = (p2.x + 1.0f) * m_ptr_rectRenderArea->right / 2.0f;
+	vertex[2].y = (p2.y + 1.0f) * m_ptr_rectRenderArea->bottom / 2.0f;
+
 	DrawLine(vertex[0], vertex[1], color);
 	DrawLine(vertex[1], vertex[2], color);
 	DrawLine(vertex[2], vertex[0], color);
@@ -211,4 +211,9 @@ void RenderClass::DrawLine(Vector2 p0, Vector2 p1, COLORREF color)
 			err += dx;
 		}
 	}
+}
+
+inline void RenderClass::DrawPixel(int x, int y, COLORREF color)
+{
+	SetPixel(m_hdcBuffer, x, y, color);
 }

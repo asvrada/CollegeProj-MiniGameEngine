@@ -23,9 +23,14 @@ Object::Object(Vector3 Pos, Vector3 rotation) {
 
 void Object::Initial() {
 	//三角形的三个点
-	vertex[0].x = 0.0f; vertex[0].y = 100.0f; vertex[0].z = 0.0f;
-	vertex[1].x = 100.0f; vertex[1].y = 0.0f; vertex[1].z = 0.0f;
-	vertex[2].x = 0.0f; vertex[2].y = 0.0f; vertex[2].z = 0.0f;
+	vertices.push_back(Vector3(0.0f));
+	vertices.push_back(Vector3(0.f, 100.0f, 0.f));
+	vertices.push_back(Vector3(100.f, 0.f, 0.f));
+
+	indices.push_back(0);
+	indices.push_back(1);
+	indices.push_back(2);
+	
 	//三角形三个点的UV坐标
 	/*
 	vertexUV[0].u = 0.0f; vertexUV[0].v = 0.0f;

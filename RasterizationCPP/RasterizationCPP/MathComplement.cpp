@@ -38,6 +38,21 @@ bool triangleBackcull(const Vector4 set[])
 	return (view.DotProduct(a.CrossProduct(b)) <= 0);
 }
 
+bool triangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2)
+{
+	Vector3 view(0.0f, 0.0f, 1.0f);
+	Vector3 a, b;
+	a.x = p0.x - p1.x;
+	a.y = p0.y - p1.y;
+	a.z = p0.z - p1.z;
+
+	b.x = p2.x - p1.x;
+	b.y = p2.y - p1.y;
+	b.z = p2.z - p1.z;
+
+	return (view.DotProduct(a.CrossProduct(b)) <= 0);
+}
+
 /*************************
 Vector3D
 *************************/

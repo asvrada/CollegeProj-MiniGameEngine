@@ -19,7 +19,10 @@ struct UV {
 class Object {
 	//三角形的三点
 public:
-	Vector3 vertex[3];
+	vector<Vector3> vertices;
+	vector<int> indices;
+	//作废
+	//Vector3 vertex[3];
 	//UV vertexUV[3];
 
 	Vector3 Position;

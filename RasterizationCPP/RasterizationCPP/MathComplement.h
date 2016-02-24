@@ -37,6 +37,7 @@ void swap(T &a, T &b) {
 
 //back face cull
 bool triangleBackcull(const Vector4 set[]);
+bool triangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2);
 
 class Vector2 {
 public:

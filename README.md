@@ -4,7 +4,7 @@ Student's work, terrible coding manner
 Open for all feedback  
 
 ## _Todo Lists:_
-1. Add Vertex index list
+1. Fix all the memory leaks
 2. Load Model's vertex infomation from external file
 3. Options for changing Background 
 

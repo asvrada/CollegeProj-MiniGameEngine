@@ -84,7 +84,7 @@ public:
 	//输出文字
 	void OutputText(const wstring&, int linenumber);
 	//画单个三角形
-	void DrawTriangle(const Vector4[], COLORREF);
+	void DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF);
 	//画线
 	void DrawLine(Vector2, Vector2, COLORREF);
 	//设置单个像素的颜色
