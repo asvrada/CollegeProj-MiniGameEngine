@@ -80,6 +80,13 @@ public:
 
 class RenderClass
 {
+	////////////////
+	// Debug 用 //
+	///////////////
+//public:
+	
+
+
 private:
 	//当前程序的句柄
 	HWND *m_ptr_hwnd;

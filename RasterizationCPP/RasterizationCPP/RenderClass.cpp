@@ -82,12 +82,8 @@ void RenderClass::RenderAFrame() {
 
 	//
 	wstringstream ws;
-	ws << "[ " << m_ptr_rectRenderArea->right << ", " << m_ptr_rectRenderArea->bottom << " ]";
+	ws <<"Resolution : " << m_ptr_rectRenderArea->right << " * " << m_ptr_rectRenderArea->bottom;
 	OutputText(ws.str(), 1);
-
-	ws.str(L"");
-	ws << "Cursor Locked :" << (m_ptr_Input->isCenterSnapped ? "Yes" : "No");
-	OutputText(ws.str(), 2);
 
 	
 	////////////////

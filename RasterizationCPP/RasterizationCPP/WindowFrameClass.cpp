@@ -67,7 +67,7 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 	//æ”÷–œ‘ æ¥∞ø⁄
 	m_hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, m_AppName, m_AppName,
 		WS_OVERLAPPEDWINDOW, (m_WINDOW_X - m_rectRenderScreen.right + m_rectRenderScreen.left) / 2, (m_WINDOW_Y - m_rectRenderScreen.bottom + m_rectRenderScreen.top) / 2,
-		m_rectRenderScreen.right - m_rectRenderScreen.left, m_rectRenderScreen.bottom - m_rectRenderScreen.top, NULL, NULL, hInstance, NULL);
+		m_rectRenderScreen.right , m_rectRenderScreen.bottom, NULL, NULL, hInstance, NULL);
 
 		if (!m_hWnd) {
 			return ERROR;

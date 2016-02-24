@@ -53,8 +53,7 @@ Vector3 Vector3::operator*(const Matrix3 &b)
 
 Vector4 Vector3::operator*(const Matrix4 &b)
 {
-	Vector4 vertex(*this, true);
-	return vertex * b;
+	return Vector4(*this,true) * b;
 }
 
 Vector3 Vector3::operator+(const Vector3 &b)
@@ -315,6 +314,10 @@ Matrix4 Matrix4::Invert()
 	//用于储存每次的余子式
 	Matrix3 tmp;
 
+	//////////////////////////
+	// 为什么又错了？？？ //
+	//////////////////////////
+	/*
 	float firstPart;
 	//先算分母，再求倒
 	firstPart =
@@ -329,7 +332,7 @@ Matrix4 Matrix4::Invert()
 
 	//求倒
 	firstPart = 1.0f / firstPart;
-
+	*/
 
 	//最里层的循环
 	int x, y;
@@ -364,7 +367,7 @@ Matrix4 Matrix4::Invert()
 			}
 		}
 	}
-	output = output * firstPart;
+	//output = output * firstPart;
 	*this = output;
 
 	return output;
@@ -470,7 +473,7 @@ void Vector4::VectorUnify()
 	z /= length;
 }
 
-wstringstream &operator << (wstringstream& ws, const Vector4& v) {
-	ws << "[ " << v.x << ", " << v.y << ", " << v.z << ", " << v.w << " ]" << endl;
+wstringstream& operator << (wstringstream& ws, const Vector4& v) {
+	ws << "[ " << v.x << ", " << v.y << ", " << v.z << ", " << v.w << " ]";
 	return ws;
 }

@@ -62,13 +62,16 @@ void CameraClass::CameraControl() {
 
 	//ÉãÏñ»ú¿Õ¼äÒÆ¶¯
 
-	if (m_ptr_Input->IsKeyPressed('W') || m_ptr_Input->IsKeyPressed('A') || m_ptr_Input->IsKeyPressed('S') || m_ptr_Input->IsKeyPressed('D'))
+	if (m_ptr_Input->IsKeyPressed('W') || m_ptr_Input->IsKeyPressed('A') || m_ptr_Input->IsKeyPressed('S') || m_ptr_Input->IsKeyPressed('D') ||
+		m_ptr_Input->IsKeyPressed('Q') || m_ptr_Input->IsKeyPressed('E'))
 	{
 		Vector4 MovingDirection;
 		if (m_ptr_Input->IsKeyPressed('A')) { MovingDirection.x = -1.0f; }
 		if (m_ptr_Input->IsKeyPressed('D')) { MovingDirection.x = 1.0f; }
 		if (m_ptr_Input->IsKeyPressed('W')) { MovingDirection.z = 1.0f; }
 		if (m_ptr_Input->IsKeyPressed('S')) { MovingDirection.z = -1.0f; }
+		if (m_ptr_Input->IsKeyPressed('Q')) { MovingDirection.y = 1.0f; }
+		if (m_ptr_Input->IsKeyPressed('E')) { MovingDirection.y = -1.0f; }
 
 		MovingDirection = MovingDirection * (Matrix4('x', Rotation.x) * Matrix4('y', Rotation.y));
 		MovingDirection.VectorUnify();
@@ -77,8 +80,6 @@ void CameraClass::CameraControl() {
 		Position.y += MovingDirection.y*moveSpeed;
 		Position.z += MovingDirection.z*moveSpeed;
 	}
-	if (m_ptr_Input->IsKeyPressed('Q')) { Position.y += moveSpeed; }
-	if (m_ptr_Input->IsKeyPressed('E')) { Position.y -= moveSpeed; }
 }
 
 void CameraClass::GetViewToHomoMatrix4() {
