@@ -1,27 +1,27 @@
 #include "ObjectClass.h"
 
-Object::Object() {
+ObjectClass::ObjectClass() {
 	m_Initial();
 
 	position.x = position.y = position.z = 0.0f;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-Object::Object(Vector3 _position) {
+ObjectClass::ObjectClass(Vector3 _position) {
 	m_Initial();
 
 	position = _position;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-Object::Object(Vector3 _position, Vector3 _rotation) {
+ObjectClass::ObjectClass(Vector3 _position, Vector3 _rotation) {
 	m_Initial();
 
 	position = _position;
 	rotation = _rotation;
 }
 
-void Object::m_Initial() {
+void ObjectClass::m_Initial() {
 	//三角形的三个点
 	vertices.push_back(Vector3(0.0f));
 	vertices.push_back(Vector3(0.f, 100.0f, 0.f));

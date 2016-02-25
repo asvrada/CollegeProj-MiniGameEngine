@@ -36,13 +36,13 @@ private:
 	//储存背景图案的画刷
 	HBRUSH m_brush_background;
 
+	//时间类
+	TimeClass m_time;
 
 	//输入类的指针
 	InputClass *m_ptr_input;
-	//时间类
-	TimeClass m_time;
 	//摄像机类
-	CameraClass *m_camera;
+	CameraClass *m_ptr_camera;
 
 //私有函数
 private:
@@ -85,7 +85,7 @@ public:
 
 //模型数据
 public:
-	vector<Object> vector_objects;
+	vector<ObjectClass> vector_objects;
 };
 
 #endif

@@ -1,41 +1,41 @@
 #include "RenderClass.h"
 
 void RenderClass::m_DrawObjects() {
-	m_world_to_view = m_camera->GetWorldToViewMatrix4();
+	m_world_to_view = m_ptr_camera->GetWorldToViewMatrix4();
 	Matrix4 LocalToView;
-	for (Object object : vector_objects) {
-		vector<Vector4> transformedVertexes;
+	for (auto object : vector_objects) {
+		vector<Vector4> transformed_vertices;
 
 		LocalToView = Matrix4('A', object.rotation) * Matrix4(object.position);
 		LocalToView = LocalToView * m_world_to_view;
 
 		for (int lop = 0; lop < (int)object.vertices.size(); lop++) {
 			//Local To View transformation
-			transformedVertexes.push_back(object.vertices[lop] * LocalToView);
+			transformed_vertices.push_back(object.vertices[lop] * LocalToView);
 
 			//View To Homo transformation
-			transformedVertexes[lop] = transformedVertexes[lop] * m_camera->view_to_homo;
+			transformed_vertices[lop] = transformed_vertices[lop] * m_ptr_camera->view_to_homo;
 
-			float z_depth = transformedVertexes[lop].w;
-			transformedVertexes[lop].x /= z_depth;
-			transformedVertexes[lop].y /= z_depth;
-			transformedVertexes[lop].z /= z_depth;
+			float z_depth = transformed_vertices[lop].w;
+			transformed_vertices[lop].x /= z_depth;
+			transformed_vertices[lop].y /= z_depth;
+			transformed_vertices[lop].z /= z_depth;
 		}
 
 		//Draw every face of that object
 		for (int lop = 0; lop < (int)object.indices.size(); lop += 3) {
-			DrawTriangle(transformedVertexes[lop], transformedVertexes[lop + 1], transformedVertexes[lop + 2], COLOR_BLACK);
+			DrawTriangle(transformed_vertices[lop], transformed_vertices[lop + 1], transformed_vertices[lop + 2], COLOR_BLACK);
 		}
 	}
 }
 
 RenderClass::RenderClass(InputClass *input) {
 	m_ptr_input = input;
-	m_camera = NULL;
+	m_ptr_camera = NULL;
 }
 
 RenderClass::~RenderClass() {
-	delete m_camera;
+	delete m_ptr_camera;
 }
 
 void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
@@ -44,12 +44,12 @@ void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
 
 	m_hdc_screen = GetDC(*m_ptr_hwnd);
 
-	m_camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f, m_ptr_input, &m_time);
-	m_camera->Update();
+	m_ptr_camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f, m_ptr_input, &m_time);
+	m_ptr_camera->Update();
 
 	//初始化物体
-	vector_objects.push_back(Object());
-	vector_objects.push_back(Object(Vector3(100.f, 100.f, 0), Vector3(0, 0, 180.0f)));
+	vector_objects.push_back(ObjectClass());
+	vector_objects.push_back(ObjectClass(Vector3(100.f, 100.f, 0), Vector3(0, 0, 180.0f)));
 }
 
 void RenderClass::DeleteResources() {
@@ -59,8 +59,8 @@ void RenderClass::DeleteResources() {
 
 void RenderClass::Shutdown() {
 	DeleteResources();
-	delete m_camera;
-	m_camera = nullptr;
+	delete m_ptr_camera;
+	m_ptr_camera = nullptr;
 }
 
 void RenderClass::RenderAFrame() {
@@ -69,7 +69,7 @@ void RenderClass::RenderAFrame() {
 	////////////////
 	m_time.ComputeTime();
 	GetCursorPos(&m_ptr_input->point_cursor_current);
-	m_camera->CameraControl();
+	m_ptr_camera->CameraControl();
 	////////////////
 	// <每帧必做 //
 	////////////////
@@ -130,7 +130,7 @@ void RenderClass::UpdateSettings()
 	SetBkMode(m_hdc_buffer, TRANSPARENT);
 
 	//升级摄像机的数据
-	m_camera->Update((float)m_ptr_rect_client->right / (float)m_ptr_rect_client->bottom, m_camera->fov);
+	m_ptr_camera->Update((float)m_ptr_rect_client->right / (float)m_ptr_rect_client->bottom, m_ptr_camera->fov);
 }
 
 void RenderClass::SwapBufferToScreen() {

@@ -16,7 +16,7 @@ struct UV {
 };
 
 //目前一个Object就是一个三角形
-class Object {
+class ObjectClass {
 	//三角形的三点
 public:
 	vector<Vector3> vertices;
@@ -30,11 +30,11 @@ public:
 	// 构造函数 //
 	///////////////
 
-	Object();
+	ObjectClass();
 	//给出Position
-	Object(Vector3);
+	ObjectClass(Vector3);
 	//给出Pos 和 Rotation
-	Object(Vector3, Vector3);
+	ObjectClass(Vector3, Vector3);
 private:
 	void m_Initial();
 };

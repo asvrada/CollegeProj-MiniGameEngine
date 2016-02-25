@@ -28,10 +28,10 @@ private:
 //用到的类
 private:
 	//渲染类
-	RenderClass *m_renderer;
+	RenderClass *m_ptr_renderer;
 
 	//记录当前按下的按键
-	InputClass *m_input;
+	InputClass *m_ptr_input;
 
 public:
 	WindowFrameClass();

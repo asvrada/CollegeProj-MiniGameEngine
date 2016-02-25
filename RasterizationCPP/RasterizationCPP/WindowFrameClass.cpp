@@ -6,17 +6,17 @@ WindowFrameClass::WindowFrameClass() {
 	m_app_name = TEXT("Reasterizer");
 
 	AppHandler = this;
-	m_input = NULL;
-	m_renderer = NULL;
+	m_ptr_input = NULL;
+	m_ptr_renderer = NULL;
 }
 
 WindowFrameClass::~WindowFrameClass() {
 	m_app_name = NULL;
-	delete m_input;
-	m_input = NULL;
+	delete m_ptr_input;
+	m_ptr_input = NULL;
 
-	delete m_renderer;
-	m_renderer = NULL;
+	delete m_ptr_renderer;
+	m_ptr_renderer = NULL;
 }
 
 void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
@@ -24,18 +24,18 @@ void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
 	m_rect_client.top = 0; m_rect_client.left = 0; m_rect_client.bottom = RENDER_Y; m_rect_client.right = RENDER_X;
 	m_quit_software = false;
 
-	m_input = new InputClass();
+	m_ptr_input = new InputClass();
 
-	m_renderer = new RenderClass(m_input);
+	m_ptr_renderer = new RenderClass(m_ptr_input);
 }
 
 void WindowFrameClass::Shutdown() {
-	m_renderer->Shutdown();
-	delete m_renderer;
-	m_renderer = NULL;
+	m_ptr_renderer->Shutdown();
+	delete m_ptr_renderer;
+	m_ptr_renderer = NULL;
 
-	delete m_input;
-	m_input = NULL;
+	delete m_ptr_input;
+	m_ptr_input = NULL;
 }
 
 int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
@@ -73,9 +73,9 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 		//从系统申请到窗口句柄后
 		//用它初始化各个类
 		//初始化主渲染类
-		m_renderer->Initialize(&m_rect_client, &m_hwnd);
+		m_ptr_renderer->Initialize(&m_rect_client, &m_hwnd);
 		//初始化输入类
-		m_input->Initialize(m_hwnd);
+		m_ptr_input->Initialize(m_hwnd);
 
 
 		//显示窗口
@@ -98,7 +98,7 @@ int WindowFrameClass::Run() {
 		}
 
 		//进行一帧渲染
-		m_renderer->RenderAFrame();
+		m_ptr_renderer->RenderAFrame();
 	}
 	return msg.message;
 }
@@ -114,35 +114,35 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 		m_rect_client.left = m_rect_client.top = 0;
 
 		//并更改画布的大小
-		m_renderer->UpdateSettings();
+		m_ptr_renderer->UpdateSettings();
 		//重新设置鼠标的中心
-		m_input->UpdateCursorCenterPostion(m_rect_client);
+		m_ptr_input->UpdateCursorCenterPostion(m_rect_client);
 		break;
 	case WM_MOVE:
-		m_input->UpdateCursorCenterPostion(m_rect_client);
+		m_ptr_input->UpdateCursorCenterPostion(m_rect_client);
 		break;
 
 	//以下消息响应按键
 	case WM_LBUTTONDOWN:
-		m_input->Press('l');
+		m_ptr_input->Press('l');
 		break;
 	case WM_LBUTTONUP:
-		m_input->Release('l');
-		m_input->is_lbutton_up = true;
+		m_ptr_input->Release('l');
+		m_ptr_input->is_lbutton_up = true;
 		break;
 	case WM_RBUTTONDOWN:
-		m_input->Press('r');
+		m_ptr_input->Press('r');
 		break;
 	case WM_RBUTTONUP:
-		m_input->Release('r');
-		m_input->is_rbutton_up = true;
+		m_ptr_input->Release('r');
+		m_ptr_input->is_rbutton_up = true;
 		break;
 	case WM_KEYDOWN:
-		m_input->Press((int)wParam);
-		m_input->ReactToKeyPressed();
+		m_ptr_input->Press((int)wParam);
+		m_ptr_input->ReactToKeyPressed();
 		break;
 	case WM_KEYUP:
-		m_input->Release((int)wParam);
+		m_ptr_input->Release((int)wParam);
 		break;
 
 	//关闭程序
