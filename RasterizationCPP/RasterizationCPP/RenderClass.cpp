@@ -4,9 +4,12 @@ void RenderClass::m_DrawObjects() {
 	m_world_to_view = m_ptr_camera->GetWorldToViewMatrix4();
 	Matrix4 LocalToView;
 	for (auto object : vector_objects) {
+		if ((int)object.vertices.size() == 0) {
+			continue;
+		}
 		vector<Vector4> transformed_vertices;
 
-		LocalToView = Matrix4('A', object.rotation) * Matrix4(object.position);
+		LocalToView = Matrix4(1.0f) * Matrix4('A', object.rotation) * Matrix4(object.position);
 		LocalToView = LocalToView * m_world_to_view;
 
 		for (int lop = 0; lop < (int)object.vertices.size(); lop++) {
@@ -23,11 +26,13 @@ void RenderClass::m_DrawObjects() {
 		}
 
 		//Draw every face of that object
-		for (int lop = 0; lop < (int)object.indices.size(); lop += 3) {
+		int surface_count =(int)object.indices.size();
+		surface_count /= 3;
+		for (int lop = 0; lop < surface_count; lop ++) {
 			DrawTriangle(
-				transformed_vertices[object.indices[lop]], 
-				transformed_vertices[object.indices[lop + 1]],
-				transformed_vertices[object.indices[lop + 2]],
+				transformed_vertices[object.indices[lop * 3]], 
+				transformed_vertices[object.indices[lop * 3 + 1]],
+				transformed_vertices[object.indices[lop * 3 + 2]],
 				COLOR_BLACK);
 		}
 	}

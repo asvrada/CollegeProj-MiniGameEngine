@@ -275,7 +275,8 @@ Matrix4::Matrix4(Matrix4 &a, const Matrix4 &b) {
 Matrix4::Matrix4(float input)
 {
 	SetZero();
-	var[0][0] = var[1][1] = var[2][2] = var[3][3] = input;
+	var[0][0] = var[1][1] = var[2][2]  = input;
+	var[3][3] = 1.0f;
 }
 
 //复制构造函数
