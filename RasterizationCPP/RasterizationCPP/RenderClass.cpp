@@ -26,13 +26,12 @@ void RenderClass::m_DrawObjects() {
 		}
 
 		//Draw every face of that object
-		int surface_count =(int)object.indices.size();
-		surface_count /= 3;
-		for (int lop = 0; lop < surface_count; lop ++) {
+		int indice_count = (int)object.indices.size();
+		for (int lop = 0; lop < indice_count; lop += 3) {
 			DrawTriangle(
-				transformed_vertices[object.indices[lop * 3]], 
-				transformed_vertices[object.indices[lop * 3 + 1]],
-				transformed_vertices[object.indices[lop * 3 + 2]],
+				transformed_vertices[object.indices[lop]],
+				transformed_vertices[object.indices[lop + 1]],
+				transformed_vertices[object.indices[lop + 2]],
 				COLOR_BLACK);
 		}
 	}

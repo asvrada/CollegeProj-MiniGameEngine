@@ -20,16 +20,13 @@ void ObjectClass::Initial(char *file)
 	tmpParserResult->parse(imported_file);
 	imported_file.close();
 
-	int step = 1;
-
 	int vertice_count = tmpParserResult->get<Array>("vertices").size();
-	vertice_count /= step;
-	for (int lop = 0; lop < vertice_count; lop +=3) {
+	for (int lop = 0; lop < vertice_count; lop += 3) {
 		vertices.push_back(
 			Vector3(
-				tmpParserResult->get<Array>("vertices").get<Number>(lop * step),
-				tmpParserResult->get<Array>("vertices").get<Number>(lop * step + 1),
-				tmpParserResult->get<Array>("vertices").get<Number>(lop * step + 2))
+				tmpParserResult->get<Array>("vertices").get<Number>(lop),
+				tmpParserResult->get<Array>("vertices").get<Number>(lop + 1),
+				tmpParserResult->get<Array>("vertices").get<Number>(lop + 2))
 			);
 	}
 
