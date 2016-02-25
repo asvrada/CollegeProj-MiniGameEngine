@@ -5,62 +5,63 @@
 
 class TimeClass {
 private:
-	float sumOfqueue;
-	queue<float> qFPS;
-	int size;
-	wstring InfoFPS;
+	float m_sum_of_queue;
+	queue<float> m_queue_delta_time;
+	int m_queue_size;
+	wstring m_fps_info;
 
 	//用于计算帧数的东西
-	float previousClock;
-	float currentClock;
+	float m_previous_clock;
+	float m_current_clock;
 	//上次渲染一帧后过去的时间
-	float deltaTime;
+	float m_delta_time;
+
+private:
+	void m_Push(float gap) {
+		m_sum_of_queue -= m_queue_delta_time.front();
+		m_queue_delta_time.pop();
+		m_sum_of_queue += gap;
+		m_queue_delta_time.push(gap);
+	}
+
 public:
 	TimeClass() {
-		previousClock = currentClock = 0.0f;
-		deltaTime = 1.0f / 60;
-		size = 60;
+		m_previous_clock = m_current_clock = 0.0f;
+		m_delta_time = 1.0f / 60;
+		m_queue_size = 60;
 
-		sumOfqueue = size * deltaTime;
-		for (int lop = 0; lop < size; lop++) {
-			qFPS.push(deltaTime);
+		m_sum_of_queue = m_queue_size * m_delta_time;
+		for (int lop = 0; lop < m_queue_size; lop++) {
+			m_queue_delta_time.push(m_delta_time);
 		}
 	}
 
-	float getDeltaTime() {
-		return deltaTime;
+	float GetDeltaTime() {
+		return m_delta_time;
 	}
 
 	//计算每帧的耗时
-	void computeTime() {
-		currentClock = (float)clock();
-		deltaTime = (currentClock - previousClock) / CLK_TCK;
-		push(deltaTime);
-		previousClock = currentClock;
-	}
-
-	void push(float gap) {
-		sumOfqueue -= qFPS.front();
-		qFPS.pop();
-		sumOfqueue += gap;
-		qFPS.push(gap);
+	void ComputeTime() {
+		m_current_clock = (float)clock();
+		m_delta_time = (m_current_clock - m_previous_clock) / CLK_TCK;
+		m_Push(m_delta_time);
+		m_previous_clock = m_current_clock;
 	}
 
 	//获得当前的帧数
-	float getFPS() {
-		return ((float)size / sumOfqueue);
+	float GetFPS() {
+		return ((float)m_queue_size / m_sum_of_queue);
 	}
 
 	//获得帧数的字符串信息
-	wstring getFPSwstring() {
-		InfoFPS.clear();
+	wstring GetFPSwstring() {
+		m_fps_info.clear();
 
 		wstringstream ws;
-		ws << TEXT("FPS : ") << getFPS();
-		InfoFPS = ws.str();
-		return InfoFPS;
+		ws << TEXT("FPS : ") << GetFPS();
+		m_fps_info = ws.str();
+		return m_fps_info;
 	}
 };
-
 
 #endif

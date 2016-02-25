@@ -23,39 +23,32 @@
 
 class RenderClass
 {
-	////////////////
-	// Debug 用 //
-	///////////////
-//public:
-	
-
-
 private:
 	//当前程序的句柄
 	HWND *m_ptr_hwnd;
 	//屏幕的设备上下文
-	HDC m_hdcScreen;
+	HDC m_hdc_screen;
 	//渲染区域
-	RECT *m_ptr_rectRenderArea;
+	RECT *m_ptr_rect_client;
 
 	//渲染缓冲区
-	HDC m_hdcBuffer;
+	HDC m_hdc_buffer;
 	//储存背景图案的画刷
-	HBRUSH m_brushBackground;
+	HBRUSH m_brush_background;
 
 
 	//输入类的指针
-	InputClass *m_ptr_Input;
+	InputClass *m_ptr_input;
 	//时间类
-	TimeClass fps;
+	TimeClass m_time;
 	//摄像机类
-	CameraClass *m_Camera;
+	CameraClass *m_camera;
 
 //私有函数
 private:
 	//ViewToHomo 矩阵在摄像机类里
-	Matrix4 WorldToView;
-	void DrawObjects();
+	Matrix4 m_world_to_view;
+	void m_DrawObjects();
 public:
 	RenderClass(InputClass*);
 	~RenderClass();
@@ -92,7 +85,7 @@ public:
 
 //模型数据
 public:
-	vector<Object> RenderObjects;
+	vector<Object> vector_objects;
 };
 
 #endif

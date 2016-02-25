@@ -1,43 +1,41 @@
 #include "WindowFrameClass.h"
 
 WindowFrameClass::WindowFrameClass() {
-	m_rectRenderScreen.bottom = m_rectRenderScreen.left = m_rectRenderScreen.right = m_rectRenderScreen.top = 0;
-	m_centerCursor = false;
-	m_quitSoftware = false;
-	m_AppName = TEXT("Reasterizer");
+	m_rect_client.bottom = m_rect_client.left = m_rect_client.right = m_rect_client.top = 0;
+	m_quit_software = false;
+	m_app_name = TEXT("Reasterizer");
 
 	AppHandler = this;
-	m_Input = NULL;
-	m_MainRenderer = NULL;
+	m_input = NULL;
+	m_renderer = NULL;
 }
 
 WindowFrameClass::~WindowFrameClass() {
-	m_AppName = NULL;
-	delete m_Input;
-	m_Input = NULL;
+	m_app_name = NULL;
+	delete m_input;
+	m_input = NULL;
 
-	delete m_MainRenderer;
-	m_MainRenderer = NULL;
+	delete m_renderer;
+	m_renderer = NULL;
 }
 
 void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
 	//设定初始渲染区域的大小
-	m_rectRenderScreen.top = 0; m_rectRenderScreen.left = 0; m_rectRenderScreen.bottom = RENDER_Y; m_rectRenderScreen.right = RENDER_X;
-	m_centerCursor = false;
-	m_quitSoftware = false;
+	m_rect_client.top = 0; m_rect_client.left = 0; m_rect_client.bottom = RENDER_Y; m_rect_client.right = RENDER_X;
+	m_quit_software = false;
 
-	m_Input = new InputClass();
+	m_input = new InputClass();
 
-	m_MainRenderer = new RenderClass(m_Input);
+	m_renderer = new RenderClass(m_input);
 }
 
 void WindowFrameClass::Shutdown() {
-	m_MainRenderer->Shutdown();
-	delete m_MainRenderer;
-	m_MainRenderer = NULL;
+	m_renderer->Shutdown();
+	delete m_renderer;
+	m_renderer = NULL;
 
-	delete m_Input;
-	m_Input = NULL;
+	delete m_input;
+	m_input = NULL;
 }
 
 int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
@@ -58,31 +56,31 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 	wnd.hIconSm = NULL;
 	wnd.hInstance = hInstance;
 	wnd.lpfnWndProc = CustomWinProc;
-	wnd.lpszClassName = m_AppName;
+	wnd.lpszClassName = m_app_name;
 	wnd.lpszMenuName = NULL;
 	wnd.style = CS_VREDRAW | CS_HREDRAW;
 
 	//注册窗口
 	RegisterClassEx(&wnd);
 	//居中显示窗口
-	m_hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, m_AppName, m_AppName,
-		WS_OVERLAPPEDWINDOW, (m_WINDOW_X - m_rectRenderScreen.right + m_rectRenderScreen.left) / 2, (m_WINDOW_Y - m_rectRenderScreen.bottom + m_rectRenderScreen.top) / 2,
-		m_rectRenderScreen.right , m_rectRenderScreen.bottom, NULL, NULL, hInstance, NULL);
+	m_hwnd = CreateWindowEx(WS_EX_CLIENTEDGE, m_app_name, m_app_name,
+		WS_OVERLAPPEDWINDOW, (m_WINDOW_X - m_rect_client.right + m_rect_client.left) / 2, (m_WINDOW_Y - m_rect_client.bottom + m_rect_client.top) / 2,
+		m_rect_client.right , m_rect_client.bottom, NULL, NULL, hInstance, NULL);
 
-		if (!m_hWnd) {
+		if (!m_hwnd) {
 			return ERROR;
 		}
 		//从系统申请到窗口句柄后
 		//用它初始化各个类
 		//初始化主渲染类
-		m_MainRenderer->Initialize(&m_rectRenderScreen, &m_hWnd);
+		m_renderer->Initialize(&m_rect_client, &m_hwnd);
 		//初始化输入类
-		m_Input->Initialize(m_hWnd);
+		m_input->Initialize(m_hwnd);
 
 
 		//显示窗口
-		ShowWindow(m_hWnd, nShowCmd);
-		UpdateWindow(m_hWnd);
+		ShowWindow(m_hwnd, nShowCmd);
+		UpdateWindow(m_hwnd);
 
 		return OK;
 }
@@ -90,7 +88,7 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 int WindowFrameClass::Run() {
 	MSG msg = { 0 };
 	//主要程序循环
-	while(!m_quitSoftware) {
+	while(!m_quit_software) {
 		//无消息时退出以下循环
 		while (1) {
 			if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) break;
@@ -100,7 +98,7 @@ int WindowFrameClass::Run() {
 		}
 
 		//进行一帧渲染
-		m_MainRenderer->RenderAFrame();
+		m_renderer->RenderAFrame();
 	}
 	return msg.message;
 }
@@ -111,46 +109,46 @@ LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, L
 	switch (Msg) {
 	case WM_SIZE:
 		//取得新屏幕的大小
-		m_rectRenderScreen.right = LOWORD(lParam);
-		m_rectRenderScreen.bottom = HIWORD(lParam);
-		m_rectRenderScreen.left = m_rectRenderScreen.top = 0;
+		m_rect_client.right = LOWORD(lParam);
+		m_rect_client.bottom = HIWORD(lParam);
+		m_rect_client.left = m_rect_client.top = 0;
 
 		//并更改画布的大小
-		m_MainRenderer->UpdateSettings();
+		m_renderer->UpdateSettings();
 		//重新设置鼠标的中心
-		m_Input->UpdateCursorCenterPostion(m_rectRenderScreen);
+		m_input->UpdateCursorCenterPostion(m_rect_client);
 		break;
 	case WM_MOVE:
-		m_Input->UpdateCursorCenterPostion(m_rectRenderScreen);
+		m_input->UpdateCursorCenterPostion(m_rect_client);
 		break;
 
 	//以下消息响应按键
 	case WM_LBUTTONDOWN:
-		m_Input->Press('l');
+		m_input->Press('l');
 		break;
 	case WM_LBUTTONUP:
-		m_Input->Release('l');
-		m_Input->lButtonUp = true;
+		m_input->Release('l');
+		m_input->is_lbutton_up = true;
 		break;
 	case WM_RBUTTONDOWN:
-		m_Input->Press('r');
+		m_input->Press('r');
 		break;
 	case WM_RBUTTONUP:
-		m_Input->Release('r');
-		m_Input->rButtonUp = true;
+		m_input->Release('r');
+		m_input->is_rbutton_up = true;
 		break;
 	case WM_KEYDOWN:
-		m_Input->Press((int)wParam);
-		m_Input->ReactToKeyPressed();
+		m_input->Press((int)wParam);
+		m_input->ReactToKeyPressed();
 		break;
 	case WM_KEYUP:
-		m_Input->Release((int)wParam);
+		m_input->Release((int)wParam);
 		break;
 
 	//关闭程序
 	case WM_CLOSE:
 	case WM_DESTROY:
-		m_quitSoftware = true;
+		m_quit_software = true;
 		PostQuitMessage(0);
 		break;
 

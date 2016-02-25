@@ -11,12 +11,12 @@ Open for all feedback
 
 ### -What is this ?
 
-A Graphic Engine with minimum functions...  
-_or_  
+For detailed information please consult the Documentation.md
+
 A dull implement of the Rasterization method, which is widely used in almost all the modern game engines to generate image.
 
 ### -How to compile and run ?  
-__Make sure the Rasterizer.exe is placed under the same directory as the "ImageResources"" folder, or images will not be found or even worse__  
+__Make sure the Rasterizer.exe is placed under the same directory as the "Resources"" folder, or images will not be found or even worse__  
 
 I'm using Visual Studio 2015 Community to make this project, so Visual Studio is highly recommended for compile work.  
 

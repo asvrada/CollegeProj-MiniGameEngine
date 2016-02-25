@@ -21,12 +21,9 @@ class Object {
 public:
 	vector<Vector3> vertices;
 	vector<int> indices;
-	//作废
-	//Vector3 vertex[3];
-	//UV vertexUV[3];
 
-	Vector3 Position;
-	Vector3 Rotation;
+	Vector3 position;
+	Vector3 rotation;
 
 public:
 	///////////////
@@ -39,7 +36,7 @@ public:
 	//给出Pos 和 Rotation
 	Object(Vector3, Vector3);
 private:
-	void Initial();
+	void m_Initial();
 };
 
 #endif

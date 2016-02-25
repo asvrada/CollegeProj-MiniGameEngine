@@ -1,33 +1,33 @@
 #include "InputClass.h"
 
 InputClass::InputClass() {
-	rButtonUp = lButtonUp = false;
-	m_hWnd = 0;
+	is_rbutton_up = is_lbutton_up = false;
+	m_hwnd = 0;
 }
 
 
 InputClass::~InputClass() {
-	m_hWnd = 0;
+	m_hwnd = 0;
 }
 
 void InputClass::Initialize(HWND hWnd) {
-	isCenterSnapped = false;
-	m_hWnd = hWnd;
+	is_center_snapped = false;
+	m_hwnd = hWnd;
 }
 
 void InputClass::Press(int input) {
-	m_KeyPressed.m_KeyPressed[input] = true;
+	m_key_pressed.key[input] = true;
 }
 
 void InputClass::Press(char mouseButton) {
 	switch (mouseButton) {
 	case 'r':
 	case 'R':
-		m_KeyPressed.r = true;
+		m_key_pressed.right_mouse_button = true;
 		break;
 	case 'l':
 	case 'L':
-		m_KeyPressed.l = true;
+		m_key_pressed.left_mouse_button = true;
 		break;
 	default:
 		break;
@@ -35,7 +35,7 @@ void InputClass::Press(char mouseButton) {
 }
 
 void InputClass::Release(int input) {
-	m_KeyPressed.m_KeyPressed[input] = false;
+	m_key_pressed.key[input] = false;
 }
 
 void InputClass::Release(char mouseButton)
@@ -43,10 +43,10 @@ void InputClass::Release(char mouseButton)
 	switch (mouseButton) {
 	case 'r':
 	case 'R':
-		m_KeyPressed.r = false;
+		m_key_pressed.right_mouse_button = false;
 	case 'l':
 	case 'L':
-		m_KeyPressed.l = false;
+		m_key_pressed.left_mouse_button = false;
 	default:
 		Release((int)mouseButton);
 	}
@@ -54,39 +54,39 @@ void InputClass::Release(char mouseButton)
 
 void InputClass::UpdateCursorCenterPostion(const RECT &rectRender)
 {
-	rectCursorCenterPostion.x = rectRender.right / 2;
-	rectCursorCenterPostion.y = rectRender.bottom / 2;
-	ClientToScreen(m_hWnd, &rectCursorCenterPostion);
+	point_cursor_default.x = rectRender.right / 2;
+	point_cursor_default.y = rectRender.bottom / 2;
+	ClientToScreen(m_hwnd, &point_cursor_default);
 }
 
 int InputClass::ReactToKeyPressed() {
 	//如果按下ESC
-	if (IsKeyPressed(VK_ESCAPE)) {
-		SendMessage(m_hWnd, WM_CLOSE, 0, 0);
+	if (KeyPressed(VK_ESCAPE)) {
+		SendMessage(m_hwnd, WM_CLOSE, 0, 0);
 	}
 	return OK;
 }
 
-void InputClass::clearFlag()
+void InputClass::ClearFlag()
 {
-	rButtonUp = lButtonUp = false;
+	is_rbutton_up = is_lbutton_up = false;
 }
 
-inline bool InputClass::IsKeyPressed(int input) {
-	return m_KeyPressed.m_KeyPressed[input];
+inline bool InputClass::KeyPressed(int input) {
+	return m_key_pressed.key[input];
 }
 
-bool InputClass::IsKeyPressed(char mouseButton)
+bool InputClass::KeyPressed(char mouseButton)
 {
 	switch (mouseButton) {
 	case 'r':
 	case 'R':
-		return m_KeyPressed.r;
+		return m_key_pressed.right_mouse_button;
 	case 'l':
 	case 'L':
-		return m_KeyPressed.l;
+		return m_key_pressed.left_mouse_button;
 	default:
-		return IsKeyPressed((int)mouseButton);
+		return KeyPressed((int)mouseButton);
 	}
 	return false;
 }

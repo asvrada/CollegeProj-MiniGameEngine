@@ -14,26 +14,24 @@
 class WindowFrameClass {
 private:
 	//程序句柄
-	HWND m_hWnd;
+	HWND m_hwnd;
 
 	//渲染区域（客户坐标系）
 	//Rendering area(in client coordinate)
-	RECT m_rectRenderScreen;
+	RECT m_rect_client;
 
-	//鼠标居中显示
-	bool m_centerCursor;
 	//退出程序
-	bool m_quitSoftware;
+	bool m_quit_software;
 	//窗口名称
-	wchar_t *m_AppName;
+	wchar_t *m_app_name;
 
 //用到的类
 private:
 	//渲染类
-	RenderClass *m_MainRenderer;
+	RenderClass *m_renderer;
 
 	//记录当前按下的按键
-	InputClass *m_Input;
+	InputClass *m_input;
 
 public:
 	WindowFrameClass();
