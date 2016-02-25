@@ -3,6 +3,10 @@
 
 #include "ProjectHeader.h"
 
+#include "jsonparser\jsonxx.h"
+#include <fstream>
+using std::ifstream;
+
 struct UV {
 	float u, v;
 
@@ -29,14 +33,13 @@ public:
 	///////////////
 	// 构造函数 //
 	///////////////
-
 	ObjectClass();
+	//todo
+	void Initial(char*);
 	//给出Position
 	ObjectClass(Vector3);
 	//给出Pos 和 Rotation
 	ObjectClass(Vector3, Vector3);
-private:
-	void m_Initial();
 };
 
 #endif

@@ -24,7 +24,11 @@ void RenderClass::m_DrawObjects() {
 
 		//Draw every face of that object
 		for (int lop = 0; lop < (int)object.indices.size(); lop += 3) {
-			DrawTriangle(transformed_vertices[lop], transformed_vertices[lop + 1], transformed_vertices[lop + 2], COLOR_BLACK);
+			DrawTriangle(
+				transformed_vertices[object.indices[lop]], 
+				transformed_vertices[object.indices[lop + 1]],
+				transformed_vertices[object.indices[lop + 2]],
+				COLOR_BLACK);
 		}
 	}
 }
@@ -49,7 +53,7 @@ void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
 
 	//初始化物体
 	vector_objects.push_back(ObjectClass());
-	vector_objects.push_back(ObjectClass(Vector3(100.f, 100.f, 0), Vector3(0, 0, 180.0f)));
+	vector_objects[0].Initial("Resources\\Models\\Cube");
 }
 
 void RenderClass::DeleteResources() {

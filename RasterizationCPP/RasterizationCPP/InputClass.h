@@ -1,5 +1,5 @@
-﻿#ifndef RASTERIZER_INPUT_H
-#define RASTERIZER_INPUT_H
+﻿#ifndef RASTERIZER_INPUTCLASS_H
+#define RASTERIZER_INPUTCLASS_H
 
 #include "ProjectHeader.h"
 

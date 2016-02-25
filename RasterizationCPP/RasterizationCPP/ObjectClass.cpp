@@ -1,40 +1,50 @@
 #include "ObjectClass.h"
 
 ObjectClass::ObjectClass() {
-	m_Initial();
-
 	position.x = position.y = position.z = 0.0f;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-ObjectClass::ObjectClass(Vector3 _position) {
-	m_Initial();
+void ObjectClass::Initial(char *file)
+{
+	using jsonxx::Object;
+	using jsonxx::Array;
+	using jsonxx::Number;
 
+	ifstream imported_file;
+	imported_file.open(file, std::ios::in);
+
+	//delete this later!!!
+	Object *tmpParserResult = new Object;
+
+	tmpParserResult->parse(imported_file);
+	imported_file.close();
+
+	int size = tmpParserResult->get<Array>("vertices").size();
+	for (int lop = 0; lop < size; lop += 3) {
+		vertices.push_back(
+			Vector3(
+				tmpParserResult->get<Array>("vertices").get<Number>(lop),
+				tmpParserResult->get<Array>("vertices").get<Number>(lop + 1),
+				tmpParserResult->get<Array>("vertices").get<Number>(lop + 2))
+			);
+	}
+
+	size = tmpParserResult->get<Array>("indices").size();
+	for (int lop = 0; lop < size; lop++) {
+		indices.push_back((int)(tmpParserResult->get<Array>("indices").get<Number>(lop)));
+	}
+
+	delete tmpParserResult;
+	tmpParserResult = nullptr;
+}
+
+ObjectClass::ObjectClass(Vector3 _position) {
 	position = _position;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
 ObjectClass::ObjectClass(Vector3 _position, Vector3 _rotation) {
-	m_Initial();
-
 	position = _position;
 	rotation = _rotation;
-}
-
-void ObjectClass::m_Initial() {
-	//三角形的三个点
-	vertices.push_back(Vector3(0.0f));
-	vertices.push_back(Vector3(0.f, 100.0f, 0.f));
-	vertices.push_back(Vector3(100.f, 0.f, 0.f));
-
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(2);
-	
-	//三角形三个点的UV坐标
-	/*
-	vertexUV[0].u = 0.0f; vertexUV[0].v = 0.0f;
-	vertexUV[1].u = 512.0f; vertexUV[1].v = 512.0f;
-	vertexUV[2].u = 0.0f; vertexUV[2].v = 512.0f;
-	*/
 }

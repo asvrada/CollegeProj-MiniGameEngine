@@ -103,6 +103,6 @@ void CameraClass::m_UpdateViewToHomoMatrix4() {
 Matrix4 CameraClass::GetWorldToViewMatrix4()
 {
 	Matrix4 WTV;
-	WTV = Matrix4('A', rotation)*Matrix4(position);
+	WTV = Matrix4('A', rotation) * Matrix4(position);
 	return WTV.Invert();
 }
