@@ -5,41 +5,32 @@ ObjectClass::ObjectClass() {
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-int ObjectClass::Initial(char *file)
+int ObjectClass::Initial(char *fileName)
 {
-	using jsonxx::Object;
-	using jsonxx::Array;
-	using jsonxx::Number;
-
-	ifstream imported_file;
-	imported_file.open(file, std::ios::in);
-	if (!imported_file.is_open()) {
+	ifstream file(fileName);
+	if (!file.is_open()) {
 		return ERROR;
 	}
-	//delete this later!!!
-	Object *tmpParserResult = new Object;
+	int maxIndex = 0;
 
-	tmpParserResult->parse(imported_file);
-	imported_file.close();
-
-	int vertice_count = tmpParserResult->get<Array>("vertices").size();
-	for (int lop = 0; lop < vertice_count; lop += 3) {
-		vertices.push_back(
-			Vector3(
-				tmpParserResult->get<Array>("vertices").get<Number>(lop),
-				tmpParserResult->get<Array>("vertices").get<Number>(lop + 1),
-				tmpParserResult->get<Array>("vertices").get<Number>(lop + 2))
-			);
+	char type = 0;
+	float x = 0, y = 0, z = 0;
+	while (!file.eof()) {
+		file >> type >> x >> y >> z;
+		switch (type)
+		{
+		case 'v':
+			vertices.push_back(Vector3(x, y, z));
+			break;
+		case 'f':
+			indices.push_back((int)(x - 1));
+			indices.push_back((int)(y - 1));
+			indices.push_back((int)(z - 1));
+			break;
+		default:
+			break;
+		}
 	}
-
-	int indice_count = tmpParserResult->get<Array>("indices").size();
-	for (int lop = 0; lop < indice_count; lop++) {
-		indices.push_back((int)(tmpParserResult->get<Array>("indices").get<Number>(lop)));
-	}
-
-	delete tmpParserResult;
-	tmpParserResult = nullptr;
-
 	return OK;
 }
 

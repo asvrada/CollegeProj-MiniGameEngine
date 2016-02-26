@@ -3,7 +3,6 @@
 
 #include "ProjectHeader.h"
 
-#include "jsonparser\jsonxx.h"
 #include <fstream>
 using std::ifstream;
 

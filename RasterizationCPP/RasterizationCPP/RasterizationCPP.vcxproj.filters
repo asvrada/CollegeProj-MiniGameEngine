@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\jsonparser">
-      <UniqueIdentifier>{080b8079-0fcb-4101-99ce-60b0c11ad3fb}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -38,9 +35,6 @@
     </ClCompile>
     <ClCompile Include="ObjectClass.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="jsonparser\jsonxx.cc">
-      <Filter>头文件\jsonparser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -70,9 +64,6 @@
     </ClInclude>
     <ClInclude Include="TimeClass.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="jsonparser\jsonxx.h">
-      <Filter>头文件\jsonparser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
