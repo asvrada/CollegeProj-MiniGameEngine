@@ -36,11 +36,11 @@ private:
 	//储存背景图案的画刷
 	HBRUSH m_brush_background;
 
-	//时间类
-	TimeClass m_time;
-
-	//输入类的指针
+	//别人的时间类
+	TimeClass *m_ptr_time;
+	//别人的输入类
 	InputClass *m_ptr_input;
+
 	//摄像机类
 	CameraClass *m_ptr_camera;
 
@@ -50,7 +50,7 @@ private:
 	Matrix4 m_world_to_view;
 	void m_DrawObjects();
 public:
-	RenderClass(InputClass*);
+	RenderClass(InputClass*, TimeClass*);
 	~RenderClass();
 
 	void Initialize(RECT*,HWND*);

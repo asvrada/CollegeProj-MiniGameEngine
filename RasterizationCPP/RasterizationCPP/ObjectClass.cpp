@@ -5,7 +5,7 @@ ObjectClass::ObjectClass() {
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-void ObjectClass::Initial(char *file)
+int ObjectClass::Initial(char *file)
 {
 	using jsonxx::Object;
 	using jsonxx::Array;
@@ -13,7 +13,9 @@ void ObjectClass::Initial(char *file)
 
 	ifstream imported_file;
 	imported_file.open(file, std::ios::in);
-
+	if (!imported_file.is_open()) {
+		return ERROR;
+	}
 	//delete this later!!!
 	Object *tmpParserResult = new Object;
 
@@ -37,6 +39,8 @@ void ObjectClass::Initial(char *file)
 
 	delete tmpParserResult;
 	tmpParserResult = nullptr;
+
+	return OK;
 }
 
 ObjectClass::ObjectClass(Vector3 _position) {

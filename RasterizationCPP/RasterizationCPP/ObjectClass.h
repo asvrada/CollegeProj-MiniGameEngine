@@ -35,7 +35,7 @@ public:
 	///////////////
 	ObjectClass();
 	//todo
-	void Initial(char*);
+	int Initial(char*);
 	//给出Position
 	ObjectClass(Vector3);
 	//给出Pos 和 Rotation

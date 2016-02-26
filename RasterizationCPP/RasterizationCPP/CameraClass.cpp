@@ -43,6 +43,10 @@ void CameraClass::CameraControl() {
 	if (m_ptr_Input->is_center_snapped) {
 		pointCursorModify.x = m_ptr_Input->point_cursor_current.x - m_ptr_Input->point_cursor_default.x;
 		pointCursorModify.y = m_ptr_Input->point_cursor_current.y - m_ptr_Input->point_cursor_default.y;
+
+		//dead zone
+		//pointCursorModify.x /= 
+
 		SetCursorPos((int)m_ptr_Input->point_cursor_default.x, (int)m_ptr_Input->point_cursor_default.y);
 
 		//摄像头上下视角移动

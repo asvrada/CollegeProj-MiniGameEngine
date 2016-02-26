@@ -30,6 +30,9 @@ private:
 	//渲染类
 	RenderClass *m_ptr_renderer;
 
+	//时间类
+	TimeClass *m_ptr_time;
+
 	//记录当前按下的按键
 	InputClass *m_ptr_input;
 

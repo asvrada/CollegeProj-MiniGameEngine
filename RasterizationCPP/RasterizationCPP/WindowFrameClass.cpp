@@ -11,12 +11,7 @@ WindowFrameClass::WindowFrameClass() {
 }
 
 WindowFrameClass::~WindowFrameClass() {
-	m_app_name = NULL;
-	delete m_ptr_input;
-	m_ptr_input = NULL;
-
-	delete m_ptr_renderer;
-	m_ptr_renderer = NULL;
+	Shutdown();
 }
 
 void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
@@ -25,17 +20,26 @@ void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
 	m_quit_software = false;
 
 	m_ptr_input = new InputClass();
-
-	m_ptr_renderer = new RenderClass(m_ptr_input);
+	m_ptr_time = new TimeClass();
+	m_ptr_renderer = new RenderClass(m_ptr_input, m_ptr_time);
 }
 
 void WindowFrameClass::Shutdown() {
-	m_ptr_renderer->Shutdown();
-	delete m_ptr_renderer;
-	m_ptr_renderer = NULL;
+	if (m_ptr_renderer != nullptr) {
+		m_ptr_renderer->Shutdown();
+		delete m_ptr_renderer;
+		m_ptr_renderer = nullptr;
+	}
 
-	delete m_ptr_input;
-	m_ptr_input = NULL;
+	if(m_ptr_time != nullptr) {
+		delete m_ptr_time;
+		m_ptr_time = nullptr;
+	}
+
+	if (m_ptr_input != nullptr) {
+		delete m_ptr_input;
+		m_ptr_input = nullptr;
+	}
 }
 
 int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
@@ -96,9 +100,14 @@ int WindowFrameClass::Run() {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+		m_ptr_time->ComputeTime();
+		GetCursorPos(&m_ptr_input->point_cursor_current);
 
 		//½øÐÐÒ»Ö¡äÖÈ¾
 		m_ptr_renderer->RenderAFrame();
+
+		m_ptr_input->ClearFlag();
+
 	}
 	return msg.message;
 }

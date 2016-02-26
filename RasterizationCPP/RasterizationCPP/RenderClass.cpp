@@ -1,6 +1,9 @@
 #include "RenderClass.h"
 
 void RenderClass::m_DrawObjects() {
+	if (vector_objects.size() == 0) {
+		return;
+	}
 	m_world_to_view = m_ptr_camera->GetWorldToViewMatrix4();
 	Matrix4 LocalToView;
 	for (auto object : vector_objects) {
@@ -37,13 +40,14 @@ void RenderClass::m_DrawObjects() {
 	}
 }
 
-RenderClass::RenderClass(InputClass *input) {
+RenderClass::RenderClass(InputClass *input, TimeClass *time) {
 	m_ptr_input = input;
+	m_ptr_time = time;
 	m_ptr_camera = NULL;
 }
 
 RenderClass::~RenderClass() {
-	delete m_ptr_camera;
+	Shutdown();
 }
 
 void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
@@ -52,12 +56,14 @@ void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
 
 	m_hdc_screen = GetDC(*m_ptr_hwnd);
 
-	m_ptr_camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f, m_ptr_input, &m_time);
+	m_ptr_camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f, m_ptr_input, m_ptr_time);
 	m_ptr_camera->Update();
 
 	//初始化物体
 	vector_objects.push_back(ObjectClass());
-	vector_objects[0].Initial("Resources\\Models\\Cube");
+	if (vector_objects[0].Initial("Resources\\Models\\teapot") == ERROR) {
+		vector_objects.erase(vector_objects.end() - 1);
+	}
 }
 
 void RenderClass::DeleteResources() {
@@ -67,21 +73,21 @@ void RenderClass::DeleteResources() {
 
 void RenderClass::Shutdown() {
 	DeleteResources();
-	delete m_ptr_camera;
-	m_ptr_camera = nullptr;
+	if (m_ptr_camera != nullptr) {
+		delete m_ptr_camera;
+		m_ptr_camera = nullptr;
+	}
 }
 
 void RenderClass::RenderAFrame() {
 	////////////////
 	// >每帧必做 //
 	////////////////
-	m_time.ComputeTime();
-	GetCursorPos(&m_ptr_input->point_cursor_current);
 	m_ptr_camera->CameraControl();
 	////////////////
 	// <每帧必做 //
 	////////////////
-	OutputText(m_time.GetFPSwstring(), 0);
+	OutputText(m_ptr_time->GetFPSwstring(), 0);
 
 	wstringstream ws;
 	ws <<"Resolution : " << m_ptr_rect_client->right << " * " << m_ptr_rect_client->bottom;
@@ -97,7 +103,7 @@ void RenderClass::RenderAFrame() {
 
 	m_DrawObjects();
 
-	m_ptr_input->ClearFlag();
+
 	SwapBufferToScreen();
 	ClearCanvas();
 	////////////////

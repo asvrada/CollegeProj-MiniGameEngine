@@ -34,6 +34,7 @@ public:
 	//仅受高宽比 和 FOV 的影响
 	Matrix4 view_to_homo;
 private:
+	//别人的类
 	TimeClass *m_ptr_time;
 	InputClass *m_ptr_Input;
 	//摄像机坐标转换到齐次剪彩空间坐标
