@@ -3,9 +3,6 @@
 
 #include "ProjectHeader.h"
 
-#include <fstream>
-using std::ifstream;
-
 struct UV {
 	float u, v;
 
@@ -19,7 +16,7 @@ struct UV {
 };
 
 //目前一个Object就是一个三角形
-class ObjectClass {
+class Object {
 	//三角形的三点
 public:
 	vector<Vector3> vertices;
@@ -32,13 +29,13 @@ public:
 	///////////////
 	// 构造函数 //
 	///////////////
-	ObjectClass();
+	Object();
 	//todo
 	int Initial(char*);
 	//给出Position
-	ObjectClass(Vector3);
+	Object(Vector3);
 	//给出Pos 和 Rotation
-	ObjectClass(Vector3, Vector3);
+	Object(Vector3, Vector3);
 };
 
 #endif

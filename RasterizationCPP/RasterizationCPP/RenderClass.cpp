@@ -1,6 +1,11 @@
 #include "RenderClass.h"
 
-void RenderClass::m_DrawObjects() {
+#include "CameraClass.h"
+#include "TimeClass.h"
+#include "ObjectClass.h"
+#include "WindowFrameClass.h"
+
+void Render::m_DrawObjects() {
 	if (vector_objects.size() == 0) {
 		return;
 	}
@@ -40,38 +45,35 @@ void RenderClass::m_DrawObjects() {
 	}
 }
 
-RenderClass::RenderClass(InputClass *input, TimeClass *time) {
-	m_ptr_input = input;
-	m_ptr_time = time;
+Render::Render() {
 	m_ptr_camera = NULL;
 }
 
-RenderClass::~RenderClass() {
+Render::~Render() {
 	Shutdown();
 }
 
-void RenderClass::Initialize(RECT *rectWindow, HWND *hWndScreen) {
-	m_ptr_rect_client = rectWindow;
+void Render::Initialize(HWND *hWndScreen) {
 	m_ptr_hwnd = hWndScreen;
 
 	m_hdc_screen = GetDC(*m_ptr_hwnd);
 
-	m_ptr_camera = new CameraClass((float)(rectWindow->right / rectWindow->bottom), 70.0f, m_ptr_input, m_ptr_time);
+	m_ptr_camera = new Camera((float)(WindowFrame::rect_client.right / WindowFrame::rect_client.bottom), 70.0f);
 	m_ptr_camera->Update();
 
 	//初始化物体
-	vector_objects.push_back(ObjectClass());
+	vector_objects.push_back(Object());
 	if (vector_objects[0].Initial("Resources\\Models\\teapot") == ERROR) {
 		vector_objects.erase(vector_objects.end() - 1);
 	}
 }
 
-void RenderClass::DeleteResources() {
+void Render::DeleteResources() {
 	DeleteDC(m_hdc_buffer);
 	DeleteObject(m_brush_background);
 }
 
-void RenderClass::Shutdown() {
+void Render::Shutdown() {
 	DeleteResources();
 	if (m_ptr_camera != nullptr) {
 		delete m_ptr_camera;
@@ -79,7 +81,7 @@ void RenderClass::Shutdown() {
 	}
 }
 
-void RenderClass::RenderAFrame() {
+void Render::RenderAFrame() {
 	////////////////
 	// >每帧必做 //
 	////////////////
@@ -87,10 +89,10 @@ void RenderClass::RenderAFrame() {
 	////////////////
 	// <每帧必做 //
 	////////////////
-	OutputText(m_ptr_time->GetFPSwstring(), 0);
+	OutputText(Time::GetFPSwstring(), 0);
 
 	wstringstream ws;
-	ws <<"Resolution : " << m_ptr_rect_client->right << " * " << m_ptr_rect_client->bottom;
+	ws <<"Resolution : " << WindowFrame::rect_client.right << " * " << WindowFrame::rect_client.bottom;
 	OutputText(ws.str(), 1);
 
 	ws.str(L"");
@@ -111,7 +113,7 @@ void RenderClass::RenderAFrame() {
 	////////////////
 }
 
-void RenderClass::UpdateSettings()
+void Render::UpdateSettings()
 {
 	//不为空时删除原有数据
 	if (m_hdc_buffer) {
@@ -122,14 +124,14 @@ void RenderClass::UpdateSettings()
 
 	//载入本地背景图片
 	HBITMAP bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("Resources\\Materials\\Background.bmp"), IMAGE_BITMAP,
-		m_ptr_rect_client->right, m_ptr_rect_client->bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+		WindowFrame::rect_client.right, WindowFrame::rect_client.bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	//如果载入失败
 	//创建灰色背景
 	if (bmpBackgroundImage == NULL) {
-		bmpBackgroundImage = CreateCompatibleBitmap(m_hdc_screen, m_ptr_rect_client->right, m_ptr_rect_client->bottom);
+		bmpBackgroundImage = CreateCompatibleBitmap(m_hdc_screen, WindowFrame::rect_client.right, WindowFrame::rect_client.bottom);
 
 		SelectObject(m_hdc_buffer, bmpBackgroundImage);
-		FillRect(m_hdc_buffer, m_ptr_rect_client, (HBRUSH)GetStockObject(GRAY_BRUSH));
+		FillRect(m_hdc_buffer, &WindowFrame::rect_client, (HBRUSH)GetStockObject(GRAY_BRUSH));
 	}
 	else {
 		//选入物体
@@ -144,44 +146,44 @@ void RenderClass::UpdateSettings()
 	SetBkMode(m_hdc_buffer, TRANSPARENT);
 
 	//升级摄像机的数据
-	m_ptr_camera->Update((float)m_ptr_rect_client->right / (float)m_ptr_rect_client->bottom, m_ptr_camera->fov);
+	m_ptr_camera->Update((float)WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom, m_ptr_camera->fov);
 }
 
-void RenderClass::SwapBufferToScreen() {
-	BitBlt(m_hdc_screen, 0, 0, m_ptr_rect_client->right, m_ptr_rect_client->bottom, m_hdc_buffer, 0, 0, SRCCOPY);
+void Render::SwapBufferToScreen() {
+	BitBlt(m_hdc_screen, 0, 0, WindowFrame::rect_client.right, WindowFrame::rect_client.bottom, m_hdc_buffer, 0, 0, SRCCOPY);
 }
 
-void RenderClass::ClearCanvas() {
+void Render::ClearCanvas() {
 	//用背景画刷填充背景
-	FillRect(m_hdc_buffer, m_ptr_rect_client, m_brush_background);
+	FillRect(m_hdc_buffer, &WindowFrame::rect_client, m_brush_background);
 }
 
-inline void RenderClass::OutputText(const wstring & text, int line) {
+inline void Render::OutputText(const wstring & text, int line) {
 	TextOut(m_hdc_buffer, 0, 20 * line, text.data(), text.size());
 }
 
-void RenderClass::DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF color)
+void Render::DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF color)
 {
 	if (triangleBackcull(p0, p1, p2)) {
 		return;
 	}
 
 	Vector2 vertex[3];
-	vertex[0].x = (p0.x + 1.0f) * m_ptr_rect_client->right / 2.0f;
-	vertex[0].y = (p0.y + 1.0f) * m_ptr_rect_client->bottom / 2.0f;
+	vertex[0].x = (p0.x + 1.0f) * WindowFrame::rect_client.right / 2.0f;
+	vertex[0].y = (p0.y + 1.0f) * WindowFrame::rect_client.bottom / 2.0f;
 
-	vertex[1].x = (p1.x + 1.0f) * m_ptr_rect_client->right / 2.0f;
-	vertex[1].y = (p1.y + 1.0f) * m_ptr_rect_client->bottom / 2.0f;
+	vertex[1].x = (p1.x + 1.0f) * WindowFrame::rect_client.right / 2.0f;
+	vertex[1].y = (p1.y + 1.0f) * WindowFrame::rect_client.bottom / 2.0f;
 
-	vertex[2].x = (p2.x + 1.0f) * m_ptr_rect_client->right / 2.0f;
-	vertex[2].y = (p2.y + 1.0f) * m_ptr_rect_client->bottom / 2.0f;
+	vertex[2].x = (p2.x + 1.0f) * WindowFrame::rect_client.right / 2.0f;
+	vertex[2].y = (p2.y + 1.0f) * WindowFrame::rect_client.bottom / 2.0f;
 
 	DrawLine(vertex[0], vertex[1], color);
 	DrawLine(vertex[1], vertex[2], color);
 	DrawLine(vertex[2], vertex[0], color);
 }
 
-void RenderClass::DrawLine(Vector2 p0, Vector2 p1, COLORREF color)
+void Render::DrawLine(Vector2 p0, Vector2 p1, COLORREF color)
 {
 	//直线斜率是否大于1
 	BOOL steep = ABS(p1.y - p0.y) > ABS(p1.x - p0.x);
@@ -207,10 +209,10 @@ void RenderClass::DrawLine(Vector2 p0, Vector2 p1, COLORREF color)
 
 	for (int i = (int)p0.x; i <= p1.x; i++) {
 		if (steep) {
-			DrawPixel(painter_y, m_ptr_rect_client->bottom - i, color);
+			DrawPixel(painter_y, WindowFrame::rect_client.bottom - i, color);
 		}
 		else {
-			DrawPixel(i, m_ptr_rect_client->bottom - painter_y, color);
+			DrawPixel(i, WindowFrame::rect_client.bottom - painter_y, color);
 		}
 		err -= dy;
 		if (err < 0) {
@@ -220,7 +222,7 @@ void RenderClass::DrawLine(Vector2 p0, Vector2 p1, COLORREF color)
 	}
 }
 
-inline void RenderClass::DrawPixel(int x, int y, COLORREF color)
+inline void Render::DrawPixel(int x, int y, COLORREF color)
 {
 	SetPixel(m_hdc_buffer, x, y, color);
 }

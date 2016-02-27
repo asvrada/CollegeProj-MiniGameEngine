@@ -1,25 +1,31 @@
 #include "InputClass.h"
 
-InputClass::InputClass() {
-	is_rbutton_up = is_lbutton_up = false;
+//static 初始化
+KeyPressedList Input::m_key_pressed = KeyPressedList();
+POINT Input::point_cursor_default = POINT();
+POINT Input::point_cursor_current = POINT();
+bool Input::is_center_snapped = false;
+bool Input::is_rbutton_up = false;
+bool Input::is_lbutton_up = false;
+
+Input::Input() {
 	m_hwnd = 0;
 }
 
 
-InputClass::~InputClass() {
+Input::~Input() {
 	m_hwnd = 0;
 }
 
-void InputClass::Initialize(HWND hWnd) {
-	is_center_snapped = false;
+void Input::Initialize(HWND hWnd) {
 	m_hwnd = hWnd;
 }
 
-void InputClass::Press(int input) {
+void Input::Press(int input) {
 	m_key_pressed.key[input] = true;
 }
 
-void InputClass::Press(char mouseButton) {
+void Input::Press(char mouseButton) {
 	switch (mouseButton) {
 	case 'r':
 	case 'R':
@@ -34,11 +40,11 @@ void InputClass::Press(char mouseButton) {
 	}
 }
 
-void InputClass::Release(int input) {
+void Input::Release(int input) {
 	m_key_pressed.key[input] = false;
 }
 
-void InputClass::Release(char mouseButton)
+void Input::Release(char mouseButton)
 {
 	switch (mouseButton) {
 	case 'r':
@@ -52,14 +58,14 @@ void InputClass::Release(char mouseButton)
 	}
 }
 
-void InputClass::UpdateCursorCenterPostion(const RECT &rectRender)
+void Input::UpdateCursorCenterPostion(const RECT &rectRender)
 {
 	point_cursor_default.x = rectRender.right / 2;
 	point_cursor_default.y = rectRender.bottom / 2;
 	ClientToScreen(m_hwnd, &point_cursor_default);
 }
 
-int InputClass::ReactToKeyPressed() {
+int Input::ReactToKeyPressed() {
 	//如果按下ESC
 	if (KeyPressed(VK_ESCAPE)) {
 		SendMessage(m_hwnd, WM_CLOSE, 0, 0);
@@ -67,16 +73,16 @@ int InputClass::ReactToKeyPressed() {
 	return OK;
 }
 
-void InputClass::ClearFlag()
+void Input::ClearFlag()
 {
 	is_rbutton_up = is_lbutton_up = false;
 }
 
-inline bool InputClass::KeyPressed(int input) {
+inline bool Input::KeyPressed(int input) {
 	return m_key_pressed.key[input];
 }
 
-bool InputClass::KeyPressed(char mouseButton)
+bool Input::KeyPressed(char mouseButton)
 {
 	switch (mouseButton) {
 	case 'r':

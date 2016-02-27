@@ -1,11 +1,14 @@
 #include "ObjectClass.h"
 
-ObjectClass::ObjectClass() {
+#include <fstream>
+using std::ifstream;
+
+Object::Object() {
 	position.x = position.y = position.z = 0.0f;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-int ObjectClass::Initial(char *fileName)
+int Object::Initial(char *fileName)
 {
 	ifstream file(fileName);
 	if (!file.is_open()) {
@@ -27,6 +30,8 @@ int ObjectClass::Initial(char *fileName)
 			indices.push_back((int)(y - 1));
 			indices.push_back((int)(z - 1));
 			break;
+		case '#':
+			break;
 		default:
 			break;
 		}
@@ -34,12 +39,12 @@ int ObjectClass::Initial(char *fileName)
 	return OK;
 }
 
-ObjectClass::ObjectClass(Vector3 _position) {
+Object::Object(Vector3 _position) {
 	position = _position;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-ObjectClass::ObjectClass(Vector3 _position, Vector3 _rotation) {
+Object::Object(Vector3 _position, Vector3 _rotation) {
 	position = _position;
 	rotation = _rotation;
 }

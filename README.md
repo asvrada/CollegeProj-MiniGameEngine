@@ -4,9 +4,9 @@ Student's work, terrible coding manner
 Open for all feedback  
 
 ## _Todo Lists:_
-1. Fix all the memory leaks
-2. Load .obj file
-3. Options for changing Background 
+1. Options for changing Background 
+2. Texture
+3. static methods
 
 
 ### -What is this ?

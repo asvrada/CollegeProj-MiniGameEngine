@@ -1,48 +1,26 @@
 #ifndef RASTERIZER_RENDERCLASS_H
 #define RASTERIZER_RENDERCLASS_H
-/*
-渲染类
-进行数学计算并将生成的图案输出至Canvas
 
-包含类:
-画布类
-摄像机类
-
-时间管理类
-计算每次渲染过去多少时间
-*/
-
-////////////
-// 包含类 //
-////////////
 #include "ProjectHeader.h"
-#include "CameraClass.h"
-#include "ObjectClass.h"
-#include "InputClass.h"
-#include "TimeClass.h"
 
-class RenderClass
+class Camera;
+class Object;
+
+class Render
 {
 private:
 	//当前程序的句柄
 	HWND *m_ptr_hwnd;
 	//屏幕的设备上下文
 	HDC m_hdc_screen;
-	//渲染区域
-	RECT *m_ptr_rect_client;
 
 	//渲染缓冲区
 	HDC m_hdc_buffer;
 	//储存背景图案的画刷
 	HBRUSH m_brush_background;
 
-	//别人的时间类
-	TimeClass *m_ptr_time;
-	//别人的输入类
-	InputClass *m_ptr_input;
-
 	//摄像机类
-	CameraClass *m_ptr_camera;
+	Camera *m_ptr_camera;
 
 //私有函数
 private:
@@ -50,10 +28,10 @@ private:
 	Matrix4 m_world_to_view;
 	void m_DrawObjects();
 public:
-	RenderClass(InputClass*, TimeClass*);
-	~RenderClass();
+	Render();
+	~Render();
 
-	void Initialize(RECT*,HWND*);
+	void Initialize(HWND*);
 	void DeleteResources();
 	void Shutdown();
 
@@ -85,7 +63,7 @@ public:
 
 //模型数据
 public:
-	vector<ObjectClass> vector_objects;
+	vector<Object> vector_objects;
 };
 
 #endif

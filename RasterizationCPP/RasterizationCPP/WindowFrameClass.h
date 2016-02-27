@@ -8,17 +8,19 @@
 */
 
 #include "ProjectHeader.h"
-#include "InputClass.h"
-#include "RenderClass.h"
 
-class WindowFrameClass {
+class Render;
+class Input;
+class Time;
+
+class WindowFrame {
+public:
+	//渲染区域（客户坐标系）
+	//Rendering area(in client coordinate)
+	static RECT rect_client;
 private:
 	//程序句柄
 	HWND m_hwnd;
-
-	//渲染区域（客户坐标系）
-	//Rendering area(in client coordinate)
-	RECT m_rect_client;
 
 	//退出程序
 	bool m_quit_software;
@@ -28,17 +30,15 @@ private:
 //用到的类
 private:
 	//渲染类
-	RenderClass *m_ptr_renderer;
-
+	Render *m_ptr_renderer;
 	//时间类
-	TimeClass *m_ptr_time;
-
+	Time *m_ptr_time;
 	//记录当前按下的按键
-	InputClass *m_ptr_input;
+	Input *m_ptr_input;
 
 public:
-	WindowFrameClass();
-	~WindowFrameClass();
+	WindowFrame();
+	~WindowFrame();
 
 	//真正的消息处理函数
 	LRESULT CALLBACK WinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
@@ -56,6 +56,6 @@ public:
 
 //骗Win的消息处理函数
 LRESULT CALLBACK CustomWinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-static WindowFrameClass *AppHandler = NULL;
+static WindowFrame *AppHandler = NULL;
 
 #endif

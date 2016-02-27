@@ -1,9 +1,9 @@
 #include "CameraClass.h"
 
-CameraClass::CameraClass(float _screen_aspect,float _fov, InputClass *input, TimeClass *time) {
-	m_ptr_Input = input;
-	m_ptr_time = time;
+#include "InputClass.h"
+#include "TimeClass.h"
 
+Camera::Camera(float _screen_aspect,float _fov) {
 	near_z = 1.0f;
 	far_z = 1500.0f;
 	fov = _fov;
@@ -18,36 +18,37 @@ CameraClass::CameraClass(float _screen_aspect,float _fov, InputClass *input, Tim
 }
 
 //暂时用不上
-CameraClass::~CameraClass()
+Camera::~Camera()
 {
 }
 
-void CameraClass::Update(float _screen_aspect, float _fov) {
+void Camera::Update(float _screen_aspect, float _fov) {
 	screen_aspect = _screen_aspect;
 	fov = _fov;
 	m_UpdateViewToHomoMatrix4();
 }
 
-void CameraClass::Update() {
+void Camera::Update() {
 	m_UpdateViewToHomoMatrix4();
 }
 
-void CameraClass::CameraControl() {
-	if (m_ptr_Input->is_rbutton_up) {
-		m_ptr_Input->point_cursor_current = m_ptr_Input->point_cursor_default;
-		m_ptr_Input->is_center_snapped = !m_ptr_Input->is_center_snapped;
-		ShowCursor(!m_ptr_Input->is_center_snapped);
+void Camera::CameraControl() {
+	float delta_time = Time::GetDeltaTime();
+	if (Input::is_rbutton_up) {
+		Input::point_cursor_current = Input::point_cursor_default;
+		Input::is_center_snapped = !Input::is_center_snapped;
+		ShowCursor(!Input::is_center_snapped);
 	}
 
 	POINT pointCursorModify = { 0,0 };
-	if (m_ptr_Input->is_center_snapped) {
-		pointCursorModify.x = m_ptr_Input->point_cursor_current.x - m_ptr_Input->point_cursor_default.x;
-		pointCursorModify.y = m_ptr_Input->point_cursor_current.y - m_ptr_Input->point_cursor_default.y;
+	if (Input::is_center_snapped) {
+		pointCursorModify.x = Input::point_cursor_current.x - Input::point_cursor_default.x;
+		pointCursorModify.y = Input::point_cursor_current.y - Input::point_cursor_default.y;
 
 		//dead zone
 		//pointCursorModify.x /= 
 
-		SetCursorPos((int)m_ptr_Input->point_cursor_default.x, (int)m_ptr_Input->point_cursor_default.y);
+		SetCursorPos((int)Input::point_cursor_default.x, (int)Input::point_cursor_default.y);
 
 		//摄像头上下视角移动
 		rotation.x += (float)pointCursorModify.y / 15.0f;
@@ -55,10 +56,10 @@ void CameraClass::CameraControl() {
 		rotation.y += (float)pointCursorModify.x / 15.0f;
 	}
 
-	if (m_ptr_Input->KeyPressed(VK_UP)) { rotation.x -= rotate_speed * m_ptr_time->GetDeltaTime(); }
-	if (m_ptr_Input->KeyPressed(VK_DOWN)) { rotation.x += rotate_speed * m_ptr_time->GetDeltaTime(); }
-	if (m_ptr_Input->KeyPressed(VK_LEFT)) { rotation.y -= rotate_speed * m_ptr_time->GetDeltaTime(); }
-	if (m_ptr_Input->KeyPressed(VK_RIGHT)) { rotation.y += rotate_speed * m_ptr_time->GetDeltaTime(); }
+	if (Input::KeyPressed(VK_UP)) { rotation.x -= rotate_speed * delta_time; }
+	if (Input::KeyPressed(VK_DOWN)) { rotation.x += rotate_speed * delta_time; }
+	if (Input::KeyPressed(VK_LEFT)) { rotation.y -= rotate_speed * delta_time; }
+	if (Input::KeyPressed(VK_RIGHT)) { rotation.y += rotate_speed * delta_time; }
 
 	if (rotation.x < -90.0f) { rotation.x = -90.0f; }
 	if (rotation.x > 90.0f) { rotation.x = 90.0f; }
@@ -67,27 +68,27 @@ void CameraClass::CameraControl() {
 
 	//摄像机空间移动
 
-	if (m_ptr_Input->KeyPressed('W') || m_ptr_Input->KeyPressed('A') || m_ptr_Input->KeyPressed('S') || m_ptr_Input->KeyPressed('D') ||
-		m_ptr_Input->KeyPressed('Q') || m_ptr_Input->KeyPressed('E'))
+	if (Input::KeyPressed('W') || Input::KeyPressed('A') || Input::KeyPressed('S') || Input::KeyPressed('D') ||
+		Input::KeyPressed('Q') || Input::KeyPressed('E'))
 	{
 		Vector4 MovingDirection;
-		if (m_ptr_Input->KeyPressed('A')) { MovingDirection.x = -1.0f; }
-		if (m_ptr_Input->KeyPressed('D')) { MovingDirection.x = 1.0f; }
-		if (m_ptr_Input->KeyPressed('W')) { MovingDirection.z = 1.0f; }
-		if (m_ptr_Input->KeyPressed('S')) { MovingDirection.z = -1.0f; }
-		if (m_ptr_Input->KeyPressed('Q')) { MovingDirection.y = 1.0f; }
-		if (m_ptr_Input->KeyPressed('E')) { MovingDirection.y = -1.0f; }
+		if (Input::KeyPressed('A')) { MovingDirection.x = -1.0f; }
+		if (Input::KeyPressed('D')) { MovingDirection.x = 1.0f; }
+		if (Input::KeyPressed('W')) { MovingDirection.z = 1.0f; }
+		if (Input::KeyPressed('S')) { MovingDirection.z = -1.0f; }
+		if (Input::KeyPressed('Q')) { MovingDirection.y = 1.0f; }
+		if (Input::KeyPressed('E')) { MovingDirection.y = -1.0f; }
 
 		MovingDirection = MovingDirection * (Matrix4('x', rotation.x) * Matrix4('y', rotation.y));
 		MovingDirection.VectorUnify();
 
-		position.x += MovingDirection.x*move_speed * m_ptr_time->GetDeltaTime();
-		position.y += MovingDirection.y*move_speed * m_ptr_time->GetDeltaTime();
-		position.z += MovingDirection.z*move_speed * m_ptr_time->GetDeltaTime();
+		position.x += MovingDirection.x*move_speed * delta_time;
+		position.y += MovingDirection.y*move_speed * delta_time;
+		position.z += MovingDirection.z*move_speed * delta_time;
 	}
 }
 
-void CameraClass::m_UpdateViewToHomoMatrix4() {
+void Camera::m_UpdateViewToHomoMatrix4() {
 	float l, r, t, b;
 
 	r = near_z*tanf(DEGREE(fov) / 2.0f);
@@ -104,7 +105,7 @@ void CameraClass::m_UpdateViewToHomoMatrix4() {
 	view_to_homo.var[3][2] = -(2.0f*near_z*far_z) / (far_z - near_z);
 }
 
-Matrix4 CameraClass::GetWorldToViewMatrix4()
+Matrix4 Camera::GetWorldToViewMatrix4()
 {
 	Matrix4 WTV;
 	WTV = Matrix4('A', rotation) * Matrix4(position);

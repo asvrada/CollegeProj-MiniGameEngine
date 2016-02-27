@@ -15,23 +15,26 @@ struct KeyPressedList {
 	}
 };
 
-class InputClass {
+class Input {
 private:
 	//数组，记录按下的按键
-	KeyPressedList m_key_pressed;
+	static KeyPressedList m_key_pressed;
 
 	HWND m_hwnd;
 public:
+	///////////
+	// static //
+	//////////
 	//记录鼠标应当处于的坐标
-	POINT point_cursor_default;
+	static POINT point_cursor_default;
 	//记录鼠标当前的位置
-	POINT point_cursor_current;
-	bool is_center_snapped;
-	bool is_rbutton_up;
-	bool is_lbutton_up;
+	static POINT point_cursor_current;
+	static bool is_center_snapped;
+	static bool is_rbutton_up;
+	static bool is_lbutton_up;
 public:
-	InputClass();
-	~InputClass();
+	Input();
+	~Input();
 
 	void Initialize(HWND);
 	void Press(int);
@@ -46,8 +49,8 @@ public:
 	int ReactToKeyPressed();
 	void ClearFlag();
 
-	bool KeyPressed(int);
-	bool KeyPressed(char);
+	static bool KeyPressed(int);
+	static bool KeyPressed(char);
 };
 
 #endif

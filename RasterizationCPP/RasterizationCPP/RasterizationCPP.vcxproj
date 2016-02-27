@@ -151,6 +151,7 @@
     <ClCompile Include="MathComplement.cpp" />
     <ClCompile Include="ObjectClass.cpp" />
     <ClCompile Include="RenderClass.cpp" />
+    <ClCompile Include="TimeClass.cpp" />
     <ClCompile Include="WindowFrameClass.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,10 +167,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Rasterizer.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

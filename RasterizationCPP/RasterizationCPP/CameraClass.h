@@ -2,10 +2,8 @@
 #define RASTERIZER_CAMERACLASS_H
 
 #include "ProjectHeader.h"
-#include "InputClass.h"
-#include "TimeClass.h"
 
-class CameraClass {
+class Camera {
 //公有数据成员
 public:
 	//坐标
@@ -34,17 +32,14 @@ public:
 	//仅受高宽比 和 FOV 的影响
 	Matrix4 view_to_homo;
 private:
-	//别人的类
-	TimeClass *m_ptr_time;
-	InputClass *m_ptr_Input;
 	//摄像机坐标转换到齐次剪彩空间坐标
 	//仅在摄像机属性变化时重新生成
 	//不包括位置和旋转的变化
 	void m_UpdateViewToHomoMatrix4();
 public:
 	//必须给出高宽比
-	CameraClass(float aspect, float fov, InputClass *, TimeClass*);
-	~CameraClass();
+	Camera(float aspect, float fov);
+	~Camera();
 
 	//更新数据
 	//0代表不变

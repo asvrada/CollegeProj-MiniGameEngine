@@ -9,7 +9,7 @@
 #include "WindowFrameClass.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
-	WindowFrameClass *mainWindow = new WindowFrameClass();
+	WindowFrame *mainWindow = new WindowFrame();
 
 	//³õÊ¼»¯
 	mainWindow->Initialize(800, 600);

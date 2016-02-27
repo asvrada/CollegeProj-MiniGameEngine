@@ -1,7 +1,12 @@
 #include "WindowFrameClass.h"
 
-WindowFrameClass::WindowFrameClass() {
-	m_rect_client.bottom = m_rect_client.left = m_rect_client.right = m_rect_client.top = 0;
+#include "InputClass.h"
+#include "RenderClass.h"
+#include "TimeClass.h"
+
+RECT WindowFrame::rect_client = RECT();
+
+WindowFrame::WindowFrame() {
 	m_quit_software = false;
 	m_app_name = TEXT("Reasterizer");
 
@@ -10,21 +15,21 @@ WindowFrameClass::WindowFrameClass() {
 	m_ptr_renderer = NULL;
 }
 
-WindowFrameClass::~WindowFrameClass() {
+WindowFrame::~WindowFrame() {
 	Shutdown();
 }
 
-void WindowFrameClass::Initialize(int RENDER_X, int RENDER_Y) {
+void WindowFrame::Initialize(int RENDER_X, int RENDER_Y) {
 	//设定初始渲染区域的大小
-	m_rect_client.top = 0; m_rect_client.left = 0; m_rect_client.bottom = RENDER_Y; m_rect_client.right = RENDER_X;
+	rect_client.top = 0; rect_client.left = 0; rect_client.bottom = RENDER_Y; rect_client.right = RENDER_X;
 	m_quit_software = false;
 
-	m_ptr_input = new InputClass();
-	m_ptr_time = new TimeClass();
-	m_ptr_renderer = new RenderClass(m_ptr_input, m_ptr_time);
+	m_ptr_input = new Input();
+	m_ptr_time = new Time();
+	m_ptr_renderer = new Render();
 }
 
-void WindowFrameClass::Shutdown() {
+void WindowFrame::Shutdown() {
 	if (m_ptr_renderer != nullptr) {
 		m_ptr_renderer->Shutdown();
 		delete m_ptr_renderer;
@@ -42,7 +47,7 @@ void WindowFrameClass::Shutdown() {
 	}
 }
 
-int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
+int WindowFrame::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
 	//获取桌面分辨率
 	//用于居中显示窗口
 	int m_WINDOW_X = GetSystemMetrics(SM_CXSCREEN);
@@ -68,8 +73,8 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 	RegisterClassEx(&wnd);
 	//居中显示窗口
 	m_hwnd = CreateWindowEx(WS_EX_CLIENTEDGE, m_app_name, m_app_name,
-		WS_OVERLAPPEDWINDOW, (m_WINDOW_X - m_rect_client.right + m_rect_client.left) / 2, (m_WINDOW_Y - m_rect_client.bottom + m_rect_client.top) / 2,
-		m_rect_client.right , m_rect_client.bottom, NULL, NULL, hInstance, NULL);
+		WS_OVERLAPPEDWINDOW, (m_WINDOW_X - rect_client.right + rect_client.left) / 2, (m_WINDOW_Y - rect_client.bottom + rect_client.top) / 2,
+		rect_client.right , rect_client.bottom, NULL, NULL, hInstance, NULL);
 
 		if (!m_hwnd) {
 			return ERROR;
@@ -77,7 +82,7 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 		//从系统申请到窗口句柄后
 		//用它初始化各个类
 		//初始化主渲染类
-		m_ptr_renderer->Initialize(&m_rect_client, &m_hwnd);
+		m_ptr_renderer->Initialize(&m_hwnd);
 		//初始化输入类
 		m_ptr_input->Initialize(m_hwnd);
 
@@ -89,7 +94,7 @@ int WindowFrameClass::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPrein
 		return OK;
 }
 
-int WindowFrameClass::Run() {
+int WindowFrame::Run() {
 	MSG msg = { 0 };
 	//主要程序循环
 	while(!m_quit_software) {
@@ -113,22 +118,22 @@ int WindowFrameClass::Run() {
 }
 
 //消息处理函数
-LRESULT CALLBACK WindowFrameClass::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WindowFrame::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (Msg) {
 	case WM_SIZE:
 		//取得新屏幕的大小
-		m_rect_client.right = LOWORD(lParam);
-		m_rect_client.bottom = HIWORD(lParam);
-		m_rect_client.left = m_rect_client.top = 0;
+		rect_client.right = LOWORD(lParam);
+		rect_client.bottom = HIWORD(lParam);
+		rect_client.left = rect_client.top = 0;
 
 		//并更改画布的大小
 		m_ptr_renderer->UpdateSettings();
 		//重新设置鼠标的中心
-		m_ptr_input->UpdateCursorCenterPostion(m_rect_client);
+		m_ptr_input->UpdateCursorCenterPostion(rect_client);
 		break;
 	case WM_MOVE:
-		m_ptr_input->UpdateCursorCenterPostion(m_rect_client);
+		m_ptr_input->UpdateCursorCenterPostion(rect_client);
 		break;
 
 	//以下消息响应按键
