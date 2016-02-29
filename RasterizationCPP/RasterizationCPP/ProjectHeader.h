@@ -76,4 +76,24 @@ using std::memset;
 //Default Color
 #define COLOR_BLACK (RGB(0, 0, 0))
 #define COLOR_WHITE (RGB(255, 255, 255))
+
+
+//////////
+// Flag //
+/////////
+
+//x
+#define COORD_LEFT_HAND 0x00000000L
+#define COORD_RIGHT_HAND 0x00000001L
+#define COORD_MASK 0x00000001L
+
+//x0
+#define CULL_ANTICLOCKWISE 0x000000000L
+#define CULL_CLOCKWISE 0x00000002L
+#define CULL_MASK 0x00000002L
+
+//x00
+#define RENDER_MODE_OUTLINE 0x00000000L
+#define RENDER_MODE_FILL 0x00000004L
+#define RENDER_MODE_MASK 0x00000004L
 #endif

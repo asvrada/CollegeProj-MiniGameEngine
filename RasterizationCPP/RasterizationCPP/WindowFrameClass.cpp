@@ -5,8 +5,11 @@
 #include "TimeClass.h"
 
 RECT WindowFrame::rect_client = RECT();
+DWORD WindowFrame::STYLE_CHECKER = 0;
 
-WindowFrame::WindowFrame() {
+WindowFrame::WindowFrame(DWORD checker) {
+	STYLE_CHECKER = checker;
+
 	m_quit_software = false;
 	m_app_name = TEXT("Reasterizer");
 

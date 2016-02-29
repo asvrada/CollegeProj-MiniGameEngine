@@ -20,7 +20,7 @@
 */
 
 #include "ProjectHeader.h"
-
+template < class T = float >
 class Vector2;
 class Vector3;
 class Vector4;
@@ -39,19 +39,20 @@ void swap(T &a, T &b) {
 bool triangleBackcull(const Vector4 set[]);
 bool triangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2);
 
+template <class T>
 class Vector2 {
 public:
-	float x, y;
+	T x, y;
 
 	Vector2() {
-		x = y = 0.0f;
+		x = y = 0;
 	}
 
-	Vector2(float all) {
+	Vector2(T all) {
 		x = y = all;
 	}
 
-	Vector2(float _x, float _y) {
+	Vector2(T _x, T _y) {
 		x = _x;
 		y = _y;
 	}
@@ -256,6 +257,12 @@ public:
 	//求逆矩阵
 	Matrix4 Invert();
 
+	////////////////
+	// static 函数 //
+	///////////////
+
+	//todo
+
 	/////////////////////
 	//运算符重载部分  //
 	////////////////////
@@ -268,10 +275,5 @@ public:
 
 };
 
-
-///////////////////
-// 非类成员函数 //
-//////////////////
-Matrix4 RotationSingleAxis(char axis, float degree);
-
 #endif
+

@@ -54,10 +54,16 @@ public:
 
 	//输出文字
 	void OutputText(const wstring&, int linenumber);
-	//画单个三角形
+
+	//填充三角形
+	void FillTriangles(vector<Vector4> &vertices, vector<Vector2<float>> &UVs, vector<Vector2<int>> &indices, HDC text);
+	void FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c,HDC);
+	void FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c,HDC);
+	//画三角形边框
+	void DrawTriangles(vector<Vector4> &vertices, vector<Vector2<int>> &indices);
 	void DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF);
 	//画线
-	void DrawLine(Vector2, Vector2, COLORREF);
+	void DrawLine(Vector2<float>, Vector2<float>, COLORREF);
 	//设置单个像素的颜色
 	void DrawPixel(int, int, COLORREF);
 

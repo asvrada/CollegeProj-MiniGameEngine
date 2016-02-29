@@ -1,27 +1,6 @@
 #include "MathComplement.h"
 
-/*
-int TriangleBackCull(FLOAT3D p0, FLOAT3D p1, FLOAT3D p2)
-{
-	//p1->p0
-	//p1->p2
-	FLOAT3D view = { 0.0f,0.0f,1.0f };
-	FLOAT3D a, b;
-	a.x = p0.x - p1.x;
-	a.y = p0.y - p1.y;
-	a.z = p0.z - p1.z;
-
-	b.x = p2.x - p1.x;
-	b.y = p2.y - p1.y;
-	b.z = p2.z - p1.z;
-
-	if (DotProduct(view, CrossProduct(a, b)) <= 0)
-	{
-		return 1;
-	}
-	return 0;
-}
-*/
+#include "WindowFrameClass.h"
 
 bool triangleBackcull(const Vector4 set[])
 {
@@ -49,12 +28,17 @@ bool triangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2)
 	b.x = p2.x - p1.x;
 	b.y = p2.y - p1.y;
 	b.z = p2.z - p1.z;
-
-	return (view.DotProduct(a.CrossProduct(b)) <= 0);
+	if ((WindowFrame::STYLE_CHECKER & CULL_MASK) == CULL_CLOCKWISE) {
+		return (view.DotProduct(a.CrossProduct(b)) >= 0);
+	}
+	else {
+		return (view.DotProduct(a.CrossProduct(b)) <= 0);
+	}
 }
 
+
 /*************************
-Vector3D
+Vector3
 *************************/
 
 void Vector3::VectorUnify() {
@@ -120,6 +104,35 @@ Vector3 Vector3::operator-(const Vector3 &b)
 
 wstringstream &operator << (wstringstream& ws, const Vector3& v) {
 	ws << "Vector3 : [ " << v.x << ", " << v.y << ", " << v.z << " ]";
+	return ws;
+}
+
+/*************************
+Vector4
+*************************/
+
+
+Vector4 Vector4::operator*(const Matrix4 & b)
+{
+	Vector4 tmp;
+	tmp.x = x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0] + w * b.var[3][0];
+	tmp.y = x*b.var[0][1] + y*b.var[1][1] + z*b.var[2][1] + w * b.var[3][1];
+	tmp.z = x*b.var[0][2] + y*b.var[1][2] + z*b.var[2][2] + w * b.var[3][2];
+	tmp.w = x*b.var[0][3] + y*b.var[1][3] + z*b.var[2][3] + w * b.var[3][3];
+	return tmp;
+}
+
+void Vector4::VectorUnify()
+{
+	float length = x * x + y * y + z * z;
+	length = sqrtf(length);
+	x /= length;
+	y /= length;
+	z /= length;
+}
+
+wstringstream& operator << (wstringstream& ws, const Vector4& v) {
+	ws << "[ " << v.x << ", " << v.y << ", " << v.z << ", " << v.w << " ]";
 	return ws;
 }
 
@@ -452,81 +465,54 @@ Matrix4 Matrix4::operator*(const float &multi) {
 }
 
 
-
-///////////////////
-// 非类成员函数 //
-//////////////////
-
+/*
 Matrix4 RotationSingleAxis(char axis, float degree)
 {
-	Matrix4 matrix_R;
+Matrix4 matrix_R;
 
-	matrix_R.var[0][0] = 1.0f;
-	matrix_R.var[1][1] = 1.0f;
-	matrix_R.var[2][2] = 1.0f;
-	matrix_R.var[3][3] = 1.0f;
+matrix_R.var[0][0] = 1.0f;
+matrix_R.var[1][1] = 1.0f;
+matrix_R.var[2][2] = 1.0f;
+matrix_R.var[3][3] = 1.0f;
 
-	//如果没进行旋转
-	if (-0.001f <= degree && degree <= 0.001f)
-	{
-		return matrix_R;
-	}
-
-	degree = DEGREE(degree);
-	float c = cosf(degree);
-	float s = sinf(degree);
-
-	switch (axis)
-	{
-	case 'x':
-	case 'X':
-		matrix_R.var[1][1] = c;
-		matrix_R.var[2][2] = c;
-		matrix_R.var[1][2] = s;
-		matrix_R.var[2][1] = -s;
-		return matrix_R;
-	case 'y':
-	case 'Y':
-		matrix_R.var[0][0] = c;
-		matrix_R.var[2][2] = c;
-		matrix_R.var[2][0] = s;
-		matrix_R.var[0][2] = -s;
-		return matrix_R;
-	case 'z':
-	case 'Z':
-		matrix_R.var[0][0] = c;
-		matrix_R.var[1][1] = c;
-		matrix_R.var[0][1] = s;
-		matrix_R.var[1][0] = -s;
-		return matrix_R;
-	default:
-		return matrix_R;
-	}
-
-	//Should never reach here;
-	return matrix_R;
-}
-
-Vector4 Vector4::operator*(const Matrix4 & b)
+//如果没进行旋转
+if (-0.001f <= degree && degree <= 0.001f)
 {
-	Vector4 tmp;
-	tmp.x = x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0] + w * b.var[3][0];
-	tmp.y = x*b.var[0][1] + y*b.var[1][1] + z*b.var[2][1] + w * b.var[3][1];
-	tmp.z = x*b.var[0][2] + y*b.var[1][2] + z*b.var[2][2] + w * b.var[3][2];
-	tmp.w  = x*b.var[0][3] + y*b.var[1][3] + z*b.var[2][3] + w * b.var[3][3];
-	return tmp;
+return matrix_R;
 }
 
-void Vector4::VectorUnify()
+degree = DEGREE(degree);
+float c = cosf(degree);
+float s = sinf(degree);
+
+switch (axis)
 {
-	float length = x * x + y * y + z * z;
-	length = sqrtf(length);
-	x /= length;
-	y /= length;
-	z /= length;
+case 'x':
+case 'X':
+matrix_R.var[1][1] = c;
+matrix_R.var[2][2] = c;
+matrix_R.var[1][2] = s;
+matrix_R.var[2][1] = -s;
+return matrix_R;
+case 'y':
+case 'Y':
+matrix_R.var[0][0] = c;
+matrix_R.var[2][2] = c;
+matrix_R.var[2][0] = s;
+matrix_R.var[0][2] = -s;
+return matrix_R;
+case 'z':
+case 'Z':
+matrix_R.var[0][0] = c;
+matrix_R.var[1][1] = c;
+matrix_R.var[0][1] = s;
+matrix_R.var[1][0] = -s;
+return matrix_R;
+default:
+return matrix_R;
 }
 
-wstringstream& operator << (wstringstream& ws, const Vector4& v) {
-	ws << "[ " << v.x << ", " << v.y << ", " << v.z << ", " << v.w << " ]";
-	return ws;
+//Should never reach here;
+return matrix_R;
 }
+*/

@@ -1,41 +1,66 @@
 #include "ObjectClass.h"
+#include "WindowFrameClass.h"
 
 #include <fstream>
 using std::ifstream;
+#include <string>
+using std::string;
 
 Object::Object() {
 	position.x = position.y = position.z = 0.0f;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-int Object::Initial(char *fileName)
+int Object::Initial(char *fileName,LPCWSTR texturename)
 {
+	HBITMAP bmp_texture = (HBITMAP)LoadImage(NULL, texturename, IMAGE_BITMAP, 512, 512, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hdc_texture = CreateCompatibleDC(NULL);
+	SelectObject(hdc_texture, bmp_texture);
+
 	ifstream file(fileName);
 	if (!file.is_open()) {
+		file.close();
 		return ERROR;
 	}
-	int maxIndex = 0;
+	float texture_coord_x = -1, texture_coord_y = -1, texture_coord_z = -1;
+	float vertice_x = -1, vertice_y = -1, vertice_z = -1;
+	int indice_x = -1, indice_y = -1, indice_z = -1;
+	int u = -1, v = -1, w = -1;
 
-	char type = 0;
-	float x = 0, y = 0, z = 0;
 	while (!file.eof()) {
-		file >> type >> x >> y >> z;
-		switch (type)
-		{
-		case 'v':
-			vertices.push_back(Vector3(x, y, z));
-			break;
-		case 'f':
-			indices.push_back((int)(x - 1));
-			indices.push_back((int)(y - 1));
-			indices.push_back((int)(z - 1));
-			break;
-		case '#':
-			break;
-		default:
-			break;
+		string head;
+		file >> head;
+		//vertices and indices
+		if (head.size() == 1) {
+			switch (*head.begin()) {
+			case 'v':
+				file >> vertice_x >> vertice_y >> vertice_z;
+				vertices.push_back(Vector3(vertice_x, vertice_y, vertice_z));
+				break;
+			case 'f':
+				file >> indice_x;
+				file.ignore(1, '/');
+				file >> u >> indice_y;
+				file.ignore(1, '/');
+				file >> v >> indice_z;
+				file.ignore(1, '/');
+				file >> w;
+				indices.push_back(Vector2<int>(indice_x - 1, u - 1));
+				indices.push_back(Vector2<int>(indice_y - 1, v - 1));
+				indices.push_back(Vector2<int>(indice_z - 1, w - 1));
+				break;
+			default:
+				file.ignore(100, '\n');
+				break;
+			}
+		}
+		//texture coord
+		else if (head.size() == 2) {
+			file >> texture_coord_x >> texture_coord_y >> texture_coord_z;
+			uv.push_back(Vector2<float>(texture_coord_x, texture_coord_y));
 		}
 	}
+	file.close();
 	return OK;
 }
 

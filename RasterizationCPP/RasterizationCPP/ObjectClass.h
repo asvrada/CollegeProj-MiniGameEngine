@@ -3,35 +3,27 @@
 
 #include "ProjectHeader.h"
 
-struct UV {
-	float u, v;
-
-	UV(float a, float b) {
-		u = a;
-		v = b;
-	}
-	UV() {
-		u = v = 0.0f;
-	}
-};
-
 //目前一个Object就是一个三角形
 class Object {
+	typedef vector<Vector2<float>> UV;
+	typedef vector<Vector2<int>> INDEX;
 	//三角形的三点
 public:
 	vector<Vector3> vertices;
-	vector<int> indices;
+	vector<Vector2<float>> uv;
+	vector<Vector2<int>> indices;
+
+	HDC hdc_texture;
 
 	Vector3 position;
 	Vector3 rotation;
-
+	Vector3 scale;
 public:
 	///////////////
 	// 构造函数 //
 	///////////////
 	Object();
-	//todo
-	int Initial(char*);
+	int Initial(char*, LPCWSTR);
 	//给出Position
 	Object(Vector3);
 	//给出Pos 和 Rotation

@@ -5,8 +5,8 @@ Open for all feedback
 
 ## _Todo Lists:_
 1. Options for changing Background 
-2. Texture
-3. static methods
+2. Texture Fill
+3. Template class
 
 
 ### -What is this ?

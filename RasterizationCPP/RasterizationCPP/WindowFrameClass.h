@@ -14,21 +14,30 @@ class Input;
 class Time;
 
 class WindowFrame {
-public:
+public:	
+	//程序句柄
+	HWND m_hwnd;
 	//渲染区域（客户坐标系）
 	//Rendering area(in client coordinate)
 	static RECT rect_client;
+
+	///////////
+	// FLAG //
+	///////////
+	//32 bit
+	//16 ^ 8 == 2^32 == long
+	//8 number each
+	//0x00000000L
+	static DWORD STYLE_CHECKER;
 private:
-	//程序句柄
-	HWND m_hwnd;
+
 
 	//退出程序
 	bool m_quit_software;
 	//窗口名称
 	wchar_t *m_app_name;
 
-//用到的类
-private:
+	//包含的类
 	//渲染类
 	Render *m_ptr_renderer;
 	//时间类
@@ -37,7 +46,7 @@ private:
 	Input *m_ptr_input;
 
 public:
-	WindowFrame();
+	WindowFrame(DWORD checker = CULL_ANTICLOCKWISE | COORD_LEFT_HAND);
 	~WindowFrame();
 
 	//真正的消息处理函数
