@@ -43,7 +43,8 @@ void Render::m_DrawObjects() {
 }
 
 Render::Render() {
-	m_ptr_camera = NULL;
+	m_ptr_camera = nullptr;
+	m_z_depth_buffer = nullptr;
 }
 
 Render::~Render() {
@@ -64,6 +65,12 @@ void Render::Initialize(HWND *hWndScreen) {
 		vector_objects.erase(vector_objects.end() - 1);
 	}
 	vector_objects[0].rotation = Vector3(0, 180.0f, 0);
+
+	vector_objects.push_back(Object());
+	if (vector_objects[1].Initial("Resources\\Models\\plane.obj", TEXT("Resources\\Materials\\ApertureTexture.bmp")) == ERROR) {
+		vector_objects.erase(vector_objects.end() - 1);
+	}
+	vector_objects[1].rotation = Vector3(45.0f, 180.0f, 0);
 }
 
 void Render::DeleteResources() {
@@ -73,9 +80,13 @@ void Render::DeleteResources() {
 
 void Render::Shutdown() {
 	DeleteResources();
-	if (m_ptr_camera != nullptr) {
+	if (m_ptr_camera) {
 		delete m_ptr_camera;
 		m_ptr_camera = nullptr;
+	}
+	if (m_z_depth_buffer) {
+		delete m_z_depth_buffer;
+		m_z_depth_buffer = nullptr;
 	}
 }
 
@@ -84,9 +95,12 @@ void Render::RenderAFrame() {
 	// >每帧必做 //
 	////////////////
 	m_ptr_camera->CameraControl();
+	m_DrawObjects();
 	////////////////
 	// <每帧必做 //
 	////////////////
+
+
 	OutputText(Time::GetFPSwstring(), 0);
 
 	wstringstream ws;
@@ -97,13 +111,10 @@ void Render::RenderAFrame() {
 	ws << "Use W, A, S, D ,Q ,E and Arrow keys to move around";
 	OutputText(ws.str(), 2);
 
+
 	////////////////
 	// >每帧必做 //
 	////////////////
-
-	m_DrawObjects();
-
-
 	SwapBufferToScreen();
 	ClearCanvas();
 	////////////////
@@ -113,6 +124,14 @@ void Render::RenderAFrame() {
 
 void Render::UpdateSettings()
 {
+	//改变z缓存的大小
+	if (m_z_depth_buffer) {
+		delete m_z_depth_buffer;
+		m_z_depth_buffer = nullptr;
+	}
+
+	m_z_depth_buffer = new float[WindowFrame::rect_client.right  * WindowFrame::rect_client.bottom];
+
 	//不为空时删除原有数据
 	if (m_hdc_buffer) {
 		DeleteResources();
@@ -153,6 +172,7 @@ void Render::SwapBufferToScreen() {
 }
 
 void Render::ClearCanvas() {
+	std::fill(m_z_depth_buffer, m_z_depth_buffer + WindowFrame::rect_client.right  * WindowFrame::rect_client.bottom, -1.0f);
 	//用背景画刷填充背景
 	FillRect(m_hdc_buffer, &WindowFrame::rect_client, m_brush_background);
 }
@@ -340,11 +360,19 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 		int x = 0;
 		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left;
 		x <= xRight;
-			x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step)
-		{
+			x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
-			DrawPixel(x, WindowFrame::rect_client.bottom - y, GetPixel(texture, u, v));
+			int _x = x;
+			int _y = WindowFrame::rect_client.bottom - y;
+			int _index = (_y - 1) * WindowFrame::rect_client.right + x;
+			if (_index < WindowFrame::rect_client.right * WindowFrame::rect_client.bottom && _index >= 0) {
+				float &_z = m_z_depth_buffer[_index];
+				if (oneoverz > _z) {
+					DrawPixel(_x, _y, GetPixel(texture, u, v));
+					_z = oneoverz;
+				}
+			}
 		}
 	}
 }
@@ -425,11 +453,19 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 		int x = 0;
 		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left;
 		x <= xRight;
-			x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step)
-		{
+			x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
-			DrawPixel(x, WindowFrame::rect_client.bottom - y, GetPixel(texture, u, v));
+			int _x = x;
+			int _y = WindowFrame::rect_client.bottom - y;
+			int _index = (_y - 1) * WindowFrame::rect_client.right + x;
+			if (_index < WindowFrame::rect_client.right * WindowFrame::rect_client.bottom && _index >= 0) {
+				float &_z = m_z_depth_buffer[_index];
+				if (oneoverz > _z) {
+					DrawPixel(_x, _y, GetPixel(texture, u, v));
+					_z = oneoverz;
+				}
+			}
 		}
 	}
 }

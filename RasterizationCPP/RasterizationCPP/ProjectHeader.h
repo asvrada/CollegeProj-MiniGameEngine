@@ -37,6 +37,8 @@ z : Roll
 //////////////////////////////
 // STL and other Libraries //
 /////////////////////////////
+#include <array>
+using std::array;
 #include <queue>
 using std::queue;
 #include <vector>

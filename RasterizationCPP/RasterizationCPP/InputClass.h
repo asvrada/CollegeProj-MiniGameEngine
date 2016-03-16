@@ -26,9 +26,10 @@ public:
 	// static //
 	//////////
 	//记录鼠标应当处于的坐标
-	static POINT point_cursor_default;
+	static POINT point_cursor_center_snapped;
 	//记录鼠标当前的位置
 	static POINT point_cursor_current;
+	static POINT point_cursor_last_frame;
 	static bool is_center_snapped;
 	static bool is_rbutton_up;
 	static bool is_lbutton_up;

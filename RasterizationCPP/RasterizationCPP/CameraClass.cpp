@@ -1,5 +1,6 @@
 #include "CameraClass.h"
 
+#include "WindowFrameClass.h"
 #include "InputClass.h"
 #include "TimeClass.h"
 
@@ -35,20 +36,31 @@ void Camera::Update() {
 void Camera::CameraControl() {
 	float delta_time = Time::GetDeltaTime();
 	if (Input::is_rbutton_up) {
-		Input::point_cursor_current = Input::point_cursor_default;
 		Input::is_center_snapped = !Input::is_center_snapped;
 		ShowCursor(!Input::is_center_snapped);
+		if (Input::is_center_snapped) {
+			//重置鼠标的位置
+			Input::point_cursor_current = Input::point_cursor_last_frame = Input::point_cursor_center_snapped;
+			SetCursorPos(Input::point_cursor_center_snapped.x, Input::point_cursor_center_snapped.y);
+		}
 	}
 
-	POINT pointCursorModify = { 0,0 };
 	if (Input::is_center_snapped) {
-		pointCursorModify.x = Input::point_cursor_current.x - Input::point_cursor_default.x;
-		pointCursorModify.y = Input::point_cursor_current.y - Input::point_cursor_default.y;
+		POINT pointCursorModify = { Input::point_cursor_current.x - Input::point_cursor_last_frame.x ,
+			Input::point_cursor_current.y - Input::point_cursor_last_frame.y };
+		Input::point_cursor_last_frame = Input::point_cursor_current;
 
 		//dead zone
+		//todo
 		//pointCursorModify.x /= 
 
-		SetCursorPos((int)Input::point_cursor_default.x, (int)Input::point_cursor_default.y);
+		//超出范围才重置位置
+		//范围为窗口的一半
+		if ((ABS(Input::point_cursor_current.x - Input::point_cursor_center_snapped.x) > WindowFrame::rect_client.right / 4) ||
+			(ABS(Input::point_cursor_current.y - Input::point_cursor_center_snapped.y) > WindowFrame::rect_client.bottom / 4)) {
+			Input::point_cursor_current = Input::point_cursor_last_frame = Input::point_cursor_center_snapped;
+			SetCursorPos((int)Input::point_cursor_center_snapped.x, (int)Input::point_cursor_center_snapped.y);
+		}
 
 		//摄像头上下视角移动
 		rotation.x += (float)pointCursorModify.y / 15.0f;
@@ -100,9 +112,9 @@ void Camera::m_UpdateViewToHomoMatrix4() {
 	view_to_homo.var[1][1] = (2 * near_z) / (t - b);
 	//hMatrix4.var[2][0] = (r + l) / (r - l);
 	//hMatrix4.var[2][1] = (t + b) / (t - b);
-	view_to_homo.var[2][2] = (far_z + near_z) / (far_z - near_z);
+	view_to_homo.var[2][2] = (far_z) / (far_z - near_z);
 	view_to_homo.var[2][3] = 1.0f;
-	view_to_homo.var[3][2] = -(2.0f*near_z*far_z) / (far_z - near_z);
+	view_to_homo.var[3][2] = -(near_z*far_z) / (far_z - near_z);
 }
 
 Matrix4 Camera::GetWorldToViewMatrix4()

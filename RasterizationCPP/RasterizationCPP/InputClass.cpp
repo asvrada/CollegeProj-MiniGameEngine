@@ -2,8 +2,9 @@
 
 //static ≥ı ºªØ
 KeyPressedList Input::m_key_pressed = KeyPressedList();
-POINT Input::point_cursor_default = POINT();
+POINT Input::point_cursor_center_snapped = POINT();
 POINT Input::point_cursor_current = POINT();
+POINT Input::point_cursor_last_frame = POINT();
 bool Input::is_center_snapped = false;
 bool Input::is_rbutton_up = false;
 bool Input::is_lbutton_up = false;
@@ -60,9 +61,9 @@ void Input::Release(char mouseButton)
 
 void Input::UpdateCursorCenterPostion(const RECT &rectRender)
 {
-	point_cursor_default.x = rectRender.right / 2;
-	point_cursor_default.y = rectRender.bottom / 2;
-	ClientToScreen(m_hwnd, &point_cursor_default);
+	point_cursor_center_snapped.x = rectRender.right / 2;
+	point_cursor_center_snapped.y = rectRender.bottom / 2;
+	ClientToScreen(m_hwnd, &point_cursor_center_snapped);
 }
 
 int Input::ReactToKeyPressed() {

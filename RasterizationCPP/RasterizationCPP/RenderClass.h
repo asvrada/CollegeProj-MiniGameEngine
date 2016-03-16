@@ -26,6 +26,7 @@ private:
 private:
 	//ViewToHomo 矩阵在摄像机类里
 	Matrix4 m_world_to_view;
+	float *m_z_depth_buffer;
 	void m_DrawObjects();
 public:
 	Render();
