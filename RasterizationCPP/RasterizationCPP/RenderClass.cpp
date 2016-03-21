@@ -27,17 +27,24 @@ void Render::m_DrawObjects() {
 			//View To Homo transformation
 			transformed_vertices[lop] = transformed_vertices[lop] * m_ptr_camera->view_to_homo;
 
+			//Perspective Divison
 			float z_depth = transformed_vertices[lop].w;
 			transformed_vertices[lop].x /= z_depth;
 			transformed_vertices[lop].y /= z_depth;
-			transformed_vertices[lop].z /= z_depth;
+			//bug
+			//WHY?
+			//transformed_vertices[lop].z /= z_depth;
 		}
 
+		//Clipping
+		vector<Vector2<int>> tmp_indices;
+		Clipping(tmp_indices, transformed_vertices, object.indices);
+
 		if ((WindowFrame::STYLE_CHECKER & RENDER_MODE_MASK) == RENDER_MODE_OUTLINE) {
-			DrawTriangles(transformed_vertices, object.indices);
+			DrawTriangles(transformed_vertices, tmp_indices);
 		}
 		else {
-			FillTriangles(transformed_vertices, object.uv, object.indices, object.hdc_texture);
+			FillTriangles(transformed_vertices, object.uv, tmp_indices, object.hdc_texture);
 		}
 	}
 }
@@ -64,13 +71,7 @@ void Render::Initialize(HWND *hWndScreen) {
 	if (vector_objects[0].Initial("Resources\\Models\\plane.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp")) == ERROR) {
 		vector_objects.erase(vector_objects.end() - 1);
 	}
-	vector_objects[0].rotation = Vector3(0, 180.0f, 0);
-
-	vector_objects.push_back(Object());
-	if (vector_objects[1].Initial("Resources\\Models\\plane.obj", TEXT("Resources\\Materials\\ApertureTexture.bmp")) == ERROR) {
-		vector_objects.erase(vector_objects.end() - 1);
-	}
-	vector_objects[1].rotation = Vector3(45.0f, 180.0f, 0);
+	vector_objects[0].rotation = Vector3(0, 180.f, 0);
 }
 
 void Render::DeleteResources() {
@@ -181,6 +182,10 @@ inline void Render::OutputText(const wstring & text, int line) {
 	TextOut(m_hdc_buffer, 0, 20 * line, text.data(), text.size());
 }
 
+///////////////////
+// Fill Triangles //
+///////////////////
+
 void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs, vector<Vector2<int>>& indices, HDC texture)
 {
 	for (int lop = 0; lop < (int)indices.size(); lop += 3) {
@@ -189,19 +194,13 @@ void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs
 		Vector4 b = vertices[indices[lop + 1].x];
 		Vector4 c = vertices[indices[lop + 2].x];
 
-		if (triangleBackcull(a, b, c)) {
+		if (TriangleBackcull(a, b, c)) {
 			continue;
 		}
 
-		a.x = (a.x + 1.0f) * WindowFrame::rect_client.right / 2.0f;
-		a.y = (a.y + 1.0f) * WindowFrame::rect_client.bottom / 2.0f;
-
-		b.x = (b.x + 1.0f) * WindowFrame::rect_client.right / 2.0f;
-		b.y = (b.y + 1.0f) * WindowFrame::rect_client.bottom / 2.0f;
-
-		c.x = (c.x + 1.0f) * WindowFrame::rect_client.right / 2.0f;
-		c.y = (c.y + 1.0f) * WindowFrame::rect_client.bottom / 2.0f;
-
+		HomoToScreenCoord(a);
+		HomoToScreenCoord(b);
+		HomoToScreenCoord(c);
 
 		//一个三角形三个顶点的uv
 		Vector2<float> uv_a = UVs[indices[lop].y];
@@ -246,16 +245,6 @@ void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs
 			}
 		}
 
-		//如果已经是平底的三角形
-		if (ABS(b.y - a.y) < 0.001) {
-			FillTriangleTopFlat(a, uv_a, b, uv_b, c, uv_c, texture);
-			return;
-		}
-		if (ABS(b.y - c.y) < 0.001) {
-			FillTriangleBottomFlat(a, uv_a, b, uv_b, c, uv_c, texture);
-			return;
-		}
-
 		Vector4 d;
 		Vector2<float> uv_d;
 
@@ -283,15 +272,14 @@ void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs
 	}
 }
 
-void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC texture)
-{
-	float x1 = a.x;
-	float x2 = b.x;
-	float x3 = c.x;
+void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC texture) {
+	const float &x1 = a.x;
+	const float &x2 = b.x;
+	const float &x3 = c.x;
 
-	float y1 = a.y;
-	float y2 = b.y;
-	float y3 = c.y;
+	const float &y1 = a.y;
+	const float &y2 = b.y;
+	const float &y3 = c.y;
 
 	//确定三角形的范围
 	int miny = (int)y3;
@@ -358,9 +346,7 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 
 
 		int x = 0;
-		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left;
-		x <= xRight;
-			x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
+		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x <= xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
 			int _x = x;
@@ -377,15 +363,14 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 	}
 }
 
-void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC texture)
-{
-	float x1 = a.x;
-	float x2 = b.x;
-	float x3 = c.x;
+void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC texture) {
+	const float &x1 = a.x;
+	const float &x2 = b.x;
+	const float &x3 = c.x;
 
-	float y1 = a.y;
-	float y2 = b.y;
-	float y3 = c.y;
+	const float &y1 = a.y;
+	const float &y2 = b.y;
+	const float &y3 = c.y;
 
 	//确定三角形的范围
 	int miny = (int)y2;
@@ -451,9 +436,7 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 
 
 		int x = 0;
-		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left;
-		x <= xRight;
-			x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
+		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
 			int _x = x;
@@ -470,6 +453,10 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 	}
 }
 
+/////////////////
+// Draw Lines //
+/////////////////
+
 void Render::DrawTriangles(vector<Vector4>& vertices, vector<Vector2<int>>& indices)
 {
 	//Draw every face of that object
@@ -485,7 +472,7 @@ void Render::DrawTriangles(vector<Vector4>& vertices, vector<Vector2<int>>& indi
 
 void Render::DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF color)
 {
-	if (triangleBackcull(p0, p1, p2)) {
+	if (TriangleBackcull(p0, p1, p2)) {
 		return;
 	}
 

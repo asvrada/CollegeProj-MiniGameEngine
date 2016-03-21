@@ -14,6 +14,9 @@ Object::Object() {
 int Object::Initial(char *fileName,LPCWSTR texturename)
 {
 	HBITMAP bmp_texture = (HBITMAP)LoadImage(NULL, texturename, IMAGE_BITMAP, 512, 512, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	if (bmp_texture == NULL) {
+		return ERROR;
+	}
 	hdc_texture = CreateCompatibleDC(NULL);
 	SelectObject(hdc_texture, bmp_texture);
 
@@ -32,7 +35,7 @@ int Object::Initial(char *fileName,LPCWSTR texturename)
 		file >> head;
 		//vertices and indices
 		if (head.size() == 1) {
-			switch (*head.begin()) {
+			switch (*(head.begin())) {
 			case 'v':
 				file >> vertice_x >> vertice_y >> vertice_z;
 				vertices.push_back(Vector3(vertice_x, vertice_y, vertice_z));
@@ -45,9 +48,9 @@ int Object::Initial(char *fileName,LPCWSTR texturename)
 				file >> v >> indice_z;
 				file.ignore(1, '/');
 				file >> w;
-				indices.push_back(Vector2<int>(indice_x - 1, u - 1));
-				indices.push_back(Vector2<int>(indice_y - 1, v - 1));
-				indices.push_back(Vector2<int>(indice_z - 1, w - 1));
+				indices.push(Vector2<int>(indice_x - 1, u - 1));
+				indices.push(Vector2<int>(indice_y - 1, v - 1));
+				indices.push(Vector2<int>(indice_z - 1, w - 1));
 				break;
 			default:
 				file.ignore(100, '\n');

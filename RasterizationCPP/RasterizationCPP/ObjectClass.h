@@ -5,13 +5,10 @@
 
 //目前一个Object就是一个三角形
 class Object {
-	typedef vector<Vector2<float>> UV;
-	typedef vector<Vector2<int>> INDEX;
-	//三角形的三点
 public:
 	vector<Vector3> vertices;
 	vector<Vector2<float>> uv;
-	vector<Vector2<int>> indices;
+	queue<Vector2<int>> indices;
 
 	HDC hdc_texture;
 

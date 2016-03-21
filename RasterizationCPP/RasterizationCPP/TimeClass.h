@@ -20,7 +20,7 @@ private:
 	static int m_queue_size;
 	static float m_sum_of_queue;
 
-private:
+
 	void m_Push(float gap);
 
 public:

@@ -2,7 +2,32 @@
 
 #include "WindowFrameClass.h"
 
-bool triangleBackcull(const Vector4 set[])
+void Clipping(vector<Vector2<int>>& clipped_indices, vector<Vector4> vertices, queue<Vector2<int>> indices) {
+	while (!indices.empty()) {
+		Vector2<int> a = indices.front();
+		indices.pop();
+		Vector2<int> b = indices.front();
+		indices.pop();
+		Vector2<int> c = indices.front();
+		indices.pop();
+
+		if ((vertices[a.x].x < 1.0f && vertices[a.x].x > -1.0f) && (vertices[a.x].y < 1.0f && vertices[a.x].y > -1.0f) && (vertices[a.x].z > 0) &&
+			(vertices[b.x].x < 1.0f && vertices[b.x].x > -1.0f) && (vertices[b.x].y < 1.0f && vertices[b.x].y > -1.0f) && (vertices[b.x].z > 0) &&
+			(vertices[c.x].x < 1.0f && vertices[c.x].x > -1.0f) && (vertices[c.x].y < 1.0f && vertices[c.x].y > -1.0f) && (vertices[c.x].z > 0)) {
+			clipped_indices.push_back(a);
+			clipped_indices.push_back(b);
+			clipped_indices.push_back(c);
+		}
+	}
+}
+
+void HomoToScreenCoord(Vector4& vertex) {
+	const RECT &screen = WindowFrame::rect_client;
+	vertex.x = (vertex.x + 1.0f) * screen.right / 2.0f;
+	vertex.y = (vertex.y + 1.0f) * screen.bottom / 2.0f;
+}
+
+bool TriangleBackcull(const Vector4 set[])
 {
 	Vector3 view(0.0f, 0.0f, 1.0f);
 	Vector3 a, b;
@@ -17,7 +42,7 @@ bool triangleBackcull(const Vector4 set[])
 	return (view.DotProduct(a.CrossProduct(b)) <= 0);
 }
 
-bool triangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2)
+bool TriangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2)
 {
 	Vector3 view(0.0f, 0.0f, 1.0f);
 	Vector3 a, b;
@@ -79,7 +104,7 @@ Matrix4 Vector3::GetTransitonMatrix()
 	return matrix_T;
 }
 
-Vector3 Vector3::operator*(const Matrix3 &b)
+Vector3 Vector3::operator * (const Matrix3 &b)
 {
 	return Vector3(
 		x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0],
@@ -87,7 +112,7 @@ Vector3 Vector3::operator*(const Matrix3 &b)
 		x*b.var[0][2] + y*b.var[1][2] + z*b.var[2][2]);
 }
 
-Vector4 Vector3::operator*(const Matrix4 &b)
+Vector4 Vector3::operator * (const Matrix4 &b)
 {
 	return Vector4(*this,true) * b;
 }

@@ -20,6 +20,7 @@
 */
 
 #include "ProjectHeader.h"
+
 template < class T = float >
 class Vector2;
 class Vector3;
@@ -35,9 +36,16 @@ void swap(T &a, T &b) {
 	b = tmp;
 }
 
+//Clipping
+//只要有一点落在外面，就不要
+void Clipping(vector<Vector2<int>> &clipped_indices, vector<Vector4> vertices, queue<Vector2<int>> indices);
+
+//tranform vertices from Homo to Screen
+void HomoToScreenCoord(Vector4& vertex);
+
 //back face cull
-bool triangleBackcull(const Vector4 set[]);
-bool triangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2);
+bool TriangleBackcull(const Vector4 set[]);
+bool TriangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2);
 
 template <class T>
 class Vector2 {
