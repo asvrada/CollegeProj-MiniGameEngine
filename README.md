@@ -5,8 +5,8 @@ Open for all feedback
 
 ## _Todo Lists:_
 1. Options for changing Background 
-2. Perspective correction
-3. Template class
+2. Clipping
+3. Mutli-thread optimization  
 
 
 ### -What is this ?

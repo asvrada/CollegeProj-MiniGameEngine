@@ -28,11 +28,14 @@ z : Roll
 #ifndef RASTERIZER_PROJECTHEADER_H
 #define RASTERIZER_PROJECTHEADER_H
 
+//#define DEBUG
+
 /////////////////////
 // System Header //
 /////////////////////
 #include "resource.h"
 #include <Windows.h>
+#include <assert.h>
 
 //////////////////////////////
 // STL and other Libraries //

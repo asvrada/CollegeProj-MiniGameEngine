@@ -31,9 +31,7 @@ void Render::m_DrawObjects() {
 			float z_depth = transformed_vertices[lop].w;
 			transformed_vertices[lop].x /= z_depth;
 			transformed_vertices[lop].y /= z_depth;
-			//bug
-			//WHY?
-			//transformed_vertices[lop].z /= z_depth;
+			transformed_vertices[lop].z /= z_depth;
 		}
 
 		//Clipping
@@ -64,6 +62,7 @@ void Render::Initialize(HWND *hWndScreen) {
 	m_hdc_screen = GetDC(*m_ptr_hwnd);
 
 	m_ptr_camera = new Camera((float)(WindowFrame::rect_client.right / WindowFrame::rect_client.bottom), 70.0f);
+	m_ptr_camera->position.z = -100.f;
 	m_ptr_camera->Update();
 
 	//初始化物体
@@ -109,8 +108,12 @@ void Render::RenderAFrame() {
 	OutputText(ws.str(), 1);
 
 	ws.str(L"");
-	ws << "Use W, A, S, D ,Q ,E and Arrow keys to move around";
+	ws << m_ptr_camera->position;
 	OutputText(ws.str(), 2);
+
+	ws.str(L"");
+	ws << m_ptr_camera->rotation;
+	OutputText(ws.str(), 3);
 
 
 	////////////////
@@ -141,7 +144,7 @@ void Render::UpdateSettings()
 	m_hdc_buffer = CreateCompatibleDC(m_hdc_screen);
 
 	//载入本地背景图片
-	HBITMAP bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("Resources\\Materials\\Background.bmp"), IMAGE_BITMAP,
+	HBITMAP bmpBackgroundImage = (HBITMAP)LoadImage(NULL, NULL/*TEXT("Resources\\Materials\\Background.bmp")*/, IMAGE_BITMAP,
 		WindowFrame::rect_client.right, WindowFrame::rect_client.bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	//如果载入失败
 	//创建灰色背景
@@ -185,7 +188,6 @@ inline void Render::OutputText(const wstring & text, int line) {
 ///////////////////
 // Fill Triangles //
 ///////////////////
-
 void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs, vector<Vector2<int>>& indices, HDC texture)
 {
 	for (int lop = 0; lop < (int)indices.size(); lop += 3) {
@@ -197,10 +199,6 @@ void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs
 		if (TriangleBackcull(a, b, c)) {
 			continue;
 		}
-
-		HomoToScreenCoord(a);
-		HomoToScreenCoord(b);
-		HomoToScreenCoord(c);
 
 		//一个三角形三个顶点的uv
 		Vector2<float> uv_a = UVs[indices[lop].y];
@@ -252,12 +250,19 @@ void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs
 		d.x = t_BYAYCYAY * (c.x - a.x) + a.x;
 		d.y = b.y;
 		d.z = t_BYAYCYAY * (c.z - a.z) + a.z;
+		d.w = 1 / (t_BYAYCYAY * (1 / c.w - 1 / a.w) + 1 / a.w);
 
-		float oneoverz = t_BYAYCYAY * (1 / c.z - 1 / a.z) + 1 / a.z;
-		float uvoverz = t_BYAYCYAY * (uv_c.x / c.z - uv_a.x / a.z) + uv_a.x / a.z;
+		float oneoverz = t_BYAYCYAY * (1 / c.w - 1 / a.w) + 1 / a.w;
+		float uvoverz = t_BYAYCYAY * (uv_c.x / c.w - uv_a.x / a.w) + uv_a.x / a.w;
 		uv_d.x = uvoverz / oneoverz;
-		uvoverz = t_BYAYCYAY * (uv_c.y / c.z - uv_a.y / a.z) + uv_a.y / a.z;
+		uvoverz = t_BYAYCYAY * (uv_c.y / c.w - uv_a.y / a.w) + uv_a.y / a.w;
 		uv_d.y = uvoverz / oneoverz;
+
+		//将齐次剪裁空间的点转换到视口空间
+		HomoToScreenCoord(a);
+		HomoToScreenCoord(b);
+		HomoToScreenCoord(c);
+		HomoToScreenCoord(d);
 
 		//如果新隔出来的D点在B点左边
 		if (d.x < b.x)
@@ -323,24 +328,24 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 
 		//透视正确的插值 值的计算
 		//1 / z
-		oneoverz_Top = 1 / a.z;
-		oneoverz_Bottom = 1 / c.z;
+		oneoverz_Top = 1 / a.w;
+		oneoverz_Bottom = 1 / c.w;
 		oneoverz_Left = t_YAYCYAY* (oneoverz_Bottom - oneoverz_Top) + oneoverz_Top;
-		oneoverz_Top = 1 / b.z;
+		oneoverz_Top = 1 / b.w;
 		oneoverz_Right = t_YBYCYBY * (oneoverz_Bottom - oneoverz_Top) + oneoverz_Top;
 		oneoverz_Step = (oneoverz_Right - oneoverz_Left) / (xRight - xLeft);
 		//U / z
-		uoverz_Top = uv_a.x / a.z;
-		uoverz_Bottom = uv_c.x / c.z;
+		uoverz_Top = uv_a.x / a.w;
+		uoverz_Bottom = uv_c.x / c.w;
 		uoverz_Left = t_YAYCYAY* (uoverz_Bottom - uoverz_Top) + uoverz_Top;
-		uoverz_Top = uv_b.x / b.z;
+		uoverz_Top = uv_b.x / b.w;
 		uoverz_Right = t_YBYCYBY* (uoverz_Bottom - uoverz_Top) + uoverz_Top;
 		uoverz_Step = (uoverz_Right - uoverz_Left) / (xRight - xLeft);
 		//V / z
-		voverz_Top = uv_a.y / a.z;
-		voverz_Bottom = uv_c.y / c.z;
+		voverz_Top = uv_a.y / a.w;
+		voverz_Bottom = uv_c.y / c.w;
 		voverz_Left = t_YAYCYAY * (voverz_Bottom - voverz_Top) + voverz_Top;
-		voverz_Top = uv_b.y / b.z;
+		voverz_Top = uv_b.y / b.w;
 		voverz_Right = t_YBYCYBY* (voverz_Bottom - voverz_Top) + voverz_Top;
 		voverz_Step = (voverz_Right - voverz_Left) / (xRight - xLeft);
 
@@ -349,12 +354,20 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x <= xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
+
 			int _x = x;
 			int _y = WindowFrame::rect_client.bottom - y;
 			int _index = (_y - 1) * WindowFrame::rect_client.right + x;
+
+			//没有超出缓冲区的范围
 			if (_index < WindowFrame::rect_client.right * WindowFrame::rect_client.bottom && _index >= 0) {
 				float &_z = m_z_depth_buffer[_index];
 				if (oneoverz > _z) {
+#ifdef DEBUG
+					//debug
+					assert(u != 512);
+					assert(v != 512);
+#endif
 					DrawPixel(_x, _y, GetPixel(texture, u, v));
 					_z = oneoverz;
 				}
@@ -413,24 +426,24 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 
 		//透视正确的插值 值的计算
 		//1 / z
-		oneoverz_Top = 1 / a.z;
-		oneoverz_Bottom = 1 / c.z;
+		oneoverz_Top = 1 / a.w;
+		oneoverz_Bottom = 1 / c.w;
 		oneoverz_Left = t_YAYCYAY * (oneoverz_Bottom - oneoverz_Top) + oneoverz_Top;
-		oneoverz_Bottom = 1 / b.z;
+		oneoverz_Bottom = 1 / b.w;
 		oneoverz_Right = t_YAYBYAY * (oneoverz_Bottom - oneoverz_Top) + oneoverz_Top;
 		oneoverz_Step = (oneoverz_Right - oneoverz_Left) / (xRight - xLeft);
 		//U / z
-		uoverz_Top = uv_a.x / a.z;
-		uoverz_Bottom = uv_c.x / c.z;
+		uoverz_Top = uv_a.x / a.w;
+		uoverz_Bottom = uv_c.x / c.w;
 		uoverz_Left = t_YAYCYAY * (uoverz_Bottom - uoverz_Top) + uoverz_Top;
-		uoverz_Bottom = uv_b.x / b.z;
+		uoverz_Bottom = uv_b.x / b.w;
 		uoverz_Right = t_YAYBYAY * (uoverz_Bottom - uoverz_Top) + uoverz_Top;
 		uoverz_Step = (uoverz_Right - uoverz_Left) / (xRight - xLeft);
 		//V / z
-		voverz_Top = uv_a.y / a.z;
-		voverz_Bottom = uv_c.y / c.z;
+		voverz_Top = uv_a.y / a.w;
+		voverz_Bottom = uv_c.y / c.w;
 		voverz_Left = t_YAYCYAY * (voverz_Bottom - voverz_Top) + voverz_Top;
-		voverz_Bottom = uv_b.y / b.z;
+		voverz_Bottom = uv_b.y / b.w;
 		voverz_Right = t_YAYBYAY * (voverz_Bottom - voverz_Top) + voverz_Top;
 		voverz_Step = (voverz_Right - voverz_Left) / (xRight - xLeft);
 
@@ -439,12 +452,19 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
+
 			int _x = x;
 			int _y = WindowFrame::rect_client.bottom - y;
 			int _index = (_y - 1) * WindowFrame::rect_client.right + x;
+
 			if (_index < WindowFrame::rect_client.right * WindowFrame::rect_client.bottom && _index >= 0) {
 				float &_z = m_z_depth_buffer[_index];
 				if (oneoverz > _z) {
+#ifdef DEBUG
+					//debug
+					assert(u != 512);
+					assert(v != 512);
+#endif
 					DrawPixel(_x, _y, GetPixel(texture, u, v));
 					_z = oneoverz;
 				}

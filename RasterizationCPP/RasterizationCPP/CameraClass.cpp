@@ -5,7 +5,7 @@
 #include "TimeClass.h"
 
 Camera::Camera(float _screen_aspect,float _fov) {
-	near_z = 1.0f;
+	near_z = 10.0f;
 	far_z = 1500.0f;
 	fov = _fov;
 	move_speed = 150.0f;
@@ -103,18 +103,18 @@ void Camera::CameraControl() {
 void Camera::m_UpdateViewToHomoMatrix4() {
 	float l, r, t, b;
 
-	r = near_z*tanf(DEGREE(fov) / 2.0f);
-	l = -r;
-	t = r / screen_aspect;
+	t = near_z*tanf(DEGREE(fov) / 2.0f);
 	b = -t;
+	r = t * screen_aspect;
+	l = -r;
 
 	view_to_homo.var[0][0] = (2 * near_z) / (r - l);
 	view_to_homo.var[1][1] = (2 * near_z) / (t - b);
-	//hMatrix4.var[2][0] = (r + l) / (r - l);
-	//hMatrix4.var[2][1] = (t + b) / (t - b);
+	view_to_homo.var[2][0] = (l + r) / (l - r);
+	view_to_homo.var[2][1] = (b + t) / (b - t);
 	view_to_homo.var[2][2] = (far_z) / (far_z - near_z);
 	view_to_homo.var[2][3] = 1.0f;
-	view_to_homo.var[3][2] = -(near_z*far_z) / (far_z - near_z);
+	view_to_homo.var[3][2] = (near_z*far_z) / (near_z - far_z);
 }
 
 Matrix4 Camera::GetWorldToViewMatrix4()
