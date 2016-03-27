@@ -28,7 +28,7 @@ void Render::m_DrawObjects() {
 			transformed_vertices[lop] = transformed_vertices[lop] * m_ptr_camera->view_to_homo;
 
 			//Perspective Divison
-			float z_depth = transformed_vertices[lop].w;
+			float z_depth = ABS(transformed_vertices[lop].w);
 			transformed_vertices[lop].x /= z_depth;
 			transformed_vertices[lop].y /= z_depth;
 			transformed_vertices[lop].z /= z_depth;
@@ -62,7 +62,7 @@ void Render::Initialize(HWND *hWndScreen) {
 	m_hdc_screen = GetDC(*m_ptr_hwnd);
 
 	m_ptr_camera = new Camera((float)(WindowFrame::rect_client.right / WindowFrame::rect_client.bottom), 70.0f);
-	m_ptr_camera->position.z = -100.f;
+	m_ptr_camera->position.z = -70.f;
 	m_ptr_camera->Update();
 
 	//初始化物体
@@ -108,13 +108,8 @@ void Render::RenderAFrame() {
 	OutputText(ws.str(), 1);
 
 	ws.str(L"");
-	ws << m_ptr_camera->position;
+	ws << m_ptr_camera->position << m_ptr_camera->rotation;
 	OutputText(ws.str(), 2);
-
-	ws.str(L"");
-	ws << m_ptr_camera->rotation;
-	OutputText(ws.str(), 3);
-
 
 	////////////////
 	// >每帧必做 //

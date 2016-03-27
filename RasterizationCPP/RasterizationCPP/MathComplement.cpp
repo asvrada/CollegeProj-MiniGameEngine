@@ -128,7 +128,7 @@ Vector3 Vector3::operator-(const Vector3 &b)
 }
 
 wstringstream &operator << (wstringstream& ws, const Vector3& v) {
-	ws << "Vector3 : [ " << v.x << ", " << v.y << ", " << v.z << " ]";
+	ws << "[ " << v.x << ", " << v.y << ", " << v.z << " ] ";
 	return ws;
 }
 

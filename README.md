@@ -4,7 +4,7 @@ Student's work, terrible coding manner
 Open for all feedback  
 
 ## _Todo Lists:_
-1. Options for changing Background 
+1. Accuracy issues 
 2. Clipping
 3. Mutli-thread optimization  
 

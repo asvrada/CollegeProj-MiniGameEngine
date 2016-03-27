@@ -127,7 +127,7 @@ public:
 	Vector3 operator - (const Vector3&);
 
 	//Êä³öÁ÷ÖØÔØ
-	friend wstringstream &operator << (wstringstream&,  const Vector3&);
+	friend wstringstream& operator << (wstringstream&,  const Vector3&);
 };
 
 
