@@ -5,118 +5,70 @@
 #include "ObjectClass.h"
 #include "WindowFrameClass.h"
 
-
-void Render::m_DrawObjects() {
-	if (vector_objects.size() == 0) {
-		return;
-	}
-
-	m_world_to_view = m_ptr_camera->GetWorldToViewMatrix4();
-	Matrix4 LocalToView;
-
-	for (auto object : vector_objects) {
-		if ((int)object.vertices.size() == 0) {
-			continue;
-		}
-		//经过各项剪裁后的最终索引列表
-		vector<Vector2<int>> tmp_indices;
-		//变换后的顶点
-		vector<Vector4> transformed_vertices;
-
-		LocalToView = Matrix4(1.0f) * Matrix4('A', object.rotation) * Matrix4(object.position);
-		LocalToView = LocalToView * m_world_to_view;
-
-		//Clipping
-		//todo
-
-		//对每个点做坐标变换，剪裁判定，透视除法
-		for (int lop = 0; lop < (int)object.vertices.size(); lop++) {
-			//Local To View transformation
-			transformed_vertices.push_back(object.vertices[lop] * LocalToView);
-
-			//View To Homo transformation
-			transformed_vertices[lop] = transformed_vertices[lop] * m_ptr_camera->view_to_homo;
-
-			//Clipping
-			//todo
-
-			//Perspective Divison
-			float z_depth = ABS(transformed_vertices[lop].w);
-			transformed_vertices[lop].x /= z_depth;
-			transformed_vertices[lop].y /= z_depth;
-			transformed_vertices[lop].z /= z_depth;
-		}
-
-		//Clipping
-		//todo
-		Clipping(tmp_indices, transformed_vertices, object.indices);
-
-		if ((WindowFrame::STYLE_CHECKER & RENDER_MODE_MASK) == RENDER_MODE_OUTLINE) {
-			DrawTriangles(transformed_vertices, tmp_indices);
-		}
-		else {
-			FillTriangles(transformed_vertices, object.uv, tmp_indices, object.hdc_texture);
-		}
-	}
-}
-
-
-/*
 //测试版本
 void Render::m_DrawObjects() {
 	if (vector_objects.size() == 0) {
 		return;
 	}
 
-	m_world_to_view = m_ptr_camera->GetWorldToViewMatrix4();
-	Matrix4 LocalToView;
+	Matrix4 WorldToHomo = m_ptr_camera->GetWorldToViewMatrix4() * m_ptr_camera->view_to_homo;
+	Matrix4 LocalToHomo;
 
-	for (auto object : vector_objects) {
+	//经过各项剪裁后的最终多边形渲染列表
+	vector<Fragment> render_list;
+
+	for (auto &object : vector_objects) {
 		if ((int)object.vertices.size() == 0) {
 			continue;
 		}
-		//经过各项剪裁后的最终索引列表
-		vector<Fragment> render_list;
-		//变换后的顶点
-		vector<Vector4> transformed_vertices;
 
-		LocalToView = Matrix4(1.0f) * Matrix4('A', object.rotation) * Matrix4(object.position);
-		LocalToView = LocalToView * m_world_to_view;
+		LocalToHomo = Matrix4(1.0f) * Matrix4('A', object.rotation) * Matrix4(object.position);
+		LocalToHomo = LocalToHomo * WorldToHomo;
 
-		//Clipping
-		//todo
+		//对每个点做坐标变换
+		//本地变换到齐次剪裁空间
+		auto cur = render_list.begin();
+#ifdef DEBUG
+		assert(object.indices.size() % 3 == 0);
+#endif
+		//对于每个物体的每个三角形
+		//进行坐标变换
+		//本地坐标 -> 齐次剪裁空间
+		for (auto lop = object.indices.begin(); lop != object.indices.end(); lop += 3) {
+			render_list.push_back(Fragment(FRAGMENT_GOOD, &object.hdc_texture));
 
-		//对每个点做坐标变换，剪裁判定，透视除法
-		for (int lop = 0; lop < (int)object.vertices.size(); lop++) {
-			//Local To View transformation
-			transformed_vertices.push_back(object.vertices[lop] * LocalToView);
+			cur->uvList[0] = object.uv[lop->y] * 512.0f;
+			cur->uvList[1] = object.uv[(lop + 1)->y] * 512.0f;
+			cur->uvList[2] = object.uv[(lop + 2)->y] * 512.0f;
 
-			//View To Homo transformation
-			transformed_vertices[lop] = transformed_vertices[lop] * m_ptr_camera->view_to_homo;
-
-			//Clipping
 			//todo
-
-			//Perspective Divison
-			float z_depth = ABS(transformed_vertices[lop].w);
-			transformed_vertices[lop].x /= z_depth;
-			transformed_vertices[lop].y /= z_depth;
-			transformed_vertices[lop].z /= z_depth;
-		}
-
-		//Clipping
-		//todo
-		Clipping(tmp_indices, transformed_vertices, object.indices);
-
-		if ((WindowFrame::STYLE_CHECKER & RENDER_MODE_MASK) == RENDER_MODE_OUTLINE) {
-			DrawTriangles(transformed_vertices, tmp_indices);
-		}
-		else {
-			FillTriangles(transformed_vertices, object.uv, tmp_indices, object.hdc_texture);
+			//先乘了，存起来。然后在此直接复制
+			cur->trans_vList[0] = object.vertices[lop->x] * LocalToHomo;
+			cur->trans_vList[1] = object.vertices[(lop + 1)->x] * LocalToHomo;
+			cur->trans_vList[2] = object.vertices[(lop + 2)->x] * LocalToHomo;
 		}
 	}
+	//进行背面剔除及剪裁
+	ClippingAndBackCull(render_list);
+
+	//进行透视除法
+	for (auto &item : render_list) {
+		for (int lop = 0; lop < 3; lop++) {
+			const float &z_depth = item.trans_vList[lop].w;
+			item.trans_vList[lop].x /= z_depth;
+			item.trans_vList[lop].y /= z_depth;
+			item.trans_vList[lop].z /= z_depth;
+		}
+	}
+
+
+	if ((WindowFrame::STYLE_CHECKER & RENDER_MODE_MASK) == RENDER_MODE_OUTLINE) {
+		DrawTriangles(render_list);
+	}
+	else {
+		FillTriangles(render_list);
+	}
 }
-*/
 
 Render::Render() {
 	m_ptr_camera = nullptr;
@@ -255,8 +207,13 @@ inline void Render::OutputText(const wstring & text, int line) {
 ///////////////////
 // Fill Triangles //
 ///////////////////
-void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs, vector<Vector2<int>>& indices, HDC texture)
+//todo
+void Render::FillTriangles(const vector<Fragment> &list)
 {
+	for (auto item : list) {
+		
+	}
+
 	for (int lop = 0; lop < (int)indices.size(); lop += 3) {
 		//一个三角形的三个顶点
 		Vector4 a = vertices[indices[lop].x];
@@ -271,15 +228,6 @@ void Render::FillTriangles(vector<Vector4>& vertices,vector<Vector2<float>>& UVs
 		Vector2<float> uv_a = UVs[indices[lop].y];
 		Vector2<float> uv_b = UVs[indices[lop + 1].y];
 		Vector2<float> uv_c = UVs[indices[lop + 2].y];
-
-		uv_a.x = uv_a.x * 512.0f;
-		uv_a.y = uv_a.y * 512.0f;
-
-		uv_b.x = uv_b.x * 512.0f;
-		uv_b.y = uv_b.y * 512.0f;
-
-		uv_c.x = uv_c.x * 512.0f;
-		uv_c.y = uv_c.y * 512.0f;
 
 		//将三角形三点按照从上到下ABC的顺序重新排列
 		//A在最上面
@@ -418,7 +366,7 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 
 
 		int x = 0;
-		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
+		for (x = (int)(xLeft + 0.5f), oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
 
@@ -516,7 +464,7 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 
 
 		int x = 0;
-		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
+		for (x = (int)(xLeft + 0.5f), oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
 
@@ -543,26 +491,20 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 /////////////////
 // Draw Lines //
 /////////////////
-
-void Render::DrawTriangles(vector<Vector4>& vertices, vector<Vector2<int>>& indices)
+void Render::DrawTriangles(const vector<Fragment> &fg)
 {
 	//Draw every face of that object
-	int indice_count = (int)indices.size();
-	for (int lop = 0; lop < indice_count; lop += 3) {
-		DrawTriangle(
-			vertices[(int)indices[lop].x],
-			vertices[(int)indices[lop + 1].x],
-			vertices[(int)indices[lop + 2].x],
-			COLOR_BLACK);
+	for (auto item : fg) {
+		//如果已被删除
+		if (item.state & FRAGMENT_DELETED) {
+			continue;
+		}
+		DrawTriangle(item.trans_vList[0], item.trans_vList[1], item.trans_vList[2], COLOR_BLACK);
 	}
 }
 
 void Render::DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF color)
 {
-	if (TriangleBackcull(p0, p1, p2)) {
-		return;
-	}
-
 	Vector2<float> vertex[3];
 	vertex[0].x = (p0.x + 1.0f) * WindowFrame::rect_client.right / 2.0f;
 	vertex[0].y = (p0.y + 1.0f) * WindowFrame::rect_client.bottom / 2.0f;

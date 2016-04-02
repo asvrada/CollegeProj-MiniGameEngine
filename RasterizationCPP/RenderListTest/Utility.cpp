@@ -1,8 +1,10 @@
-#include "MathComplement.h"
+#include "Utility.h"
 
 #include "WindowFrameClass.h"
 
-void Clipping(vector<Vector2<int>>& clipped_indices, vector<Vector4> vertices, vector<Vector2<int>> &indices) {
+void ClippingAndBackCull(vector<Fragment> &rl) {
+
+	/*
 	Vector2<int> *a = nullptr;
 	Vector2<int> *b = nullptr;
 	Vector2<int> *c = nullptr;
@@ -19,6 +21,7 @@ void Clipping(vector<Vector2<int>>& clipped_indices, vector<Vector4> vertices, v
 		}
 	}
 	a = b = c = nullptr;
+	*/
 	/*while (!indices.empty()) {
 		Vector2<int> a = indices.front();
 		indices.pop();
@@ -43,24 +46,16 @@ void HomoToScreenCoord(Vector4& vertex) {
 	vertex.y = (vertex.y + 1.0f) * screen.bottom / 2.0f;
 }
 
-bool TriangleBackcull(const Vector4 set[])
+bool TriangleBackcull(Fragment &fg)
 {
+	/*
 	Vector3 view(0.0f, 0.0f, 1.0f);
 	Vector3 a(set[0].x - set[1].x, set[0].y - set[1].y, set[0].z - set[1].z);
 	Vector3 b(set[2].x - set[1].x, set[2].y - set[1].y, set[2].z - set[1].z);
 
 	return (view.DotProduct(a.CrossProduct(b)) <= 0);
+	*/
 }
-
-bool TriangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2)
-{
-	Vector3 view(0.0f, 0.0f, 1.0f);
-	Vector3 a(p0.x - p1.x, p0.y - p1.y, p0.z - p1.z);
-	Vector3 b(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-
-	return (view.DotProduct(a.CrossProduct(b)) <= 0);
-}
-
 
 /*************************
 Vector3

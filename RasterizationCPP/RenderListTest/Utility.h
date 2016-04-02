@@ -21,12 +21,21 @@
 
 #include "ProjectHeader.h"
 
+///////////////
+// 提前声明 //
+//////////////
+
 template < class T = float >
 class Vector2;
 class Vector3;
 class Vector4;
 class Matrix3;
 class Matrix4;
+typedef struct Fragment_TYPE Fragment;
+
+///////////
+// 函数 //
+//////////
 
 //交换
 template <typename T>
@@ -38,14 +47,37 @@ void swap(T &a, T &b) {
 
 //Clipping
 //只要有一点落在外面，就不要
-void Clipping(vector<Vector2<int>> &clipped_indices, vector<Vector4> vertices, vector<Vector2<int>> &indices);
+//同时进行背面剔除
+void ClippingAndBackCull(vector<Fragment> &render_list);
+
+//back face cull
+bool TriangleBackcull(Fragment &fragment);
 
 //tranform vertices from Homo to Screen
 void HomoToScreenCoord(Vector4& vertex);
 
-//back face cull
-bool TriangleBackcull(const Vector4 set[]);
-bool TriangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2);
+
+
+//////////////////////
+// 数学类、结构体 //
+/////////////////////
+
+//存放一个将要渲染的三角形
+typedef struct Fragment_TYPE {
+	int state;
+	HDC *texture;
+
+	//变换后的顶点
+	array<Vector4, 3> trans_vList;
+	//顶点的贴图坐标索引
+	//每个顶点有 2 个坐标信息
+	array<Vector2<float>, 3> uvList;
+	//该面的法向量
+	Vector3 n;
+
+	Fragment_TYPE(int _state, HDC *_texture) : state(_state), texture(_texture) {}
+
+}Fragment;
 
 template <class T>
 class Vector2 {
@@ -68,6 +100,11 @@ public:
 	Vector2(const Vector2& old) {
 		x = old.x;
 		y = old.y;
+	}
+
+	//template<class T>
+	Vector2<float> operator * (Vector2<float> &a, float &b) {
+		return Vector2<float>(a.x * b, a.y * b);
 	}
 };
 
@@ -278,4 +315,3 @@ public:
 };
 
 #endif
-
