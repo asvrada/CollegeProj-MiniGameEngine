@@ -543,7 +543,6 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 /////////////////
 // Draw Lines //
 /////////////////
-
 void Render::DrawTriangles(vector<Vector4>& vertices, vector<Vector2<int>>& indices)
 {
 	//Draw every face of that object

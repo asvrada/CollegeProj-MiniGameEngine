@@ -55,9 +55,9 @@ public:
 	void OutputText(const wstring&, int linenumber);
 
 	//Ìî³äÈý½ÇÐÎ
-	void FillTriangles(const vector<Fragment> &);
-	void FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c,HDC);
-	void FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c,HDC);
+	void FillTriangles(vector<Fragment> &);
+	void FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c,HDC*);
+	void FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c,HDC*);
 	//»­Èý½ÇÐÎ±ß¿ò
 	void DrawTriangles(const vector<Fragment> &);
 	void DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF);

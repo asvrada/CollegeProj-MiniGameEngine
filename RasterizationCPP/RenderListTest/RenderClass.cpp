@@ -21,13 +21,11 @@ void Render::m_DrawObjects() {
 		if ((int)object.vertices.size() == 0) {
 			continue;
 		}
-
 		LocalToHomo = Matrix4(1.0f) * Matrix4('A', object.rotation) * Matrix4(object.position);
 		LocalToHomo = LocalToHomo * WorldToHomo;
 
 		//对每个点做坐标变换
 		//本地变换到齐次剪裁空间
-		auto cur = render_list.begin();
 #ifdef DEBUG
 		assert(object.indices.size() % 3 == 0);
 #endif
@@ -36,7 +34,7 @@ void Render::m_DrawObjects() {
 		//本地坐标 -> 齐次剪裁空间
 		for (auto lop = object.indices.begin(); lop != object.indices.end(); lop += 3) {
 			render_list.push_back(Fragment(FRAGMENT_GOOD, &object.hdc_texture));
-
+			auto cur = render_list.end() - 1;
 			cur->uvList[0] = object.uv[lop->y] * 512.0f;
 			cur->uvList[1] = object.uv[(lop + 1)->y] * 512.0f;
 			cur->uvList[2] = object.uv[(lop + 2)->y] * 512.0f;
@@ -53,6 +51,9 @@ void Render::m_DrawObjects() {
 
 	//进行透视除法
 	for (auto &item : render_list) {
+		if (item.state & FRAGMENT_DELETED) {
+			continue;
+		}
 		for (int lop = 0; lop < 3; lop++) {
 			const float &z_depth = item.trans_vList[lop].w;
 			item.trans_vList[lop].x /= z_depth;
@@ -208,30 +209,23 @@ inline void Render::OutputText(const wstring & text, int line) {
 // Fill Triangles //
 ///////////////////
 //todo
-void Render::FillTriangles(const vector<Fragment> &list)
+void Render::FillTriangles(vector<Fragment> &list)
 {
-	for (auto item : list) {
-		
-	}
-
-	for (int lop = 0; lop < (int)indices.size(); lop += 3) {
-		//一个三角形的三个顶点
-		Vector4 a = vertices[indices[lop].x];
-		Vector4 b = vertices[indices[lop + 1].x];
-		Vector4 c = vertices[indices[lop + 2].x];
-
-		if (TriangleBackcull(a, b, c)) {
+	for (auto &item : list) {
+		if (item.state & FRAGMENT_DELETED) {
 			continue;
 		}
 
-		//一个三角形三个顶点的uv
-		Vector2<float> uv_a = UVs[indices[lop].y];
-		Vector2<float> uv_b = UVs[indices[lop + 1].y];
-		Vector2<float> uv_c = UVs[indices[lop + 2].y];
+		Vector4 &a = item.trans_vList[0];
+		Vector4 &b = item.trans_vList[1];
+		Vector4 &c = item.trans_vList[2];
 
-		//将三角形三点按照从上到下ABC的顺序重新排列
-		//A在最上面
+		Vector2<float> &uv_a = item.uvList[0];
+		Vector2<float> &uv_b = item.uvList[1];
+		Vector2<float> &uv_c = item.uvList[2];
+
 		if (a.y > b.y && a.y > c.y) {
+			//A 最上面
 			if (b.y < c.y) {
 				swap<Vector4>(b, c);
 				swap<Vector2<float>>(uv_b, uv_c);
@@ -242,6 +236,7 @@ void Render::FillTriangles(const vector<Fragment> &list)
 			//A B 互换
 			swap<Vector4>(a, b);
 			swap<Vector2<float>>(uv_a, uv_b);
+
 			if (b.y < c.y) {
 				swap<Vector4>(b, c);
 				swap<Vector2<float>>(uv_b, uv_c);
@@ -252,6 +247,7 @@ void Render::FillTriangles(const vector<Fragment> &list)
 			//A C 互换
 			swap<Vector4>(a, c);
 			swap<Vector2<float>>(uv_a, uv_c);
+
 			if (b.y < c.y) {
 				swap<Vector4>(b, c);
 				swap<Vector2<float>>(uv_b, uv_c);
@@ -280,19 +276,18 @@ void Render::FillTriangles(const vector<Fragment> &list)
 		HomoToScreenCoord(d);
 
 		//如果新隔出来的D点在B点左边
-		if (d.x < b.x)
-		{
-			FillTriangleTopFlat(d, uv_d, b, uv_b, c, uv_c, texture);
-			FillTriangleBottomFlat(a, uv_a, b, uv_b, d, uv_d, texture);
+		if (d.x < b.x) {
+			FillTriangleTopFlat(d, uv_d, b, uv_b, c, uv_c, item.texture);
+			FillTriangleBottomFlat(a, uv_a, b, uv_b, d, uv_d, item.texture);
 		}
 		else {
-			FillTriangleTopFlat(b, uv_b, d, uv_d, c, uv_c, texture);
-			FillTriangleBottomFlat(a, uv_a, d, uv_d, b, uv_b, texture);
+			FillTriangleTopFlat(b, uv_b, d, uv_d, c, uv_c, item.texture);
+			FillTriangleBottomFlat(a, uv_a, d, uv_d, b, uv_b, item.texture);
 		}
 	}
 }
 
-void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC texture) {
+void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC *texture) {
 	const float &x1 = a.x;
 	const float &x2 = b.x;
 	const float &x3 = c.x;
@@ -366,7 +361,7 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 
 
 		int x = 0;
-		for (x = (int)(xLeft + 0.5f), oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
+		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
 
@@ -383,7 +378,7 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 					assert(u != 512);
 					assert(v != 512);
 #endif
-					DrawPixel(_x, _y, GetPixel(texture, u, v));
+					DrawPixel(_x, _y, GetPixel(*texture, u, v));
 					_z = oneoverz;
 				}
 			}
@@ -391,7 +386,7 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 	}
 }
 
-void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC texture) {
+void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC *texture) {
 	const float &x1 = a.x;
 	const float &x2 = b.x;
 	const float &x3 = c.x;
@@ -464,7 +459,7 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 
 
 		int x = 0;
-		for (x = (int)(xLeft + 0.5f), oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
+		for (x = (int)xLeft, oneoverz = oneoverz_Left, uoverz = uoverz_Left, voverz = voverz_Left; x < xRight; x++, oneoverz += oneoverz_Step, uoverz += uoverz_Step, voverz += voverz_Step) {
 			u = (int)(uoverz / oneoverz);
 			v = (int)(voverz / oneoverz);
 
@@ -480,7 +475,7 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 					assert(u != 512);
 					assert(v != 512);
 #endif
-					DrawPixel(_x, _y, GetPixel(texture, u, v));
+					DrawPixel(_x, _y, GetPixel(*texture, u, v));
 					_z = oneoverz;
 				}
 			}

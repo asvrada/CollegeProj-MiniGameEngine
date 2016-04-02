@@ -27,6 +27,7 @@
 
 template < class T = float >
 class Vector2;
+
 class Vector3;
 class Vector4;
 class Matrix3;
@@ -50,35 +51,12 @@ void swap(T &a, T &b) {
 //同时进行背面剔除
 void ClippingAndBackCull(vector<Fragment> &render_list);
 
-//back face cull
-bool TriangleBackcull(Fragment &fragment);
-
 //tranform vertices from Homo to Screen
 void HomoToScreenCoord(Vector4& vertex);
-
-
 
 //////////////////////
 // 数学类、结构体 //
 /////////////////////
-
-//存放一个将要渲染的三角形
-typedef struct Fragment_TYPE {
-	int state;
-	HDC *texture;
-
-	//变换后的顶点
-	array<Vector4, 3> trans_vList;
-	//顶点的贴图坐标索引
-	//每个顶点有 2 个坐标信息
-	array<Vector2<float>, 3> uvList;
-	//该面的法向量
-	Vector3 n;
-
-	Fragment_TYPE(int _state, HDC *_texture) : state(_state), texture(_texture) {}
-
-}Fragment;
-
 template <class T>
 class Vector2 {
 public:
@@ -102,9 +80,8 @@ public:
 		y = old.y;
 	}
 
-	//template<class T>
-	Vector2<float> operator * (Vector2<float> &a, float &b) {
-		return Vector2<float>(a.x * b, a.y * b);
+	Vector2<T> operator * (float b) {
+		return Vector2<T>(x * b, y * b);
 	}
 };
 
@@ -313,5 +290,24 @@ public:
 	Matrix4 operator * (const float&);
 
 };
+
+//存放一个将要渲染的三角形
+typedef struct Fragment_TYPE {
+	int state;
+	HDC *texture;
+
+	//变换后的顶点
+	array<Vector4, 3> trans_vList;
+	//顶点的贴图坐标索引
+	//每个顶点有 2 个坐标信息
+	array<Vector2<float>, 3> uvList;
+	//该面的法向量
+	Vector3 n;
+
+	Fragment_TYPE(int _state, HDC *_texture) : state(_state), texture(_texture) {}
+	~Fragment_TYPE() {
+		texture = nullptr;
+	}
+}Fragment;
 
 #endif

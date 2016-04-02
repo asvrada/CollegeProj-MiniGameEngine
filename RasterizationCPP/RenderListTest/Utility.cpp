@@ -3,58 +3,31 @@
 #include "WindowFrameClass.h"
 
 void ClippingAndBackCull(vector<Fragment> &rl) {
-
-	/*
-	Vector2<int> *a = nullptr;
-	Vector2<int> *b = nullptr;
-	Vector2<int> *c = nullptr;
-	for (auto cur = indices.begin(); cur != indices.end(); cur += 3) {
-		a = &(*cur);
-		b = &(*(cur + 1));
-		c = &(*(cur + 2));
-		if ((vertices[a->x].x < 1.0f && vertices[a->x].x > -1.0f) && (vertices[a->x].y < 1.0f && vertices[a->x].y > -1.0f) && (vertices[a->x].z > 0) &&
-			(vertices[b->x].x < 1.0f && vertices[b->x].x > -1.0f) && (vertices[b->x].y < 1.0f && vertices[b->x].y > -1.0f) && (vertices[b->x].z > 0) &&
-			(vertices[c->x].x < 1.0f && vertices[c->x].x > -1.0f) && (vertices[c->x].y < 1.0f && vertices[c->x].y > -1.0f) && (vertices[c->x].z > 0)) {
-			clipped_indices.push_back(*a);
-			clipped_indices.push_back(*b);
-			clipped_indices.push_back(*c);
+	for (auto &item : rl) {
+		if ((item.trans_vList[0].z > 0) && (item.trans_vList[0].x <  item.trans_vList[0].w && item.trans_vList[0].x > -item.trans_vList[0].w) && (item.trans_vList[0].y <  item.trans_vList[0].w && item.trans_vList[0].y > -item.trans_vList[0].w) &&
+			(item.trans_vList[1].z > 0) && (item.trans_vList[1].x <  item.trans_vList[1].w && item.trans_vList[1].x > -item.trans_vList[1].w) && (item.trans_vList[1].y < item.trans_vList[1].w && item.trans_vList[1].y > -item.trans_vList[1].w) &&
+			(item.trans_vList[2].z > 0) && (item.trans_vList[2].x < item.trans_vList[2].w && item.trans_vList[2].x > -item.trans_vList[2].w) && (item.trans_vList[2].y < item.trans_vList[2].w && item.trans_vList[2].y > -item.trans_vList[2].w)) {
+			;
+		}
+		else{
+			item.state = item.state | FRAGMENT_DELETED;
+			continue;
+		}
+		Vector3 view(0.0f, 0.0f, 1.0f);
+		Vector3 a(item.trans_vList[0].x - item.trans_vList[1].x, item.trans_vList[0].y - item.trans_vList[1].y, item.trans_vList[0].z - item.trans_vList[1].z);
+		Vector3 b(item.trans_vList[2].x - item.trans_vList[1].x, item.trans_vList[2].y - item.trans_vList[1].y, item.trans_vList[2].z - item.trans_vList[1].z);
+		item.n = a.CrossProduct(b);
+		if (view.DotProduct(item.n) < 0) {
+			item.state = item.state | FRAGMENT_DELETED;
+			continue;
 		}
 	}
-	a = b = c = nullptr;
-	*/
-	/*while (!indices.empty()) {
-		Vector2<int> a = indices.front();
-		indices.pop();
-		Vector2<int> b = indices.front();
-		indices.pop();
-		Vector2<int> c = indices.front();
-		indices.pop();
-
-		if ((vertices[a.x].x < 1.0f && vertices[a.x].x > -1.0f) && (vertices[a.x].y < 1.0f && vertices[a.x].y > -1.0f) && (vertices[a.x].z > 0) &&
-			(vertices[b.x].x < 1.0f && vertices[b.x].x > -1.0f) && (vertices[b.x].y < 1.0f && vertices[b.x].y > -1.0f) && (vertices[b.x].z > 0) &&
-			(vertices[c.x].x < 1.0f && vertices[c.x].x > -1.0f) && (vertices[c.x].y < 1.0f && vertices[c.x].y > -1.0f) && (vertices[c.x].z > 0)) {
-			clipped_indices.push_back(a);
-			clipped_indices.push_back(b);
-			clipped_indices.push_back(c);
-		}
-	}*/
 }
 
 void HomoToScreenCoord(Vector4& vertex) {
 	const RECT &screen = WindowFrame::rect_client;
 	vertex.x = (vertex.x + 1.0f) * screen.right / 2.0f;
 	vertex.y = (vertex.y + 1.0f) * screen.bottom / 2.0f;
-}
-
-bool TriangleBackcull(Fragment &fg)
-{
-	/*
-	Vector3 view(0.0f, 0.0f, 1.0f);
-	Vector3 a(set[0].x - set[1].x, set[0].y - set[1].y, set[0].z - set[1].z);
-	Vector3 b(set[2].x - set[1].x, set[2].y - set[1].y, set[2].z - set[1].z);
-
-	return (view.DotProduct(a.CrossProduct(b)) <= 0);
-	*/
 }
 
 /*************************
