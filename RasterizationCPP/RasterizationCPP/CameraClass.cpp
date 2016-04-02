@@ -50,14 +50,11 @@ void Camera::CameraControl() {
 			Input::point_cursor_current.y - Input::point_cursor_last_frame.y };
 		Input::point_cursor_last_frame = Input::point_cursor_current;
 
-		//dead zone
-		//todo
-		//pointCursorModify.x /= 
-
 		//³¬³ö·¶Î§²ÅÖØÖÃÎ»ÖÃ
 		//·¶Î§Îª´°¿ÚµÄÒ»°ë
-		if ((ABS(Input::point_cursor_current.x - Input::point_cursor_center_snapped.x) > WindowFrame::rect_client.right / 4) ||
-			(ABS(Input::point_cursor_current.y - Input::point_cursor_center_snapped.y) > WindowFrame::rect_client.bottom / 4)) {
+		//×óÒÆÓÒÒÆhack
+		if ((ABS(Input::point_cursor_current.x - Input::point_cursor_center_snapped.x) > (WindowFrame::rect_client.right >> 2)) ||
+			(ABS(Input::point_cursor_current.y - Input::point_cursor_center_snapped.y) > (WindowFrame::rect_client.bottom >> 2))) {
 			Input::point_cursor_current = Input::point_cursor_last_frame = Input::point_cursor_center_snapped;
 			SetCursorPos((int)Input::point_cursor_center_snapped.x, (int)Input::point_cursor_center_snapped.y);
 		}
@@ -110,8 +107,8 @@ void Camera::m_UpdateViewToHomoMatrix4() {
 
 	view_to_homo.var[0][0] = (2 * near_z) / (r - l);
 	view_to_homo.var[1][1] = (2 * near_z) / (t - b);
-	view_to_homo.var[2][0] = (l + r) / (l - r);
-	view_to_homo.var[2][1] = (b + t) / (b - t);
+	//view_to_homo.var[2][0] = (l + r) / (l - r);
+	//view_to_homo.var[2][1] = (b + t) / (b - t);
 	view_to_homo.var[2][2] = (far_z) / (far_z - near_z);
 	view_to_homo.var[2][3] = 1.0f;
 	view_to_homo.var[3][2] = (near_z*far_z) / (near_z - far_z);

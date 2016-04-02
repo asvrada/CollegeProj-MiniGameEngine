@@ -38,7 +38,7 @@ void swap(T &a, T &b) {
 
 //Clipping
 //只要有一点落在外面，就不要
-void Clipping(vector<Vector2<int>> &clipped_indices, vector<Vector4> vertices, queue<Vector2<int>> indices);
+void Clipping(vector<Vector2<int>> &clipped_indices, vector<Vector4> vertices, vector<Vector2<int>> &indices);
 
 //tranform vertices from Homo to Screen
 void HomoToScreenCoord(Vector4& vertex);

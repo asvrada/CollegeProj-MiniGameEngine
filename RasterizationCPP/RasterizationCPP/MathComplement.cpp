@@ -2,8 +2,24 @@
 
 #include "WindowFrameClass.h"
 
-void Clipping(vector<Vector2<int>>& clipped_indices, vector<Vector4> vertices, queue<Vector2<int>> indices) {
-	while (!indices.empty()) {
+void Clipping(vector<Vector2<int>>& clipped_indices, vector<Vector4> vertices, vector<Vector2<int>> &indices) {
+	Vector2<int> *a = nullptr;
+	Vector2<int> *b = nullptr;
+	Vector2<int> *c = nullptr;
+	for (auto cur = indices.begin(); cur != indices.end(); cur += 3) {
+		a = &(*cur);
+		b = &(*(cur + 1));
+		c = &(*(cur + 2));
+		if ((vertices[a->x].x < 1.0f && vertices[a->x].x > -1.0f) && (vertices[a->x].y < 1.0f && vertices[a->x].y > -1.0f) && (vertices[a->x].z > 0) &&
+			(vertices[b->x].x < 1.0f && vertices[b->x].x > -1.0f) && (vertices[b->x].y < 1.0f && vertices[b->x].y > -1.0f) && (vertices[b->x].z > 0) &&
+			(vertices[c->x].x < 1.0f && vertices[c->x].x > -1.0f) && (vertices[c->x].y < 1.0f && vertices[c->x].y > -1.0f) && (vertices[c->x].z > 0)) {
+			clipped_indices.push_back(*a);
+			clipped_indices.push_back(*b);
+			clipped_indices.push_back(*c);
+		}
+	}
+	a = b = c = nullptr;
+	/*while (!indices.empty()) {
 		Vector2<int> a = indices.front();
 		indices.pop();
 		Vector2<int> b = indices.front();
@@ -18,7 +34,7 @@ void Clipping(vector<Vector2<int>>& clipped_indices, vector<Vector4> vertices, q
 			clipped_indices.push_back(b);
 			clipped_indices.push_back(c);
 		}
-	}
+	}*/
 }
 
 void HomoToScreenCoord(Vector4& vertex) {
@@ -53,12 +69,7 @@ bool TriangleBackcull(const Vector4 p0, const Vector4 p1, const Vector4 p2)
 	b.x = p2.x - p1.x;
 	b.y = p2.y - p1.y;
 	b.z = p2.z - p1.z;
-	if ((WindowFrame::STYLE_CHECKER & CULL_MASK) == CULL_CLOCKWISE) {
-		return (view.DotProduct(a.CrossProduct(b)) >= 0);
-	}
-	else {
-		return (view.DotProduct(a.CrossProduct(b)) <= 0);
-	}
+	return (view.DotProduct(a.CrossProduct(b)) <= 0);
 }
 
 

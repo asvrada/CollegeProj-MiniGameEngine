@@ -48,9 +48,9 @@ int Object::Initial(char *fileName,LPCWSTR texturename)
 				file >> v >> indice_z;
 				file.ignore(1, '/');
 				file >> w;
-				indices.push(Vector2<int>(indice_x - 1, u - 1));
-				indices.push(Vector2<int>(indice_y - 1, v - 1));
-				indices.push(Vector2<int>(indice_z - 1, w - 1));
+				indices.push_back(Vector2<int>(indice_x - 1, u - 1));
+				indices.push_back(Vector2<int>(indice_y - 1, v - 1));
+				indices.push_back(Vector2<int>(indice_z - 1, w - 1));
 				break;
 			default:
 				file.ignore(100, '\n');

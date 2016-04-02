@@ -8,7 +8,7 @@ class Object {
 public:
 	vector<Vector3> vertices;
 	vector<Vector2<float>> uv;
-	queue<Vector2<int>> indices;
+	vector<Vector2<int>> indices;
 
 	HDC hdc_texture;
 

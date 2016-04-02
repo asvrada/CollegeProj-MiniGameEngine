@@ -46,7 +46,7 @@ private:
 	Input *m_ptr_input;
 
 public:
-	WindowFrame(DWORD checker = CULL_ANTICLOCKWISE | COORD_LEFT_HAND);
+	WindowFrame(DWORD checker =  RENDER_MODE_FILL);
 	~WindowFrame();
 
 	//真正的消息处理函数

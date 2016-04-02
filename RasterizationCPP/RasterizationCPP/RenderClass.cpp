@@ -9,17 +9,26 @@ void Render::m_DrawObjects() {
 	if (vector_objects.size() == 0) {
 		return;
 	}
+
 	m_world_to_view = m_ptr_camera->GetWorldToViewMatrix4();
 	Matrix4 LocalToView;
+
 	for (auto object : vector_objects) {
 		if ((int)object.vertices.size() == 0) {
 			continue;
 		}
+		//经过各项剪裁后的最终索引列表
+		vector<Vector2<int>> tmp_indices;
+		//变换后的顶点
 		vector<Vector4> transformed_vertices;
 
 		LocalToView = Matrix4(1.0f) * Matrix4('A', object.rotation) * Matrix4(object.position);
 		LocalToView = LocalToView * m_world_to_view;
 
+		//Clipping
+		//todo
+
+		//对每个点做坐标变换，剪裁判定，透视除法
 		for (int lop = 0; lop < (int)object.vertices.size(); lop++) {
 			//Local To View transformation
 			transformed_vertices.push_back(object.vertices[lop] * LocalToView);
@@ -35,7 +44,7 @@ void Render::m_DrawObjects() {
 		}
 
 		//Clipping
-		vector<Vector2<int>> tmp_indices;
+		//todo
 		Clipping(tmp_indices, transformed_vertices, object.indices);
 
 		if ((WindowFrame::STYLE_CHECKER & RENDER_MODE_MASK) == RENDER_MODE_OUTLINE) {
@@ -62,12 +71,12 @@ void Render::Initialize(HWND *hWndScreen) {
 	m_hdc_screen = GetDC(*m_ptr_hwnd);
 
 	m_ptr_camera = new Camera((float)(WindowFrame::rect_client.right / WindowFrame::rect_client.bottom), 70.0f);
-	m_ptr_camera->position.z = -70.f;
+	m_ptr_camera->position.z = -170.f;
 	m_ptr_camera->Update();
 
 	//初始化物体
 	vector_objects.push_back(Object());
-	if (vector_objects[0].Initial("Resources\\Models\\plane.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp")) == ERROR) {
+	if (vector_objects[0].Initial("Resources\\Models\\teapot.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp")) == ERROR) {
 		vector_objects.erase(vector_objects.end() - 1);
 	}
 	vector_objects[0].rotation = Vector3(0, 180.f, 0);
