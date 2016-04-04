@@ -13,13 +13,13 @@ void ClippingAndBackCull(vector<Fragment> &rl) {
 			item.state = item.state | FRAGMENT_DELETED;
 			continue;
 		}
-		Vector3 view(0.0f, 0.0f, 1.0f);
+
 		Vector3 a(item.trans_vList[0].x - item.trans_vList[1].x, item.trans_vList[0].y - item.trans_vList[1].y, item.trans_vList[0].z - item.trans_vList[1].z);
 		Vector3 b(item.trans_vList[2].x - item.trans_vList[1].x, item.trans_vList[2].y - item.trans_vList[1].y, item.trans_vList[2].z - item.trans_vList[1].z);
 		item.n = a.CrossProduct(b);
+		Vector3 view(item.trans_vList[0].x, item.trans_vList[0].y, item.trans_vList[0].z);
 		if (view.DotProduct(item.n) < 0) {
 			item.state = item.state | FRAGMENT_DELETED;
-			continue;
 		}
 	}
 }
@@ -27,7 +27,7 @@ void ClippingAndBackCull(vector<Fragment> &rl) {
 void HomoToScreenCoord(Vector4& vertex) {
 	const RECT &screen = WindowFrame::rect_client;
 	vertex.x = (vertex.x + 1.0f) * screen.right / 2.0f;
-	vertex.y = (vertex.y + 1.0f) * screen.bottom / 2.0f;
+	vertex.y = ((-vertex.y + 1.0f) * screen.bottom / 2.0f);
 }
 
 /*************************

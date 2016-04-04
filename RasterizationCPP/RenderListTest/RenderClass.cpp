@@ -12,7 +12,6 @@ void Render::m_DrawObjects() {
 	}
 
 	Matrix4 WorldToHomo = m_ptr_camera->GetWorldToViewMatrix4() * m_ptr_camera->view_to_homo;
-	Matrix4 LocalToHomo;
 
 	//经过各项剪裁后的最终多边形渲染列表
 	vector<Fragment> render_list;
@@ -21,8 +20,8 @@ void Render::m_DrawObjects() {
 		if ((int)object.vertices.size() == 0) {
 			continue;
 		}
-		LocalToHomo = Matrix4(1.0f) * Matrix4('A', object.rotation) * Matrix4(object.position);
-		LocalToHomo = LocalToHomo * WorldToHomo;
+		Matrix4 LocalToWorld = /*Matrix4(1.0f) * */Matrix4('A', object.rotation) * Matrix4(object.position);
+		LocalToWorld = LocalToWorld * WorldToHomo;
 
 		//对每个点做坐标变换
 		//本地变换到齐次剪裁空间
@@ -32,18 +31,22 @@ void Render::m_DrawObjects() {
 		//对于每个物体的每个三角形
 		//进行坐标变换
 		//本地坐标 -> 齐次剪裁空间
+		vector<Vector4> trans_ver;
+		for (auto item : object.vertices) {
+			trans_ver.push_back(item * LocalToWorld);
+		}
+
 		for (auto lop = object.indices.begin(); lop != object.indices.end(); lop += 3) {
 			render_list.push_back(Fragment(FRAGMENT_GOOD, &object.hdc_texture));
 			auto cur = render_list.end() - 1;
-			cur->uvList[0] = object.uv[lop->y] * 512.0f;
-			cur->uvList[1] = object.uv[(lop + 1)->y] * 512.0f;
-			cur->uvList[2] = object.uv[(lop + 2)->y] * 512.0f;
+			cur->uvList[0] = object.uv[lop->y] * 511.0f;
+			cur->uvList[1] = object.uv[(lop + 1)->y] * 511.0f;
+			cur->uvList[2] = object.uv[(lop + 2)->y] * 511.0f;
 
-			//todo
 			//先乘了，存起来。然后在此直接复制
-			cur->trans_vList[0] = object.vertices[lop->x] * LocalToHomo;
-			cur->trans_vList[1] = object.vertices[(lop + 1)->x] * LocalToHomo;
-			cur->trans_vList[2] = object.vertices[(lop + 2)->x] * LocalToHomo;
+			cur->trans_vList[0] = trans_ver[lop->x];
+			cur->trans_vList[1] = trans_ver[(lop + 1)->x];
+			cur->trans_vList[2] = trans_ver[(lop + 2)->x];
 		}
 	}
 	//进行背面剔除及剪裁
@@ -61,7 +64,6 @@ void Render::m_DrawObjects() {
 			item.trans_vList[lop].z /= z_depth;
 		}
 	}
-
 
 	if ((WindowFrame::STYLE_CHECKER & RENDER_MODE_MASK) == RENDER_MODE_OUTLINE) {
 		DrawTriangles(render_list);
@@ -92,7 +94,7 @@ void Render::Initialize(HWND *hWndScreen) {
 	//初始化物体
 	vector_objects.push_back(Object());
 	if (vector_objects[0].Initial("Resources\\Models\\teapot.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp")) == ERROR) {
-		vector_objects.erase(vector_objects.end() - 1);
+		vector_objects.pop_back();
 	}
 	vector_objects[0].rotation = Vector3(0, 180.f, 0);
 }
@@ -208,7 +210,6 @@ inline void Render::OutputText(const wstring & text, int line) {
 ///////////////////
 // Fill Triangles //
 ///////////////////
-//todo
 void Render::FillTriangles(vector<Fragment> &list)
 {
 	for (auto &item : list) {
@@ -224,6 +225,7 @@ void Render::FillTriangles(vector<Fragment> &list)
 		Vector2<float> &uv_b = item.uvList[1];
 		Vector2<float> &uv_c = item.uvList[2];
 
+		//按照 a.y > b.y > c.y 的顺序排好
 		if (a.y > b.y && a.y > c.y) {
 			//A 最上面
 			if (b.y < c.y) {
@@ -254,6 +256,11 @@ void Render::FillTriangles(vector<Fragment> &list)
 			}
 		}
 
+		//将齐次剪裁空间的点转换到视口空间
+		HomoToScreenCoord(a);
+		HomoToScreenCoord(b);
+		HomoToScreenCoord(c);
+
 		Vector4 d;
 		Vector2<float> uv_d;
 
@@ -269,12 +276,8 @@ void Render::FillTriangles(vector<Fragment> &list)
 		uvoverz = t_BYAYCYAY * (uv_c.y / c.w - uv_a.y / a.w) + uv_a.y / a.w;
 		uv_d.y = uvoverz / oneoverz;
 
-		//将齐次剪裁空间的点转换到视口空间
-		HomoToScreenCoord(a);
-		HomoToScreenCoord(b);
-		HomoToScreenCoord(c);
-		HomoToScreenCoord(d);
-
+//透视纹理映射
+#ifndef AFFLINE
 		//如果新隔出来的D点在B点左边
 		if (d.x < b.x) {
 			FillTriangleTopFlat(d, uv_d, b, uv_b, c, uv_c, item.texture);
@@ -284,10 +287,68 @@ void Render::FillTriangles(vector<Fragment> &list)
 			FillTriangleTopFlat(b, uv_b, d, uv_d, c, uv_c, item.texture);
 			FillTriangleBottomFlat(a, uv_a, d, uv_d, b, uv_b, item.texture);
 		}
+//仿射纹理映射
+#else
+		//如果新隔出来的D点在B点左边
+		if (d.x < b.x) {
+			FillTriangleTopFlat_Affline(d, uv_d, b, uv_b, c, uv_c, item.texture);
+			FillTriangleBottomFlat_Affline(a, uv_a, b, uv_b, d, uv_d, item.texture);
+		}
+		else {
+			FillTriangleTopFlat_Affline(b, uv_b, d, uv_d, c, uv_c, item.texture);
+			FillTriangleBottomFlat_Affline(a, uv_a, d, uv_d, b, uv_b, item.texture);
+		}
+#endif
 	}
 }
 
-void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC *texture) {
+/////////////
+// 学习用 //
+////////////
+void Render::FillTriangleTopFlat_Affline(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1, Vector2<float> &uv_p1, Vector4& p2, Vector2<float>& uv_p2, HDC *texture) {
+	float dx_left = (p2.x - p0.x) / (p2.y - p0.y);
+	float dx_right = (p2.x - p1.x) / (p2.y - p0.y);
+
+	int ystart = (int)ceil(p0.y);
+	int yend = (int)ceil(p2.y) - 1;
+
+	float x_left = p0.x + (ystart - p0.y) * dx_left;
+	float x_right = p1.x + (ystart - p0.y) * dx_right;
+
+	for (int y = ystart; y <= yend; y++) {
+		int xstart = (int)ceil(x_left);
+		int xend = (int)ceil(x_right) - 1;
+		for (int x = xstart; x <= xend; x++) {
+			DrawPixel(x, y, COLOR_BLACK);
+		}
+		x_left += dx_left;
+		x_right += dx_right;
+	}
+}
+
+void Render::FillTriangleBottomFlat_Affline(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1, Vector2<float> &uv_p1, Vector4& p2, Vector2<float>& uv_p2, HDC *texture) {
+	float dx_left = (p2.x - p0.x) / (p2.y - p0.y);
+	float dx_right = (p1.x - p0.x) / (p2.y - p0.y);
+
+	int ystart = (int)ceil(p0.y);
+	int yend = (int)ceil(p1.y) - 1;
+
+	float x_left = p0.x + (ystart - p0.y) * dx_left;
+	float x_right = p0.x + (ystart - p0.y) * dx_right;
+
+	for (int y = ystart; y <= yend; y++) {
+		int xstart = (int)ceil(x_left);
+		int xend = (int)ceil(x_right) - 1;
+		for (int x = xstart; x <= xend; x++) {
+			DrawPixel(x, y, COLOR_BLACK);
+		}
+		x_left += dx_left;
+		x_right += dx_right;
+	}
+}
+
+void Render::FillTriangleTopFlat(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture) {
+//y1 === y2
 	const float &x1 = a.x;
 	const float &x2 = b.x;
 	const float &x3 = c.x;
@@ -297,8 +358,8 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 	const float &y3 = c.y;
 
 	//确定三角形的范围
-	int miny = (int)y3;
-	int maxy = (int)y1;
+	int miny = (int)y1;
+	int maxy = (int)y3;
 
 	//最终算出的UV坐标
 	//范围 [0, 512]
@@ -331,7 +392,7 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 	{
 		//将多次用到的数据先算出来
 		t_YAYCYAY = (y - y1) / (y3 - y1);
-		t_YBYCYBY = (y - y2) / (y3 - y2);
+		t_YBYCYBY = (y - y1) / (y3 - y1);
 
 		xLeft = t_YAYCYAY * (x3 - x1) + x1;
 		xRight = t_YBYCYBY* (x3 - x2) + x2;
@@ -366,7 +427,7 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 			v = (int)(voverz / oneoverz);
 
 			int _x = x;
-			int _y = WindowFrame::rect_client.bottom - y;
+			int _y = y;
 			int _index = (_y - 1) * WindowFrame::rect_client.right + x;
 
 			//没有超出缓冲区的范围
@@ -386,7 +447,8 @@ void Render::FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vect
 	}
 }
 
-void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c, HDC *texture) {
+void Render::FillTriangleBottomFlat(Vector4 &a, Vector2<float> &uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4 &c, Vector2<float> &uv_c, HDC *texture) {
+	//b.y == c.y
 	const float &x1 = a.x;
 	const float &x2 = b.x;
 	const float &x3 = c.x;
@@ -396,8 +458,8 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 	const float &y3 = c.y;
 
 	//确定三角形的范围
-	int miny = (int)y2;
-	int maxy = (int)y1;
+	int miny = (int)y1;
+	int maxy = (int)y2;
 
 	//用于直接从载入的纹理采样的UV坐标
 	int u, v;
@@ -427,7 +489,7 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 	for (int y = miny; y <= maxy; y++)
 	{
 		//将多次用到的数据先算出来
-		t_YAYCYAY = (y - y1) / (y3 - y1);
+		t_YAYCYAY = (y - y1) / (y2 - y1);
 		t_YAYBYAY = (y - y1) / (y2 - y1);
 
 		//当前行的左右端点
@@ -464,7 +526,7 @@ void Render::FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, V
 			v = (int)(voverz / oneoverz);
 
 			int _x = x;
-			int _y = WindowFrame::rect_client.bottom - y;
+			int _y = y;
 			int _index = (_y - 1) * WindowFrame::rect_client.right + x;
 
 			if (_index < WindowFrame::rect_client.right * WindowFrame::rect_client.bottom && _index >= 0) {
@@ -518,7 +580,7 @@ void Render::DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, 
 void Render::DrawLine(Vector2<float> p0, Vector2<float> p1, COLORREF color)
 {
 	//直线斜率是否大于1
-	BOOL steep = ABS(p1.y - p0.y) > ABS(p1.x - p0.x);
+	BOOL steep = abs(p1.y - p0.y) > abs(p1.x - p0.x);
 	//如果大于1
 	//将直线沿 y=x 翻转输出
 	if (steep) {
@@ -530,7 +592,7 @@ void Render::DrawLine(Vector2<float> p0, Vector2<float> p1, COLORREF color)
 		swap<float>(p0.y, p1.y);
 	}
 	int dx = (int)(p1.x - p0.x);
-	int dy = (int)ABS(p1.y - p0.y);
+	int dy = (int)abs(p1.y - p0.y);
 
 	int err = dx / 2;
 

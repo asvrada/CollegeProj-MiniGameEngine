@@ -29,6 +29,7 @@ z : Roll
 #define RASTERIZER_PROJECTHEADER_H
 
 //#define DEBUG
+//#define AFFLINE
 
 /////////////////////
 // System Header //
@@ -71,9 +72,6 @@ using std::memset;
 
 //角度转换
 #define DEGREE(x) (0.01745f*(x))
-
-//求绝对值（Absolute）
-#define ABS(x) (((x) >= 0)?(x):-(x))
 
 //#define ERROR 0
 #define OK 1
