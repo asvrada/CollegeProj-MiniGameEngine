@@ -125,8 +125,6 @@ void Render::RenderAFrame() {
 	////////////////
 	// <每帧必做 //
 	////////////////
-
-
 	OutputText(Time::GetFPSwstring(), 0);
 
 	wstringstream ws;
@@ -319,7 +317,7 @@ void Render::FillTriangleTopFlat_Affline(Vector4 &p0, Vector2<float>& uv_p0, Vec
 		int xstart = (int)ceil(x_left);
 		int xend = (int)ceil(x_right) - 1;
 		for (int x = xstart; x <= xend; x++) {
-			DrawPixel(x, y, COLOR_BLACK);
+			DrawPixel(x, y, COLOR_RED);
 		}
 		x_left += dx_left;
 		x_right += dx_right;
@@ -340,7 +338,7 @@ void Render::FillTriangleBottomFlat_Affline(Vector4 &p0, Vector2<float>& uv_p0, 
 		int xstart = (int)ceil(x_left);
 		int xend = (int)ceil(x_right) - 1;
 		for (int x = xstart; x <= xend; x++) {
-			DrawPixel(x, y, COLOR_BLACK);
+			DrawPixel(x, y, COLOR_BLUE);
 		}
 		x_left += dx_left;
 		x_right += dx_right;
@@ -366,7 +364,6 @@ void Render::FillTriangleTopFlat(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, V
 	int u, v;
 	//x轴左右两点
 	float xLeft, xRight;
-
 
 	//透视正确的插值计算
 	float oneoverz_Left, oneoverz_Right;

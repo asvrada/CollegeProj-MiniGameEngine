@@ -21,7 +21,9 @@ z : Roll
 三角形顶点缠绕方向：顺时针 为正面朝向
 
 齐次剪裁空间：
-范围 X,Y,Z ~ [-1, 1]
+范围 
+X,Y ~ [-1, 1]
+Z ~ [0, 1]
 **********************/
 
 
@@ -29,7 +31,7 @@ z : Roll
 #define RASTERIZER_PROJECTHEADER_H
 
 //#define DEBUG
-//#define AFFLINE
+#define AFFLINE
 
 /////////////////////
 // System Header //
@@ -38,9 +40,9 @@ z : Roll
 #include <Windows.h>
 #include <assert.h>
 
-//////////////////////////////
+///////////////////////////////
 // STL and other Libraries //
-/////////////////////////////
+///////////////////////////////
 #include <array>
 using std::array;
 #include <queue>
@@ -78,6 +80,8 @@ using std::memset;
 
 //Default Color
 #define COLOR_BLACK (RGB(0, 0, 0))
+#define COLOR_BLUE (RGB(0, 0, 255))
+#define COLOR_RED (RGB(255, 0, 0))
 #define COLOR_WHITE (RGB(255, 255, 255))
 
 

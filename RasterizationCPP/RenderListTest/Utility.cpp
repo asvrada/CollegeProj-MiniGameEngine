@@ -104,7 +104,6 @@ wstringstream &operator << (wstringstream& ws, const Vector3& v) {
 Vector4
 *************************/
 
-
 Vector4 Vector4::operator*(const Matrix4 & b)
 {
 	Vector4 tmp;
@@ -317,7 +316,7 @@ float Matrix4::Determinant(const Matrix3 &input)
 }
 
 //求逆矩阵
-Matrix4 Matrix4::Invert()
+Matrix4& Matrix4::Invert()
 {
 	Matrix4 output;
 	//用于储存每次的余子式
@@ -379,7 +378,7 @@ Matrix4 Matrix4::Invert()
 	//output = output * firstPart;
 	*this = output;
 
-	return output;
+	return *this;
 }
 
 //矩阵相乘

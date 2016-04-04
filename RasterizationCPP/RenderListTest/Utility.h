@@ -15,7 +15,6 @@
 四阶矩阵
 
 以及矩阵之间的乘法，加法
-矩阵的单位化
 矩阵与数字的乘法
 */
 
@@ -51,7 +50,7 @@ void swap(T &a, T &b) {
 //同时进行背面剔除
 void ClippingAndBackCull(vector<Fragment> &render_list);
 
-//tranform vertices from Homo to Screen
+//tranform vertices from Homo to Screen coordinate
 void HomoToScreenCoord(Vector4& vertex);
 
 //////////////////////
@@ -271,7 +270,7 @@ public:
 	//求余子式
 	float Determinant(const Matrix3&);
 	//求逆矩阵
-	Matrix4 Invert();
+	Matrix4& Invert();
 
 	////////////////
 	// static 函数 //
