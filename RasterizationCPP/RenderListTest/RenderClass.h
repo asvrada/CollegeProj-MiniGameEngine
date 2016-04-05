@@ -56,14 +56,11 @@ public:
 	/////////////
 	// 学习用 //
 	////////////
-	void Render::FillTriangleTopFlat_Affline(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture);
-	void Render::FillTriangleBottomFlat_Affline(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture);
-
+	void FillTriangleTopFlat(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture);
+	void FillTriangleBottomFlat(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture);
 
 	//填充三角形
 	void FillTriangles(vector<Fragment> &);
-	void FillTriangleTopFlat(Vector4 &a, Vector2<float> &uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4 &c, Vector2<float> &uv_c,HDC*);
-	void FillTriangleBottomFlat(Vector4 &a, Vector2<float> &uv_a, Vector4 &, Vector2<float> &uv_b, Vector4 &c, Vector2<float> &uv_c,HDC*);
 	//画三角形边框
 	void DrawTriangles(const vector<Fragment> &);
 	void DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF);

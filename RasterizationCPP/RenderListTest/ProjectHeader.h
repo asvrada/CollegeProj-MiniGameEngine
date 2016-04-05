@@ -31,7 +31,6 @@ Z ~ [0, 1]
 #define RASTERIZER_PROJECTHEADER_H
 
 //#define DEBUG
-#define AFFLINE
 
 /////////////////////
 // System Header //

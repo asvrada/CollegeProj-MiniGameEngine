@@ -65,8 +65,8 @@ void Camera::CameraControl() {
 		rotation.y += (float)pointCursorModify.x / 15.0f;
 	}
 
-	if (Input::KeyPressed(VK_UP)) { rotation.x -= rotate_speed * delta_time; }
-	if (Input::KeyPressed(VK_DOWN)) { rotation.x += rotate_speed * delta_time; }
+	if (Input::KeyPressed(VK_UP)) { rotation.x -= rotate_speed * delta_time * 0.7f; }
+	if (Input::KeyPressed(VK_DOWN)) { rotation.x += rotate_speed * delta_time * 0.7f ; }
 	if (Input::KeyPressed(VK_LEFT)) { rotation.y -= rotate_speed * delta_time; }
 	if (Input::KeyPressed(VK_RIGHT)) { rotation.y += rotate_speed * delta_time; }
 
