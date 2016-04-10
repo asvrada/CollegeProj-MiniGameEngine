@@ -6,15 +6,6 @@
 class Camera;
 class Object;
 
-typedef struct Fragment_TYPE {
-	//顶点的索引
-	array<int, 3> index_vList;
-	//顶点的贴图坐标索引
-	array<int, 3> index_uvList;
-	//法向量
-	Vector3 n;
-}Fragment;
-
 class Render
 {
 private:
@@ -33,8 +24,6 @@ private:
 
 //私有函数
 private:
-	//ViewToHomo 矩阵在摄像机类里
-	Matrix4 m_world_to_view;
 	float *m_z_depth_buffer;
 	void m_DrawObjects();
 public:
@@ -64,13 +53,16 @@ public:
 
 	//输出文字
 	void OutputText(const wstring&, int linenumber);
+	/////////////
+	// 学习用 //
+	////////////
+	void FillTriangleTopFlat(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture);
+	void FillTriangleBottomFlat(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture);
 
 	//填充三角形
-	void FillTriangles(vector<Vector4> &vertices, vector<Vector2<float>> &UVs, vector<Vector2<int>> &indices, HDC text);
-	void FillTriangleTopFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c,HDC);
-	void FillTriangleBottomFlat(Vector4 a, Vector2<float> uv_a, Vector4 b, Vector2<float> uv_b, Vector4 c, Vector2<float> uv_c,HDC);
+	void FillTriangles(vector<Fragment> &);
 	//画三角形边框
-	void DrawTriangles(vector<Vector4> &vertices, vector<Vector2<int>> &indices);
+	void DrawTriangles(const vector<Fragment> &);
 	void DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF);
 	//画线
 	void DrawLine(Vector2<float>, Vector2<float>, COLORREF);

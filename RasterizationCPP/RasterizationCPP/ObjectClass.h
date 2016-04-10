@@ -6,8 +6,11 @@
 //目前一个Object就是一个三角形
 class Object {
 public:
+	//顶点的 x y z 
 	vector<Vector3> vertices;
+	//顶点的 UV
 	vector<Vector2<float>> uv;
+	//每对索引 x -> 顶点, y -> UV
 	vector<Vector2<int>> indices;
 
 	HDC hdc_texture;

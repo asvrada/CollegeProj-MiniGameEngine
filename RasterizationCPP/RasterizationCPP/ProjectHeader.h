@@ -21,7 +21,9 @@ z : Roll
 三角形顶点缠绕方向：顺时针 为正面朝向
 
 齐次剪裁空间：
-范围 X,Y,Z ~ [-1, 1]
+范围 
+X,Y ~ [-1, 1]
+Z ~ [0, 1]
 **********************/
 
 
@@ -37,9 +39,9 @@ z : Roll
 #include <Windows.h>
 #include <assert.h>
 
-//////////////////////////////
+///////////////////////////////
 // STL and other Libraries //
-/////////////////////////////
+///////////////////////////////
 #include <array>
 using std::array;
 #include <queue>
@@ -62,7 +64,7 @@ using std::memset;
 ///////////////////
 // User Header //
 //////////////////
-#include "MathComplement.h"
+#include "Utility.h"
 
 
 /////////////
@@ -72,20 +74,22 @@ using std::memset;
 //角度转换
 #define DEGREE(x) (0.01745f*(x))
 
-//求绝对值（Absolute）
-#define ABS(x) (((x) >= 0)?(x):-(x))
-
 //#define ERROR 0
 #define OK 1
 
 //Default Color
 #define COLOR_BLACK (RGB(0, 0, 0))
+#define COLOR_BLUE (RGB(0, 0, 255))
+#define COLOR_RED (RGB(255, 0, 0))
 #define COLOR_WHITE (RGB(255, 255, 255))
 
 
 //////////
 // Flag //
 /////////
+#define FRAGMENT_MASK 0x00000001
+#define FRAGMENT_GOOD 0x00000000
+#define FRAGMENT_DELETED 0x00000001
 
 //32位 int
 //八位16进制数表示
