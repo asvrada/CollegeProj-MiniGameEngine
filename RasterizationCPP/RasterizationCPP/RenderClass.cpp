@@ -5,7 +5,6 @@
 #include "ObjectClass.h"
 #include "WindowFrameClass.h"
 
-//测试版本
 void Render::m_DrawObjects() {
 	if (vector_objects.size() == 0) {
 		return;
@@ -20,22 +19,16 @@ void Render::m_DrawObjects() {
 		if ((int)object.vertices.size() == 0) {
 			continue;
 		}
-		Matrix4 LocalToWorld = /*Matrix4(1.0f) * */Matrix4('A', object.rotation) * Matrix4(object.position);
-		LocalToWorld = LocalToWorld * WorldToHomo;
+		Matrix4 LocalToHomo = /*Matrix4(1.0f) * */Matrix4('A', object.rotation) * Matrix4(object.position);
+		LocalToHomo = LocalToHomo * WorldToHomo;
 
-		//对每个点做坐标变换
-		//本地变换到齐次剪裁空间
-#ifdef DEBUG
-		assert(object.indices.size() % 3 == 0);
-#endif
-		//对于每个物体的每个三角形
-		//进行坐标变换
-		//本地坐标 -> 齐次剪裁空间
 		vector<Vector4> trans_ver;
+		//本地到齐次剪裁空间
 		for (auto item : object.vertices) {
-			trans_ver.push_back(item * LocalToWorld);
+			trans_ver.push_back(item * LocalToHomo);
 		}
 
+		//将每个物体拆分成三角形的列表
 		for (auto lop = object.indices.begin(); lop != object.indices.end(); lop += 3) {
 			render_list.push_back(Fragment(FRAGMENT_GOOD, &object.hdc_texture));
 			auto cur = render_list.end() - 1;
@@ -43,7 +36,7 @@ void Render::m_DrawObjects() {
 			cur->uvList[1] = object.uv[(lop + 1)->y] * 511.0f;
 			cur->uvList[2] = object.uv[(lop + 2)->y] * 511.0f;
 
-			//先乘了，存起来。然后在此直接复制
+			//在此直接复制变换好的顶点
 			cur->trans_vList[0] = trans_ver[lop->x];
 			cur->trans_vList[1] = trans_ver[(lop + 1)->x];
 			cur->trans_vList[2] = trans_ver[(lop + 2)->x];
