@@ -3,7 +3,7 @@
 #定义介绍
 #####坐标系：  
 左手坐标系，即 x 轴向右，y 轴向上，z 轴向屏幕里  
-![Left Hand Coord](http://139.129.34.47/reference/lefthandcoord.jpg)  
+![Left Hand Coord](http://139.129.34.47/reference/pic/lefthandcoord.jpg)  
 
 #####旋转坐标：  
 从主轴相反方向望去的顺时针方向为 ___正___  
@@ -69,4 +69,4 @@ Z ~ [ 0, 1 ]
 	void m_Initial();
 
 #类介绍
-![All the Class](http://139.129.34.47/reference/ClassDiagram.png)
+![All the Class](http://139.129.34.47/reference/pic/ClassDiagram.png)
