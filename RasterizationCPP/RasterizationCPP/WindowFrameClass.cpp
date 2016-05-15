@@ -14,8 +14,10 @@ WindowFrame::WindowFrame(DWORD checker) {
 	m_app_name = TEXT("Reasterizer");
 
 	AppHandler = this;
-	m_ptr_input = NULL;
-	m_ptr_renderer = NULL;
+	m_ptr_renderer = nullptr;
+	m_ptr_manager = nullptr;
+	m_ptr_time = nullptr;
+	m_ptr_input = nullptr;
 }
 
 WindowFrame::~WindowFrame() {

@@ -54,7 +54,7 @@ public:
 	//输出文字
 	void OutputText(const wstring&, int linenumber);
 	/////////////
-	// 学习用 //
+	// 三角形填充 //
 	////////////
 	void FillTriangleTopFlat(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture);
 	void FillTriangleBottomFlat(Vector4 &a, Vector2<float>& uv_a, Vector4 &b, Vector2<float> &uv_b, Vector4& c, Vector2<float>& uv_c, HDC *texture);
@@ -64,7 +64,7 @@ public:
 	//画三角形边框
 	void DrawTriangles(const vector<Fragment> &);
 	void DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, COLORREF);
-	//画线
+	//给出两点及线段颜色，画线
 	void DrawLine(Vector2<float>, Vector2<float>, COLORREF);
 	//设置单个像素的颜色
 	void DrawPixel(int, int, COLORREF);

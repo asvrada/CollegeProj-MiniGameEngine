@@ -4,9 +4,10 @@ Student's work, terrible coding manner
 Open for all feedback  
 
 ## _Todo Lists:_
+0. Switch to shared pointers
 1. Accuracy issues 
-2. Clipping
-3. Mutli-thread optimization  
+2. Triangle Clipping (IMPORTANT)
+3. Mutli-thread optimization 
 
 
 ### -What is this ?

@@ -32,12 +32,11 @@ public:
 	//仅受高宽比 和 FOV 的影响
 	Matrix4 view_to_homo;
 private:
-	//摄像机坐标转换到齐次剪彩空间坐标
+	//摄像机坐标转换到齐次剪裁空间坐标
 	//仅在摄像机属性变化时重新生成
-	//不包括位置和旋转的变化
 	void m_UpdateViewToHomoMatrix4();
 public:
-	//必须给出高宽比
+	//构造函数必须给出高宽比
 	Camera(float aspect, float fov);
 	~Camera();
 

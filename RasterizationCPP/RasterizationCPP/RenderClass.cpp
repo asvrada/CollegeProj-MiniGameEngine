@@ -10,20 +10,24 @@ void Render::m_DrawObjects() {
 		return;
 	}
 
+	//根据摄像机位置创建世界到齐次剪裁空间的变换矩阵
 	Matrix4 WorldToHomo = m_ptr_camera->GetWorldToViewMatrix4() * m_ptr_camera->view_to_homo;
 
-	//经过各项剪裁后的最终多边形渲染列表
+	//最终三角形渲染列表
 	vector<Fragment> render_list;
 
+	//对每个将要渲染的模型进行逐个操作
 	for (auto &object : vector_objects) {
-		if ((int)object.vertices.size() == 0) {
-			continue;
-		}
+		if ((int)object.vertices.size() == 0) { continue; }
+
+		//新建本地到齐次剪裁空间的矩阵，用于下面的计算
+		//依次乘以该模型的缩放参数、旋转参数、平移参数
 		Matrix4 LocalToHomo = /*Matrix4(1.0f) * */Matrix4('A', object.rotation) * Matrix4(object.position);
 		LocalToHomo = LocalToHomo * WorldToHomo;
 
+		//用于暂时保存该模型变换后的顶点
 		vector<Vector4> trans_ver;
-		//本地到齐次剪裁空间
+		//对该模型的每一个点进行本地到齐次剪裁空间的变换
 		for (auto item : object.vertices) {
 			trans_ver.push_back(item * LocalToHomo);
 		}
@@ -58,10 +62,13 @@ void Render::m_DrawObjects() {
 		}
 	}
 
+	//选择渲染模式
 	if ((WindowFrame::STYLE_CHECKER & RENDER_MODE_MASK) == RENDER_MODE_OUTLINE) {
+		//线框
 		DrawTriangles(render_list);
 	}
 	else {
+		//填充
 		FillTriangles(render_list);
 	}
 }
@@ -216,6 +223,7 @@ void Render::FillTriangles(vector<Fragment> &list)
 		Vector2<float> &uv_b = item.uvList[1];
 		Vector2<float> &uv_c = item.uvList[2];
 
+
 		//按照 a.y > b.y > c.y 的顺序排好
 		if (a.y > b.y && a.y > c.y) {
 			//A 最上面
@@ -247,11 +255,13 @@ void Render::FillTriangles(vector<Fragment> &list)
 			}
 		}
 
+
 		//将齐次剪裁空间的点转换到视口空间
 		HomoToScreenCoord(a);
 		HomoToScreenCoord(b);
 		HomoToScreenCoord(c);
 
+		//创建剪裁出的D点
 		Vector4 d;
 		Vector2<float> uv_d;
 
@@ -267,7 +277,7 @@ void Render::FillTriangles(vector<Fragment> &list)
 		uvoverz = t_BYAYCYAY * (uv_c.y / c.w - uv_a.y / a.w) + uv_a.y / a.w;
 		uv_d.y = uvoverz / oneoverz;
 
-		//如果新隔出来的D点在B点左边
+		//确保三角形顶点缠绕方向均为顺时针
 		if (d.x < b.x) {
 			FillTriangleTopFlat(d, uv_d, b, uv_b, c, uv_c, item.texture);
 			FillTriangleBottomFlat(a, uv_a, b, uv_b, d, uv_d, item.texture);
@@ -279,9 +289,9 @@ void Render::FillTriangles(vector<Fragment> &list)
 	}
 }
 
-/////////////
-// 学习用 //
-////////////
+///////////////////////////
+// 三角形插值填充算法 //
+//////////////////////////
 void Render::FillTriangleTopFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1, Vector2<float> &uv_p1, Vector4& p2, Vector2<float>& uv_p2, HDC *texture) {
 	//左边这条线上的变化量
 	float dxdyl = (p2.x - p0.x) / (p2.y - p0.y);

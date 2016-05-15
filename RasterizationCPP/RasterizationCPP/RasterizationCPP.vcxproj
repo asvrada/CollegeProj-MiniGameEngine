@@ -150,6 +150,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ObjectClass.cpp" />
     <ClCompile Include="RenderClass.cpp" />
+    <ClCompile Include="SceneManagerClass.cpp" />
     <ClCompile Include="TimeClass.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="WindowFrameClass.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="ProjectHeader.h" />
     <ClInclude Include="RenderClass.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SceneManagerClass.h" />
     <ClInclude Include="TimeClass.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="WindowFrameClass.h" />

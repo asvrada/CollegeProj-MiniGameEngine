@@ -10,6 +10,7 @@
 #include "ProjectHeader.h"
 
 class Render;
+class SceneManager;
 class Input;
 class Time;
 
@@ -40,6 +41,8 @@ private:
 	//包含的类
 	//渲染类
 	Render *m_ptr_renderer;
+	//场景管理类
+	SceneManager *m_ptr_manager;
 	//时间类
 	Time *m_ptr_time;
 	//记录当前按下的按键

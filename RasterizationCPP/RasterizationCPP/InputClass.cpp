@@ -13,7 +13,6 @@ Input::Input() {
 	m_hwnd = 0;
 }
 
-
 Input::~Input() {
 	m_hwnd = 0;
 }
