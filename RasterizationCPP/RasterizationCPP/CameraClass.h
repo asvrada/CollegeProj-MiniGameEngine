@@ -1,53 +1,53 @@
-#ifndef RASTERIZER_CAMERACLASS_H
+ï»¿#ifndef RASTERIZER_CAMERACLASS_H
 #define RASTERIZER_CAMERACLASS_H
 
 #include "ProjectHeader.h"
 
 class Camera {
-//¹«ÓĞÊı¾İ³ÉÔ±
+//å…¬æœ‰æ•°æ®æˆå‘˜
 public:
-	//×ø±ê
+	//åæ ‡
 	Vector3 position;
 
-	//ÈÆ¸÷¸öÖáĞı×ªµÄ½Ç¶È
+	//ç»•å„ä¸ªè½´æ—‹è½¬çš„è§’åº¦
 	//x -> pitch
 	//y -> yaw
 	//z -> roll
 	Vector3 rotation;
 
-	//×î½üµÄ¾àÀë£¬×îÔ¶ÏÔÊ¾µÄ¾àÀë
+	//æœ€è¿‘çš„è·ç¦»ï¼Œæœ€è¿œæ˜¾ç¤ºçš„è·ç¦»
 	float near_z, far_z;
 	//Field of View
 	float fov;
 
-	//ÆÁÄ»¸ß¿í±È
-	//¸ù¾İ»­²¼·Ö±æÂÊÉèÖÃ
+	//å±å¹•é«˜å®½æ¯”
+	//æ ¹æ®ç”»å¸ƒåˆ†è¾¨ç‡è®¾ç½®
 	float screen_aspect;
 
-	//ÉãÏñ»úÒÆ¶¯ËÙ¶È
+	//æ‘„åƒæœºç§»åŠ¨é€Ÿåº¦
 	float move_speed;
 	float rotate_speed;
 
-	//¿ÉÒÔÌáÇ°Ëã³öÀ´
-	//½öÊÜ¸ß¿í±È ºÍ FOV µÄÓ°Ïì
+	//å¯ä»¥æå‰ç®—å‡ºæ¥
+	//ä»…å—é«˜å®½æ¯” å’Œ FOV çš„å½±å“
 	Matrix4 view_to_homo;
 private:
-	//ÉãÏñ»ú×ø±ê×ª»»µ½Æë´Î¼ô²Ã¿Õ¼ä×ø±ê
-	//½öÔÚÉãÏñ»úÊôĞÔ±ä»¯Ê±ÖØĞÂÉú³É
+	//æ‘„åƒæœºåæ ‡è½¬æ¢åˆ°é½æ¬¡å‰ªè£ç©ºé—´åæ ‡
+	//ä»…åœ¨æ‘„åƒæœºå±æ€§å˜åŒ–æ—¶é‡æ–°ç”Ÿæˆ
 	void m_UpdateViewToHomoMatrix4();
 public:
-	//¹¹Ôìº¯Êı±ØĞë¸ø³ö¸ß¿í±È
+	//æ„é€ å‡½æ•°å¿…é¡»ç»™å‡ºé«˜å®½æ¯”
 	Camera(float aspect, float fov);
 	~Camera();
 
-	//¸üĞÂÊı¾İ
-	//0´ú±í²»±ä
+	//æ›´æ–°æ•°æ®
+	//0ä»£è¡¨ä¸å˜
 	void Update(float aspect, float fov);
 	void Update();
 
 	void CameraControl();
-	//ÊÀ½ç×ø±ê×ª»»µ½ÉãÏñ»ú×ø±ê
-	//¼´ÊÓ¿Ú×ø±ê
+	//ä¸–ç•Œåæ ‡è½¬æ¢åˆ°æ‘„åƒæœºåæ ‡
+	//å³è§†å£åæ ‡
 	Matrix4 GetWorldToViewMatrix4();
 };
 

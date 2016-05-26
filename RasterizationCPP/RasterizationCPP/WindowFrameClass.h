@@ -15,7 +15,7 @@ class Input;
 class Time;
 
 class WindowFrame {
-public:	
+public:
 	//程序句柄
 	HWND m_hwnd;
 	//渲染区域（客户坐标系）
@@ -31,7 +31,6 @@ public:
 	//0x00000000L
 	static DWORD STYLE_CHECKER;
 private:
-
 
 	//退出程序
 	bool m_quit_software;
@@ -49,14 +48,14 @@ private:
 	Input *m_ptr_input;
 
 public:
-	WindowFrame(DWORD checker =  RENDER_MODE_FILL);
+	WindowFrame(DWORD checker = RENDER_MODE_FILL);
 	~WindowFrame();
 
 	//真正的消息处理函数
 	LRESULT CALLBACK WinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 	//Initialize parameters
-	void Initialize(int,int);
+	void Initialize(int, int);
 	void Shutdown();
 
 	//在系统中注册窗口

@@ -1,17 +1,19 @@
-#ifndef RASTERIZER_SCENEMANAGERCLASS_H
+ï»¿#ifndef RASTERIZER_SCENEMANAGERCLASS_H
 #define RASTERIZER_SCENEMANAGERCLASS_H
 
 #include "ProjectHeader.h"
-#include "ObjectClass.h"
+#include "ModelClass.h"
 
-//±£´æ³¡¾°ÓĞÊ²Ã´ÎïÌå
-//ÉãÏñ»úÎ»ÖÃµÈµÈ
+//ä¿å­˜åœºæ™¯æœ‰ä»€ä¹ˆç‰©ä½“
+//æ‘„åƒæœºä½ç½®ç­‰ç­‰
 class SceneManager {
 private:
-	vector<Object> objects_all;
+	vector<Model> objects_all;
 public:
-	//·µ»ØÎïÌåÁĞ±í£¬ÒÔ¹©äÖÈ¾
-	vector<Object>& getObjectsForRendering();
+	//è¿”å›ç‰©ä½“åˆ—è¡¨ï¼Œä»¥ä¾›æ¸²æŸ“
+	vector<Model>& getObjectsForRendering();
+
+	SceneManager& init();
 };
 
 #endif

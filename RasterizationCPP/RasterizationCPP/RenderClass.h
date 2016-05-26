@@ -4,27 +4,32 @@
 #include "ProjectHeader.h"
 
 class Camera;
-class Object;
+class SceneManager;
 
 class Render
 {
+public:
+	//场景类的指针（操）
+	SceneManager *m_ptr_manager;
+//私有数据成员
 private:
 	//当前程序的句柄
 	HWND *m_ptr_hwnd;
 	//屏幕的设备上下文
 	HDC m_hdc_screen;
 
+	//深度缓冲区
+	float *m_z_depth_buffer;
 	//渲染缓冲区
 	HDC m_hdc_buffer;
 	//储存背景图案的画刷
 	HBRUSH m_brush_background;
-
+	
 	//摄像机类
 	Camera *m_ptr_camera;
 
 //私有函数
 private:
-	float *m_z_depth_buffer;
 	void m_DrawObjects();
 public:
 	Render();
@@ -68,10 +73,6 @@ public:
 	void DrawLine(Vector2<float>, Vector2<float>, COLORREF);
 	//设置单个像素的颜色
 	void DrawPixel(int, int, COLORREF);
-
-//模型数据
-public:
-	vector<Object> vector_objects;
 };
 
 #endif

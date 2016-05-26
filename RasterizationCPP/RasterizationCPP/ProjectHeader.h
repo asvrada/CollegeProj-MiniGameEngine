@@ -1,27 +1,27 @@
-/*
+﻿/*
 Just Include this single file in every other header
 and everything will be just fine !
 */
 
 /************************
-��Ŀͨ�ù����壺
-����ϵ����������ϵ
+项目通用规则定义：
+坐标系：左手坐标系
 
-�������궨�壺
-x�᣺����
-y�᣺����
-z�᣺����Ļ��
+世界坐标定义：
+x轴：向右
+y轴：向上
+z轴：向屏幕里
 
-��ת���궨�壺�������෴������ȥ��˳ʱ�뷽��Ϊ ��
+旋转坐标定义：向主轴相反方向望去的顺时针方向为 正
 x : Pitch
 y : Yaw
 z : Roll
 
-�������Ԫ�أ�
-�����ζ�����Ʒ���˳ʱ�� Ϊ���泯��
+物体基本元素：
+三角形顶点缠绕方向：顺时针 为正面朝向
 
-��μ��ÿռ䣺
-��Χ 
+齐次剪裁空间：
+范围 
 X,Y ~ [-1, 1]
 Z ~ [0, 1]
 **********************/
@@ -71,7 +71,7 @@ using std::memset;
 // Macros //
 /////////////
 
-//�Ƕ�ת��
+//角度转换
 #define DEGREE(x) (0.01745f*(x))
 
 //#define ERROR 0
@@ -91,8 +91,8 @@ using std::memset;
 #define FRAGMENT_GOOD 0x00000000
 #define FRAGMENT_DELETED 0x00000001
 
-//32λ int
-//��λ16��������ʾ
+//32位 int
+//八位16进制数表示
 //x
 #define RENDER_MODE_OUTLINE 0x00000000
 #define RENDER_MODE_FILL 0x00000001

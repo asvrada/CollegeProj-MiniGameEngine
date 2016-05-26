@@ -2,10 +2,12 @@
 
 #include "CameraClass.h"
 #include "TimeClass.h"
-#include "ObjectClass.h"
+#include "ModelClass.h"
 #include "WindowFrameClass.h"
+#include "SceneManagerClass.h"
 
 void Render::m_DrawObjects() {
+	auto vector_objects = m_ptr_manager->getObjectsForRendering();
 	if (vector_objects.size() == 0) {
 		return;
 	}
@@ -75,6 +77,7 @@ void Render::m_DrawObjects() {
 
 Render::Render() {
 	m_ptr_camera = nullptr;
+	m_ptr_manager = nullptr;
 	m_z_depth_buffer = nullptr;
 }
 
@@ -90,13 +93,6 @@ void Render::Initialize(HWND *hWndScreen) {
 	m_ptr_camera = new Camera((float)(WindowFrame::rect_client.right / WindowFrame::rect_client.bottom), 70.0f);
 	m_ptr_camera->position.z = -70.f;
 	m_ptr_camera->Update();
-
-	//初始化物体
-	vector_objects.push_back(Object());
-	if (vector_objects[0].Initial("Resources\\Models\\teapot.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp")) == ERROR) {
-		vector_objects.pop_back();
-	}
-	vector_objects[0].rotation = Vector3(0, 180.f, 0);
 }
 
 void Render::DeleteResources() {
@@ -202,7 +198,7 @@ inline void Render::ClearCanvas() {
 }
 
 inline void Render::OutputText(const wstring & text, int line) {
-	TextOut(m_hdc_buffer, 0, 20 * line, text.data(), text.size());
+	TextOut(m_hdc_buffer, 0, 20 * line, text.data(), (int)text.size());
 }
 
 ///////////////////

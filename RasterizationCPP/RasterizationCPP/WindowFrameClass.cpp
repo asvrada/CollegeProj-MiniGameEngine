@@ -5,6 +5,9 @@
 #include "RenderClass.h"
 #include "TimeClass.h"
 
+//////////////////
+// Static 初始化 //
+//////////////////
 RECT WindowFrame::rect_client = RECT();
 DWORD WindowFrame::STYLE_CHECKER = 0;
 
@@ -34,6 +37,10 @@ void WindowFrame::Initialize(int RENDER_X, int RENDER_Y) {
 	m_ptr_input = new Input();
 	m_ptr_time = new Time();
 	m_ptr_renderer = new Render();
+
+	m_ptr_manager->init();
+	//nasty code here
+	m_ptr_renderer->m_ptr_manager = m_ptr_manager;
 }
 
 void WindowFrame::Shutdown() {

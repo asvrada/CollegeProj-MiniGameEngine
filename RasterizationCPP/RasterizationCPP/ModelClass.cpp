@@ -1,4 +1,4 @@
-#include "ObjectClass.h"
+#include "ModelClass.h"
 #include "WindowFrameClass.h"
 
 #include <fstream>
@@ -6,12 +6,12 @@ using std::ifstream;
 #include <string>
 using std::string;
 
-Object::Object() {
+Model::Model() {
 	position.x = position.y = position.z = 0.0f;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-int Object::Initial(char *fileName,LPCWSTR texturename)
+int Model::Initial(char *fileName,LPCWSTR texturename)
 {
 	HBITMAP bmp_texture = (HBITMAP)LoadImage(NULL, texturename, IMAGE_BITMAP, 512, 512, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	if (bmp_texture == NULL) {
@@ -67,12 +67,12 @@ int Object::Initial(char *fileName,LPCWSTR texturename)
 	return OK;
 }
 
-Object::Object(Vector3 _position) {
+Model::Model(Vector3 _position) {
 	position = _position;
 	rotation.x = rotation.y = rotation.z = 0.0f;
 }
 
-Object::Object(Vector3 _position, Vector3 _rotation) {
+Model::Model(Vector3 _position, Vector3 _rotation) {
 	position = _position;
 	rotation = _rotation;
 }
