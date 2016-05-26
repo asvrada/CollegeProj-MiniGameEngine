@@ -1,4 +1,4 @@
-#include "RenderClass.h"
+ï»¿#include "RenderClass.h"
 
 #include "CameraClass.h"
 #include "TimeClass.h"
@@ -10,29 +10,29 @@ void Render::m_DrawObjects() {
 		return;
 	}
 
-	//¸ù¾İÉãÏñ»úÎ»ÖÃ´´½¨ÊÀ½çµ½Æë´Î¼ô²Ã¿Õ¼äµÄ±ä»»¾ØÕó
+	//æ ¹æ®æ‘„åƒæœºä½ç½®åˆ›å»ºä¸–ç•Œåˆ°é½æ¬¡å‰ªè£ç©ºé—´çš„å˜æ¢çŸ©é˜µ
 	Matrix4 WorldToHomo = m_ptr_camera->GetWorldToViewMatrix4() * m_ptr_camera->view_to_homo;
 
-	//×îÖÕÈı½ÇĞÎäÖÈ¾ÁĞ±í
+	//æœ€ç»ˆä¸‰è§’å½¢æ¸²æŸ“åˆ—è¡¨
 	vector<Fragment> render_list;
 
-	//¶ÔÃ¿¸ö½«ÒªäÖÈ¾µÄÄ£ĞÍ½øĞĞÖğ¸ö²Ù×÷
+	//å¯¹æ¯ä¸ªå°†è¦æ¸²æŸ“çš„æ¨¡å‹è¿›è¡Œé€ä¸ªæ“ä½œ
 	for (auto &object : vector_objects) {
 		if ((int)object.vertices.size() == 0) { continue; }
 
-		//ĞÂ½¨±¾µØµ½Æë´Î¼ô²Ã¿Õ¼äµÄ¾ØÕó£¬ÓÃÓÚÏÂÃæµÄ¼ÆËã
-		//ÒÀ´Î³ËÒÔ¸ÃÄ£ĞÍµÄËõ·Å²ÎÊı¡¢Ğı×ª²ÎÊı¡¢Æ½ÒÆ²ÎÊı
+		//æ–°å»ºæœ¬åœ°åˆ°é½æ¬¡å‰ªè£ç©ºé—´çš„çŸ©é˜µï¼Œç”¨äºä¸‹é¢çš„è®¡ç®—
+		//ä¾æ¬¡ä¹˜ä»¥è¯¥æ¨¡å‹çš„ç¼©æ”¾å‚æ•°ã€æ—‹è½¬å‚æ•°ã€å¹³ç§»å‚æ•°
 		Matrix4 LocalToHomo = /*Matrix4(1.0f) * */Matrix4('A', object.rotation) * Matrix4(object.position);
 		LocalToHomo = LocalToHomo * WorldToHomo;
 
-		//ÓÃÓÚÔİÊ±±£´æ¸ÃÄ£ĞÍ±ä»»ºóµÄ¶¥µã
+		//ç”¨äºæš‚æ—¶ä¿å­˜è¯¥æ¨¡å‹å˜æ¢åçš„é¡¶ç‚¹
 		vector<Vector4> trans_ver;
-		//¶Ô¸ÃÄ£ĞÍµÄÃ¿Ò»¸öµã½øĞĞ±¾µØµ½Æë´Î¼ô²Ã¿Õ¼äµÄ±ä»»
+		//å¯¹è¯¥æ¨¡å‹çš„æ¯ä¸€ä¸ªç‚¹è¿›è¡Œæœ¬åœ°åˆ°é½æ¬¡å‰ªè£ç©ºé—´çš„å˜æ¢
 		for (auto item : object.vertices) {
 			trans_ver.push_back(item * LocalToHomo);
 		}
 
-		//½«Ã¿¸öÎïÌå²ğ·Ö³ÉÈı½ÇĞÎµÄÁĞ±í
+		//å°†æ¯ä¸ªç‰©ä½“æ‹†åˆ†æˆä¸‰è§’å½¢çš„åˆ—è¡¨
 		for (auto lop = object.indices.begin(); lop != object.indices.end(); lop += 3) {
 			render_list.push_back(Fragment(FRAGMENT_GOOD, &object.hdc_texture));
 			auto cur = render_list.end() - 1;
@@ -40,16 +40,16 @@ void Render::m_DrawObjects() {
 			cur->uvList[1] = object.uv[(lop + 1)->y] * 511.0f;
 			cur->uvList[2] = object.uv[(lop + 2)->y] * 511.0f;
 
-			//ÔÚ´ËÖ±½Ó¸´ÖÆ±ä»»ºÃµÄ¶¥µã
+			//åœ¨æ­¤ç›´æ¥å¤åˆ¶å˜æ¢å¥½çš„é¡¶ç‚¹
 			cur->trans_vList[0] = trans_ver[lop->x];
 			cur->trans_vList[1] = trans_ver[(lop + 1)->x];
 			cur->trans_vList[2] = trans_ver[(lop + 2)->x];
 		}
 	}
-	//½øĞĞ±³ÃæÌŞ³ı¼°¼ô²Ã
+	//è¿›è¡ŒèƒŒé¢å‰”é™¤åŠå‰ªè£
 	ClippingAndBackCull(render_list);
 
-	//½øĞĞÍ¸ÊÓ³ı·¨
+	//è¿›è¡Œé€è§†é™¤æ³•
 	for (auto &item : render_list) {
 		if (item.state & FRAGMENT_DELETED) {
 			continue;
@@ -62,13 +62,13 @@ void Render::m_DrawObjects() {
 		}
 	}
 
-	//Ñ¡ÔñäÖÈ¾Ä£Ê½
+	//é€‰æ‹©æ¸²æŸ“æ¨¡å¼
 	if ((WindowFrame::STYLE_CHECKER & RENDER_MODE_MASK) == RENDER_MODE_OUTLINE) {
-		//Ïß¿ò
+		//çº¿æ¡†
 		DrawTriangles(render_list);
 	}
 	else {
-		//Ìî³ä
+		//å¡«å……
 		FillTriangles(render_list);
 	}
 }
@@ -91,7 +91,7 @@ void Render::Initialize(HWND *hWndScreen) {
 	m_ptr_camera->position.z = -70.f;
 	m_ptr_camera->Update();
 
-	//³õÊ¼»¯ÎïÌå
+	//åˆå§‹åŒ–ç‰©ä½“
 	vector_objects.push_back(Object());
 	if (vector_objects[0].Initial("Resources\\Models\\teapot.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp")) == ERROR) {
 		vector_objects.pop_back();
@@ -118,12 +118,12 @@ void Render::Shutdown() {
 
 void Render::RenderAFrame() {
 	////////////////
-	// >Ã¿Ö¡±Ø×ö //
+	// >æ¯å¸§å¿…åš //
 	////////////////
 	m_ptr_camera->CameraControl();
 	m_DrawObjects();
 	////////////////
-	// <Ã¿Ö¡±Ø×ö //
+	// <æ¯å¸§å¿…åš //
 	////////////////
 	OutputText(Time::GetFPSwstring(), 0);
 
@@ -136,18 +136,18 @@ void Render::RenderAFrame() {
 	OutputText(ws.str(), 2);
 
 	////////////////
-	// >Ã¿Ö¡±Ø×ö //
+	// >æ¯å¸§å¿…åš //
 	////////////////
 	SwapBufferToScreen();
 	ClearCanvas();
 	////////////////
-	// <Ã¿Ö¡±Ø×ö //
+	// <æ¯å¸§å¿…åš //
 	////////////////
 }
 
 void Render::UpdateSettings()
 {
-	//¸Ä±äz»º´æµÄ´óĞ¡
+	//æ”¹å˜zç¼“å­˜çš„å¤§å°
 	if (m_z_depth_buffer) {
 		delete m_z_depth_buffer;
 		m_z_depth_buffer = nullptr;
@@ -155,19 +155,19 @@ void Render::UpdateSettings()
 
 	m_z_depth_buffer = new float[WindowFrame::rect_client.right  * WindowFrame::rect_client.bottom];
 
-	//²»Îª¿ÕÊ±É¾³ıÔ­ÓĞÊı¾İ
+	//ä¸ä¸ºç©ºæ—¶åˆ é™¤åŸæœ‰æ•°æ®
 	if (m_hdc_buffer) {
 		DeleteResources();
 	}
-	//´ËÊ±µÄbufferÃ»ÓĞ´óĞ¡
+	//æ­¤æ—¶çš„bufferæ²¡æœ‰å¤§å°
 	m_hdc_buffer = CreateCompatibleDC(m_hdc_screen);
 
-	//ÔØÈë±¾µØ±³¾°Í¼Æ¬
+	//è½½å…¥æœ¬åœ°èƒŒæ™¯å›¾ç‰‡
 	//HBITMAP bmpBackgroundImage = (HBITMAP)LoadImage(NULL, TEXT("Resources\\Materials\\Background.bmp"), IMAGE_BITMAP, WindowFrame::rect_client.right, WindowFrame::rect_client.bottom, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	HBITMAP bmpBackgroundImage = NULL;
 
-	//Èç¹ûÔØÈëÊ§°Ü
-	//´´½¨»ÒÉ«±³¾°
+	//å¦‚æœè½½å…¥å¤±è´¥
+	//åˆ›å»ºç°è‰²èƒŒæ™¯
 	if (bmpBackgroundImage == NULL) {
 		bmpBackgroundImage = CreateCompatibleBitmap(m_hdc_screen, WindowFrame::rect_client.right, WindowFrame::rect_client.bottom);
 
@@ -175,18 +175,18 @@ void Render::UpdateSettings()
 		FillRect(m_hdc_buffer, &WindowFrame::rect_client, (HBRUSH)GetStockObject(GRAY_BRUSH));
 	}
 	else {
-		//Ñ¡ÈëÎïÌå
+		//é€‰å…¥ç‰©ä½“
 		SelectObject(m_hdc_buffer, bmpBackgroundImage);
 	}
-	//¸ù¾İ²úÉúµÄÍ¼°¸´´½¨»­Ë¢
+	//æ ¹æ®äº§ç”Ÿçš„å›¾æ¡ˆåˆ›å»ºç”»åˆ·
 	m_brush_background = CreatePatternBrush(bmpBackgroundImage);
-	//Ö®ºó bmp ¾Í¿ÉÒÔÉ¾ÁË
-	//ÒÔºóÓÃ»­Ë¢¾ÍĞĞÁË
+	//ä¹‹å bmp å°±å¯ä»¥åˆ äº†
+	//ä»¥åç”¨ç”»åˆ·å°±è¡Œäº†
 	DeleteObject(bmpBackgroundImage);
-	//Ìî³äÄ£Ê½ÉèÎªÍ¸Ã÷
+	//å¡«å……æ¨¡å¼è®¾ä¸ºé€æ˜
 	SetBkMode(m_hdc_buffer, TRANSPARENT);
 
-	//Éı¼¶ÉãÏñ»úµÄÊı¾İ
+	//å‡çº§æ‘„åƒæœºçš„æ•°æ®
 	m_ptr_camera->Update((float)WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom, m_ptr_camera->fov);
 }
 
@@ -197,7 +197,7 @@ inline void Render::SwapBufferToScreen() {
 
 inline void Render::ClearCanvas() {
 	std::fill(m_z_depth_buffer, m_z_depth_buffer + WindowFrame::rect_client.right  * WindowFrame::rect_client.bottom, -1.0f);
-	//ÓÃ±³¾°»­Ë¢Ìî³ä±³¾°
+	//ç”¨èƒŒæ™¯ç”»åˆ·å¡«å……èƒŒæ™¯
 	FillRect(m_hdc_buffer, &WindowFrame::rect_client, m_brush_background);
 }
 
@@ -224,17 +224,17 @@ void Render::FillTriangles(vector<Fragment> &list)
 		Vector2<float> &uv_c = item.uvList[2];
 
 
-		//°´ÕÕ a.y > b.y > c.y µÄË³ĞòÅÅºÃ
+		//æŒ‰ç…§ a.y > b.y > c.y çš„é¡ºåºæ’å¥½
 		if (a.y > b.y && a.y > c.y) {
-			//A ×îÉÏÃæ
+			//A æœ€ä¸Šé¢
 			if (b.y < c.y) {
 				swap<Vector4>(b, c);
 				swap<Vector2<float>>(uv_b, uv_c);
 			}
 		}
 		else if (b.y > a.y && b.y > c.y) {
-			//B ×îÉÏÃæ
-			//A B »¥»»
+			//B æœ€ä¸Šé¢
+			//A B äº’æ¢
 			swap<Vector4>(a, b);
 			swap<Vector2<float>>(uv_a, uv_b);
 
@@ -244,8 +244,8 @@ void Render::FillTriangles(vector<Fragment> &list)
 			}
 		}
 		else if (c.y > a.y && c.y > b.y) {
-			//C ×îÉÏÃæ
-			//A C »¥»»
+			//C æœ€ä¸Šé¢
+			//A C äº’æ¢
 			swap<Vector4>(a, c);
 			swap<Vector2<float>>(uv_a, uv_c);
 
@@ -256,12 +256,12 @@ void Render::FillTriangles(vector<Fragment> &list)
 		}
 
 
-		//½«Æë´Î¼ô²Ã¿Õ¼äµÄµã×ª»»µ½ÊÓ¿Ú¿Õ¼ä
+		//å°†é½æ¬¡å‰ªè£ç©ºé—´çš„ç‚¹è½¬æ¢åˆ°è§†å£ç©ºé—´
 		HomoToScreenCoord(a);
 		HomoToScreenCoord(b);
 		HomoToScreenCoord(c);
 
-		//´´½¨¼ô²Ã³öµÄDµã
+		//åˆ›å»ºå‰ªè£å‡ºçš„Dç‚¹
 		Vector4 d;
 		Vector2<float> uv_d;
 
@@ -277,7 +277,7 @@ void Render::FillTriangles(vector<Fragment> &list)
 		uvoverz = t_BYAYCYAY * (uv_c.y / c.w - uv_a.y / a.w) + uv_a.y / a.w;
 		uv_d.y = uvoverz / oneoverz;
 
-		//È·±£Èı½ÇĞÎ¶¥µã²øÈÆ·½Ïò¾ùÎªË³Ê±Õë
+		//ç¡®ä¿ä¸‰è§’å½¢é¡¶ç‚¹ç¼ ç»•æ–¹å‘å‡ä¸ºé¡ºæ—¶é’ˆ
 		if (d.x < b.x) {
 			FillTriangleTopFlat(d, uv_d, b, uv_b, c, uv_c, item.texture);
 			FillTriangleBottomFlat(a, uv_a, b, uv_b, d, uv_d, item.texture);
@@ -290,26 +290,26 @@ void Render::FillTriangles(vector<Fragment> &list)
 }
 
 ///////////////////////////
-// Èı½ÇĞÎ²åÖµÌî³äËã·¨ //
+// ä¸‰è§’å½¢æ’å€¼å¡«å……ç®—æ³• //
 //////////////////////////
 void Render::FillTriangleTopFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1, Vector2<float> &uv_p1, Vector4& p2, Vector2<float>& uv_p2, HDC *texture) {
-	//×ó±ßÕâÌõÏßÉÏµÄ±ä»¯Á¿
+	//å·¦è¾¹è¿™æ¡çº¿ä¸Šçš„å˜åŒ–é‡
 	float dxdyl = (p2.x - p0.x) / (p2.y - p0.y);
 	float d_one_over_z_dyl = (1 / p2.w - 1 / p0.w) / (p2.y - p0.y);
 	float d_u_over_z_dyl = (uv_p2.x / p2.w - uv_p0.x / p0.w) / (p2.y - p0.y);
 	float d_v_over_z_dyl = (uv_p2.y / p2.w - uv_p0.y / p0.w) / (p2.y - p0.y);
 
-	//ÓÒ±ßÕâÌõÏßÉÏµÄ±ä»¯Á¿
+	//å³è¾¹è¿™æ¡çº¿ä¸Šçš„å˜åŒ–é‡
 	float dxdyr = (p2.x - p1.x) / (p2.y - p0.y);
 	float d_one_over_z_dyr = (1 / p2.w - 1 / p1.w) / (p2.y - p0.y);
 	float d_u_over_z_dyr = (uv_p2.x / p2.w - uv_p1.x / p1.w) / (p2.y - p0.y);
 	float d_v_over_z_dyr = (uv_p2.y / p2.w - uv_p1.y / p1.w) / (p2.y - p0.y);
 
-	//É¨ÃèÏßµÄÆğÖÕµã
+	//æ‰«æçº¿çš„èµ·ç»ˆç‚¹
 	int ystart = (int)ceil(p0.y);
 	int yend = (int)ceil(p2.y) - 1;
 
-	//³õÊ¼Öµ
+	//åˆå§‹å€¼
 	float x_left = p0.x + (ystart - p0.y) * dxdyl;
 	float one_over_z_left = 1 / p0.w;
 	float u_over_z_left = uv_p0.x / p0.w;
@@ -360,36 +360,36 @@ void Render::FillTriangleTopFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1
 }
 
 void Render::FillTriangleBottomFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1, Vector2<float> &uv_p1, Vector4& p2, Vector2<float>& uv_p2, HDC *texture) {
-	//×ó±ßÕâÌõÏßÉÏµÄ±ä»¯Á¿
+	//å·¦è¾¹è¿™æ¡çº¿ä¸Šçš„å˜åŒ–é‡
 	//float oneOVERp2ySUBp0y = 1 / (p2.y - p0.y);
 	float dxdyl = (p2.x - p0.x) / (p2.y - p0.y);
 	float d_one_over_z_dyl = (1.0f / p2.w - 1.0f / p0.w) / (p2.y - p0.y);
 	float d_u_over_z_dyl = (uv_p2.x / p2.w - uv_p0.x / p0.w) / (p2.y - p0.y);
 	float d_v_over_z_dyl = (uv_p2.y / p2.w - uv_p0.y / p0.w) / (p2.y - p0.y);
 
-	//ÓÒ±ßÕâÌõÏßÉÏµÄ±ä»¯Á¿
+	//å³è¾¹è¿™æ¡çº¿ä¸Šçš„å˜åŒ–é‡
 	float dxdyr = (p1.x - p0.x) / (p2.y - p0.y);
 	float d_one_over_z_dyr = (1.0f / p1.w - 1.0f / p0.w) / (p2.y - p0.y);
 	float d_u_over_z_dyr = (uv_p1.x / p1.w - uv_p0.x / p0.w) / (p2.y - p0.y);
 	float d_v_over_z_dyr = (uv_p1.y / p1.w - uv_p0.y / p0.w) / (p2.y - p0.y);
 
-	//É¨ÃèÏßµÄ·¶Î§
+	//æ‰«æçº¿çš„èŒƒå›´
 	int ystart = (int)ceil(p0.y);
 	int yend = (int)ceil(p1.y) - 1;
 
-	//³õÊ¼Öµ
-	//×ó±ßÏß
+	//åˆå§‹å€¼
+	//å·¦è¾¹çº¿
 	float x_left = p0.x + (ystart - p0.y) * dxdyl;
 	float one_over_z_left = 1.0f / p0.w;
 	float u_over_z_left = uv_p0.x / p0.w;
 	float v_over_z_left = uv_p0.y / p0.w;
-	//ÓÒ±ßÏß
+	//å³è¾¹çº¿
 	float x_right = p0.x + (ystart - p0.y) * dxdyr;
 	float one_over_z_right = 1.0f / p0.w;
 	float u_over_z_right = uv_p0.x / p0.w;
 	float v_over_z_right = uv_p0.y / p0.w;
 
-	//»æÖÆÈı½ÇĞÎ
+	//ç»˜åˆ¶ä¸‰è§’å½¢
 	for (int y = ystart; y <= yend; y++) {
 		int xstart = (int)ceil(x_left);
 		int xend = (int)ceil(x_right) - 1;
@@ -401,7 +401,7 @@ void Render::FillTriangleBottomFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 
 		float ddu = u_over_z_left;
 		float ddv = v_over_z_left;
 
-		//»æÖÆÒ»ÌõÉ¨ÃèÏß
+		//ç»˜åˆ¶ä¸€æ¡æ‰«æçº¿
 		for (int x = xstart; x <= xend; x++) {
 			float u = ddu / ddz;
 			float v = ddv / ddz;
@@ -419,7 +419,7 @@ void Render::FillTriangleBottomFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 
 			ddu += ddu_step;
 			ddv += ddv_step;
 		}
-		//»æÖÆÃ¿ÌõÉ¨ÃèÏßºó£¬Êı¾İ¼ÓÉÏ±ä»¯Á¿
+		//ç»˜åˆ¶æ¯æ¡æ‰«æçº¿åï¼Œæ•°æ®åŠ ä¸Šå˜åŒ–é‡
 		x_left += dxdyl;
 		one_over_z_left += d_one_over_z_dyl;
 		u_over_z_left += d_u_over_z_dyl;
@@ -439,7 +439,7 @@ void Render::DrawTriangles(const vector<Fragment> &fg)
 {
 	//Draw every face of that object
 	for (auto item : fg) {
-		//Èç¹ûÒÑ±»É¾³ı
+		//å¦‚æœå·²è¢«åˆ é™¤
 		if (item.state & FRAGMENT_DELETED) {
 			continue;
 		}
@@ -466,10 +466,10 @@ void Render::DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, 
 
 void Render::DrawLine(Vector2<float> p0, Vector2<float> p1, COLORREF color)
 {
-	//Ö±ÏßĞ±ÂÊÊÇ·ñ´óÓÚ1
+	//ç›´çº¿æ–œç‡æ˜¯å¦å¤§äº1
 	BOOL steep = abs(p1.y - p0.y) > abs(p1.x - p0.x);
-	//Èç¹û´óÓÚ1
-	//½«Ö±ÏßÑØ y=x ·­×ªÊä³ö
+	//å¦‚æœå¤§äº1
+	//å°†ç›´çº¿æ²¿ y=x ç¿»è½¬è¾“å‡º
 	if (steep) {
 		swap<float>(p0.x, p0.y);
 		swap<float>(p1.x, p1.y);
@@ -483,9 +483,9 @@ void Render::DrawLine(Vector2<float> p0, Vector2<float> p1, COLORREF color)
 
 	int err = dx / 2;
 
-	//yµÄÔöÁ¿
+	//yçš„å¢é‡
 	int ystep = (p0.y < p1.y) ? 1 : -1;
-	//ÓÃÓÚ»æ»­µÄ y ÊıÖµ
+	//ç”¨äºç»˜ç”»çš„ y æ•°å€¼
 	int painter_y = (int)p0.y;
 
 	for (int i = (int)p0.x; i <= p1.x; i++) {

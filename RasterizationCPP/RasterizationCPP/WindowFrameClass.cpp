@@ -1,6 +1,7 @@
-#include "WindowFrameClass.h"
+ï»¿#include "WindowFrameClass.h"
 
 #include "InputClass.h"
+#include "SceneManagerClass.h"
 #include "RenderClass.h"
 #include "TimeClass.h"
 
@@ -25,10 +26,11 @@ WindowFrame::~WindowFrame() {
 }
 
 void WindowFrame::Initialize(int RENDER_X, int RENDER_Y) {
-	//Éè¶¨³õÊ¼äÖÈ¾ÇøÓòµÄ´óÐ¡
+	//è®¾å®šåˆå§‹æ¸²æŸ“åŒºåŸŸçš„å¤§å°
 	rect_client.top = 0; rect_client.left = 0; rect_client.bottom = RENDER_Y; rect_client.right = RENDER_X;
 	m_quit_software = false;
 
+	m_ptr_manager = new SceneManager();
 	m_ptr_input = new Input();
 	m_ptr_time = new Time();
 	m_ptr_renderer = new Render();
@@ -50,16 +52,21 @@ void WindowFrame::Shutdown() {
 		delete m_ptr_input;
 		m_ptr_input = nullptr;
 	}
+
+	if (m_ptr_manager != nullptr) {
+		delete m_ptr_manager;
+		m_ptr_manager = nullptr;
+	}
 }
 
 int WindowFrame::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd) {
-	//»ñÈ¡×ÀÃæ·Ö±æÂÊ
-	//ÓÃÓÚ¾ÓÖÐÏÔÊ¾´°¿Ú
+	//èŽ·å–æ¡Œé¢åˆ†è¾¨çŽ‡
+	//ç”¨äºŽå±…ä¸­æ˜¾ç¤ºçª—å£
 	int m_WINDOW_X = GetSystemMetrics(SM_CXSCREEN);
 	int m_WINDOW_Y = GetSystemMetrics(SM_CYSCREEN);
 
-	//´°¿Ú×¢²áÏà¹Ø
-	//²»±ØÌ«ÔÚÒâ
+	//çª—å£æ³¨å†Œç›¸å…³
+	//ä¸å¿…å¤ªåœ¨æ„
 	WNDCLASSEX wnd = { 0 };
 	wnd.cbClsExtra = 0;
 	wnd.cbSize = sizeof(WNDCLASSEX);
@@ -74,9 +81,9 @@ int WindowFrame::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstanc
 	wnd.lpszMenuName = NULL;
 	wnd.style = CS_VREDRAW | CS_HREDRAW;
 
-	//×¢²á´°¿Ú
+	//æ³¨å†Œçª—å£
 	RegisterClassEx(&wnd);
-	//¾ÓÖÐÏÔÊ¾´°¿Ú
+	//å±…ä¸­æ˜¾ç¤ºçª—å£
 	m_hwnd = CreateWindowEx(WS_EX_CLIENTEDGE, m_app_name, m_app_name,
 		WS_OVERLAPPEDWINDOW, (m_WINDOW_X - rect_client.right + rect_client.left) / 2, (m_WINDOW_Y - rect_client.bottom + rect_client.top) / 2,
 		rect_client.right , rect_client.bottom, NULL, NULL, hInstance, NULL);
@@ -84,15 +91,15 @@ int WindowFrame::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstanc
 		if (!m_hwnd) {
 			return ERROR;
 		}
-		//´ÓÏµÍ³ÉêÇëµ½´°¿Ú¾ä±úºó
-		//ÓÃËü³õÊ¼»¯¸÷¸öÀà
-		//³õÊ¼»¯Ö÷äÖÈ¾Àà
+		//ä»Žç³»ç»Ÿç”³è¯·åˆ°çª—å£å¥æŸ„åŽ
+		//ç”¨å®ƒåˆå§‹åŒ–å„ä¸ªç±»
+		//åˆå§‹åŒ–ä¸»æ¸²æŸ“ç±»
 		m_ptr_renderer->Initialize(&m_hwnd);
-		//³õÊ¼»¯ÊäÈëÀà
+		//åˆå§‹åŒ–è¾“å…¥ç±»
 		m_ptr_input->Initialize(m_hwnd);
 
 
-		//ÏÔÊ¾´°¿Ú
+		//æ˜¾ç¤ºçª—å£
 		ShowWindow(m_hwnd, nShowCmd);
 		UpdateWindow(m_hwnd);
 
@@ -101,9 +108,9 @@ int WindowFrame::RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstanc
 
 int WindowFrame::Run() {
 	MSG msg = { 0 };
-	//Ö÷Òª³ÌÐòÑ­»·
+	//ä¸»è¦ç¨‹åºå¾ªçŽ¯
 	while(!m_quit_software) {
-		//ÎÞÏûÏ¢Ê±ÍË³öÒÔÏÂÑ­»·
+		//æ— æ¶ˆæ¯æ—¶é€€å‡ºä»¥ä¸‹å¾ªçŽ¯
 		while (1) {
 			if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) break;
 			if (!GetMessage(&msg, NULL, 0, 0)) break;
@@ -113,7 +120,7 @@ int WindowFrame::Run() {
 		m_ptr_time->ComputeTime();
 		GetCursorPos(&m_ptr_input->point_cursor_current);
 
-		//½øÐÐÒ»Ö¡äÖÈ¾
+		//è¿›è¡Œä¸€å¸§æ¸²æŸ“
 		m_ptr_renderer->RenderAFrame();
 
 		m_ptr_input->ClearFlag();
@@ -122,26 +129,26 @@ int WindowFrame::Run() {
 	return msg.message;
 }
 
-//ÏûÏ¢´¦Àíº¯Êý
+//æ¶ˆæ¯å¤„ç†å‡½æ•°
 LRESULT CALLBACK WindowFrame::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (Msg) {
 	case WM_SIZE:
-		//È¡µÃÐÂÆÁÄ»µÄ´óÐ¡
+		//å–å¾—æ–°å±å¹•çš„å¤§å°
 		rect_client.right = LOWORD(lParam);
 		rect_client.bottom = HIWORD(lParam);
 		rect_client.left = rect_client.top = 0;
 
-		//²¢¸ü¸Ä»­²¼µÄ´óÐ¡
+		//å¹¶æ›´æ”¹ç”»å¸ƒçš„å¤§å°
 		m_ptr_renderer->UpdateSettings();
-		//ÖØÐÂÉèÖÃÊó±êµÄÖÐÐÄ
+		//é‡æ–°è®¾ç½®é¼ æ ‡çš„ä¸­å¿ƒ
 		m_ptr_input->UpdateCursorCenterPostion(rect_client);
 		break;
 	case WM_MOVE:
 		m_ptr_input->UpdateCursorCenterPostion(rect_client);
 		break;
 
-	//ÒÔÏÂÏûÏ¢ÏìÓ¦°´¼ü
+	//ä»¥ä¸‹æ¶ˆæ¯å“åº”æŒ‰é”®
 	case WM_LBUTTONDOWN:
 		m_ptr_input->Press('l');
 		break;
@@ -164,7 +171,7 @@ LRESULT CALLBACK WindowFrame::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM
 		m_ptr_input->Release((int)wParam);
 		break;
 
-	//¹Ø±Õ³ÌÐò
+	//å…³é—­ç¨‹åº
 	case WM_CLOSE:
 	case WM_DESTROY:
 		m_quit_software = true;
@@ -177,7 +184,7 @@ LRESULT CALLBACK WindowFrame::WinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM
 	return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
 
-//ÎÞÊÓ
+//æ— è§†
 LRESULT CALLBACK CustomWinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
 	return AppHandler->WinProc(hWnd, Msg, wParam, lParam);
 }

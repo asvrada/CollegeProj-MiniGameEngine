@@ -13,6 +13,7 @@ public:
 	//每对索引 x -> 顶点, y -> UV
 	vector<Vector2<int>> indices;
 
+	//纹理
 	HDC hdc_texture;
 
 	Vector3 position;
@@ -23,11 +24,13 @@ public:
 	// 构造函数 //
 	///////////////
 	Object();
-	int Initial(char*, LPCWSTR);
 	//给出Position
 	Object(Vector3);
 	//给出Pos 和 Rotation
 	Object(Vector3, Vector3);
+
+	//初始化模型数据
+	int Initial(char*, LPCWSTR);
 };
 
 #endif

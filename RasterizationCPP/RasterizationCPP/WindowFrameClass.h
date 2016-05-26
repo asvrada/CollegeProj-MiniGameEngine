@@ -1,10 +1,10 @@
-#ifndef RASTERIZER_WINDOWFRAMECLASS_H
+ï»¿#ifndef RASTERIZER_WINDOWFRAMECLASS_H
 #define RASTERIZER_WINDOWFRAMECLASS_H
 
 #define WIN32_LEAN_AND_MEAN
 /*
-ÀàµÄ¹¦ÄÜ£º
-´´½¨¾ßÓĞ´°¿Ú½çÃæµÄ³ÌĞò
+ç±»çš„åŠŸèƒ½ï¼š
+åˆ›å»ºå…·æœ‰çª—å£ç•Œé¢çš„ç¨‹åº
 */
 
 #include "ProjectHeader.h"
@@ -16,9 +16,9 @@ class Time;
 
 class WindowFrame {
 public:	
-	//³ÌĞò¾ä±ú
+	//ç¨‹åºå¥æŸ„
 	HWND m_hwnd;
-	//äÖÈ¾ÇøÓò£¨¿Í»§×ø±êÏµ£©
+	//æ¸²æŸ“åŒºåŸŸï¼ˆå®¢æˆ·åæ ‡ç³»ï¼‰
 	//Rendering area(in client coordinate)
 	static RECT rect_client;
 
@@ -33,40 +33,40 @@ public:
 private:
 
 
-	//ÍË³ö³ÌĞò
+	//é€€å‡ºç¨‹åº
 	bool m_quit_software;
-	//´°¿ÚÃû³Æ
+	//çª—å£åç§°
 	wchar_t *m_app_name;
 
-	//°üº¬µÄÀà
-	//äÖÈ¾Àà
+	//åŒ…å«çš„ç±»
+	//æ¸²æŸ“ç±»
 	Render *m_ptr_renderer;
-	//³¡¾°¹ÜÀíÀà
+	//åœºæ™¯ç®¡ç†ç±»
 	SceneManager *m_ptr_manager;
-	//Ê±¼äÀà
+	//æ—¶é—´ç±»
 	Time *m_ptr_time;
-	//¼ÇÂ¼µ±Ç°°´ÏÂµÄ°´¼ü
+	//è®°å½•å½“å‰æŒ‰ä¸‹çš„æŒ‰é”®
 	Input *m_ptr_input;
 
 public:
 	WindowFrame(DWORD checker =  RENDER_MODE_FILL);
 	~WindowFrame();
 
-	//ÕæÕıµÄÏûÏ¢´¦Àíº¯Êı
+	//çœŸæ­£çš„æ¶ˆæ¯å¤„ç†å‡½æ•°
 	LRESULT CALLBACK WinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 	//Initialize parameters
 	void Initialize(int,int);
 	void Shutdown();
 
-	//ÔÚÏµÍ³ÖĞ×¢²á´°¿Ú
+	//åœ¨ç³»ç»Ÿä¸­æ³¨å†Œçª—å£
 	int RegisterCreateWindow(HINSTANCE hInstance, HINSTANCE hPreinstance, LPSTR lpCmd, int nShowCmd);
 
-	//Ö÷ÒªµÄ³ÌĞòÑ­»·
+	//ä¸»è¦çš„ç¨‹åºå¾ªç¯
 	int Run();
 };
 
-//Æ­WinµÄÏûÏ¢´¦Àíº¯Êı
+//éª—Winçš„æ¶ˆæ¯å¤„ç†å‡½æ•°
 LRESULT CALLBACK CustomWinProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 static WindowFrame *AppHandler = NULL;
 
