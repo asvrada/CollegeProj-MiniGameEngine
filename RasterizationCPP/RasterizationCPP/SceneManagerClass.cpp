@@ -1,3 +1,4 @@
+﻿#include "SceneManagerClass.h"
 
 vector<Object>& SceneManager::getObjectsForRendering()
 {
