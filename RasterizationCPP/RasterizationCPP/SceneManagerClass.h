@@ -2,18 +2,25 @@
 #define RASTERIZER_SCENEMANAGERCLASS_H
 
 #include "ProjectHeader.h"
-#include "ModelClass.h"
 
+#include "ObjectClass.h"
+#include "ModelInfo.h"
 //保存场景有什么物体
-//摄像机位置等等
 class SceneManager {
-private:
-	vector<Model> objects_all;
 public:
-	//返回物体列表，以供渲染
-	vector<Model>& getObjectsForRendering();
+	vector<shared_ptr<Object>> objects_all;
+	map<string, ModelInfo> map_models;
 
+public:
+	//对所有object初始化
 	SceneManager& init();
+
+	//每帧调用
+	//更新所有物体的情况
+	SceneManager& update();
 };
 
 #endif
+
+//todo
+//添加专门存放模型的vector

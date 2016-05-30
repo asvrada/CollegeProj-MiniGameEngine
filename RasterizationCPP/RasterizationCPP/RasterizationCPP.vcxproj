@@ -148,7 +148,7 @@
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ModelClass.cpp" />
+    <ClCompile Include="ModelInfo.cpp" />
     <ClCompile Include="RenderClass.cpp" />
     <ClCompile Include="SceneManagerClass.cpp" />
     <ClCompile Include="TimeClass.cpp" />
@@ -157,8 +157,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
+    <ClInclude Include="GameObjectClass.h" />
     <ClInclude Include="InputClass.h" />
-    <ClInclude Include="ModelClass.h" />
+    <ClInclude Include="ModelInfo.h" />
+    <ClInclude Include="ObjectClass.h" />
     <ClInclude Include="ProjectHeader.h" />
     <ClInclude Include="RenderClass.h" />
     <ClInclude Include="resource.h" />

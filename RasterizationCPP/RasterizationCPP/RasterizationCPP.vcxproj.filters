@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\Hierarchy">
+      <UniqueIdentifier>{3d0ccbd4-ea2b-44b3-81d0-856da0a830da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Hierarchy">
+      <UniqueIdentifier>{bb0a70c6-9540-4270-bfe8-b82caeaf4215}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\辅助类">
+      <UniqueIdentifier>{caf90698-4ed1-466b-b8e2-be695a0d4bc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\辅助类">
+      <UniqueIdentifier>{8c92b508-a7fa-4a05-add9-e5a280b57cd0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -27,20 +39,20 @@
     <ClCompile Include="RenderClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CameraClass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="TimeClass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SceneManagerClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ModelClass.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="CameraClass.cpp">
+      <Filter>源文件\Hierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>源文件\辅助类</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInfo.cpp">
+      <Filter>源文件\辅助类</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -50,29 +62,35 @@
     <ClInclude Include="InputClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="RenderClass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraClass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ProjectHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="TimeClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="SceneManagerClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ModelClass.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="ObjectClass.h">
+      <Filter>头文件\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraClass.h">
+      <Filter>头文件\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectClass.h">
+      <Filter>头文件\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>头文件\辅助类</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件\辅助类</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectHeader.h">
+      <Filter>头文件\辅助类</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInfo.h">
+      <Filter>头文件\辅助类</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

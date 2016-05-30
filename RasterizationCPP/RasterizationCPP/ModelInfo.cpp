@@ -1,18 +1,6 @@
-#include "ModelClass.h"
-#include "WindowFrameClass.h"
+#include "ModelInfo.h"
 
-#include <fstream>
-using std::ifstream;
-#include <string>
-using std::string;
-
-Model::Model() {
-	position.x = position.y = position.z = 0.0f;
-	rotation.x = rotation.y = rotation.z = 0.0f;
-}
-
-int Model::Initial(char *fileName,LPCWSTR texturename)
-{
+int ModelInfo::LoadModel(char *fileName, LPCWSTR texturename) {
 	HBITMAP bmp_texture = (HBITMAP)LoadImage(NULL, texturename, IMAGE_BITMAP, 512, 512, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	if (bmp_texture == NULL) {
 		return ERROR;
@@ -65,14 +53,4 @@ int Model::Initial(char *fileName,LPCWSTR texturename)
 	}
 	file.close();
 	return OK;
-}
-
-Model::Model(Vector3 _position) {
-	position = _position;
-	rotation.x = rotation.y = rotation.z = 0.0f;
-}
-
-Model::Model(Vector3 _position, Vector3 _rotation) {
-	position = _position;
-	rotation = _rotation;
 }

@@ -1,46 +1,51 @@
 ﻿#include "RenderClass.h"
 
-#include "CameraClass.h"
-#include "TimeClass.h"
-#include "ModelClass.h"
+//为了用 static
 #include "WindowFrameClass.h"
-#include "SceneManagerClass.h"
+
+#include "GameObjectClass.h"
 
 void Render::m_DrawObjects() {
-	auto vector_objects = m_ptr_manager->getObjectsForRendering();
+	auto &vector_objects = m_ptr_manager->objects_all;
 	if (vector_objects.size() == 0) {
 		return;
 	}
-
+	auto camera = PTR_CONVERT(vector_objects[0], Camera);
 	//根据摄像机位置创建世界到齐次剪裁空间的变换矩阵
-	Matrix4 WorldToHomo = m_ptr_camera->GetWorldToViewMatrix4() * m_ptr_camera->view_to_homo;
+	Matrix4 WorldToHomo = camera->world_to_view * camera->view_to_homo;
 
 	//最终三角形渲染列表
 	vector<Fragment> render_list;
 
 	//对每个将要渲染的模型进行逐个操作
-	for (auto &object : vector_objects) {
-		if ((int)object.vertices.size() == 0) { continue; }
+	for (auto meta_object : vector_objects) {
+		//进行类型转换
+		auto object = PTR_CONVERT(meta_object, GameObject);
+		//转换失败
+		if (object == NULL) { continue; }
+		//转换成功，读取模型
+		auto &model = m_ptr_manager->map_models[object->model];
+		if ((int)model.vertices.size() == 0) { continue; }
 
 		//新建本地到齐次剪裁空间的矩阵，用于下面的计算
 		//依次乘以该模型的缩放参数、旋转参数、平移参数
-		Matrix4 LocalToHomo = /*Matrix4(1.0f) * */Matrix4('A', object.rotation) * Matrix4(object.position);
+		Matrix4 LocalToHomo = Matrix4('A', object->rotation) * Matrix4(object->position);
 		LocalToHomo = LocalToHomo * WorldToHomo;
 
 		//用于暂时保存该模型变换后的顶点
 		vector<Vector4> trans_ver;
 		//对该模型的每一个点进行本地到齐次剪裁空间的变换
-		for (auto item : object.vertices) {
+		for (auto item : model.vertices) {
 			trans_ver.push_back(item * LocalToHomo);
 		}
 
 		//将每个物体拆分成三角形的列表
-		for (auto lop = object.indices.begin(); lop != object.indices.end(); lop += 3) {
-			render_list.push_back(Fragment(FRAGMENT_GOOD, &object.hdc_texture));
+		for (auto lop = model.indices.begin(); lop != model.indices.end(); lop += 3) {
+			render_list.push_back(Fragment(FRAGMENT_GOOD, &model.hdc_texture));
 			auto cur = render_list.end() - 1;
-			cur->uvList[0] = object.uv[lop->y] * 511.0f;
-			cur->uvList[1] = object.uv[(lop + 1)->y] * 511.0f;
-			cur->uvList[2] = object.uv[(lop + 2)->y] * 511.0f;
+			cur->uvList[0] = model.uv[lop->y] * 511.0f;
+			cur->uvList[1] = model.uv[(lop + 1)->y] * 511.0f;
+			cur->uvList[2] = model.uv[(lop + 2)->y] * 511.0f;
 
 			//在此直接复制变换好的顶点
 			cur->trans_vList[0] = trans_ver[lop->x];
@@ -76,7 +81,6 @@ void Render::m_DrawObjects() {
 }
 
 Render::Render() {
-	m_ptr_camera = nullptr;
 	m_ptr_manager = nullptr;
 	m_z_depth_buffer = nullptr;
 }
@@ -89,10 +93,6 @@ void Render::Initialize(HWND *hWndScreen) {
 	m_ptr_hwnd = hWndScreen;
 
 	m_hdc_screen = GetDC(*m_ptr_hwnd);
-
-	m_ptr_camera = new Camera((float)(WindowFrame::rect_client.right / WindowFrame::rect_client.bottom), 70.0f);
-	m_ptr_camera->position.z = -70.f;
-	m_ptr_camera->Update();
 }
 
 void Render::DeleteResources() {
@@ -102,10 +102,6 @@ void Render::DeleteResources() {
 
 void Render::Shutdown() {
 	DeleteResources();
-	if (m_ptr_camera) {
-		delete m_ptr_camera;
-		m_ptr_camera = nullptr;
-	}
 	if (m_z_depth_buffer) {
 		delete m_z_depth_buffer;
 		m_z_depth_buffer = nullptr;
@@ -116,7 +112,6 @@ void Render::RenderAFrame() {
 	////////////////
 	// >每帧必做 //
 	////////////////
-	m_ptr_camera->CameraControl();
 	m_DrawObjects();
 	////////////////
 	// <每帧必做 //
@@ -124,11 +119,12 @@ void Render::RenderAFrame() {
 	OutputText(Time::GetFPSwstring(), 0);
 
 	wstringstream ws;
-	ws <<"Resolution : " << WindowFrame::rect_client.right << " * " << WindowFrame::rect_client.bottom;
+	ws << "Resolution : " << WindowFrame::rect_client.right << " * " << WindowFrame::rect_client.bottom;
 	OutputText(ws.str(), 1);
 
 	ws.str(L"");
-	ws << m_ptr_camera->position << m_ptr_camera->rotation;
+	auto ptr_camera = PTR_CONVERT(m_ptr_manager->objects_all[0], Camera);
+	ws << ptr_camera->position << ptr_camera->rotation;
 	OutputText(ws.str(), 2);
 
 	////////////////
@@ -183,7 +179,7 @@ void Render::UpdateSettings()
 	SetBkMode(m_hdc_buffer, TRANSPARENT);
 
 	//升级摄像机的数据
-	m_ptr_camera->Update((float)WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom, m_ptr_camera->fov);
+	PTR_CONVERT(m_ptr_manager->objects_all[0], Camera)->ChangeConfig((float)WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom, 0);
 }
 
 inline void Render::SwapBufferToScreen() {

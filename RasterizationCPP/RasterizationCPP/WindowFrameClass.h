@@ -9,10 +9,10 @@
 
 #include "ProjectHeader.h"
 
-class Render;
-class SceneManager;
-class Input;
-class Time;
+#include "RenderClass.h"
+#include "SceneManagerClass.h"
+#include "InputClass.h"
+#include "TimeClass.h"
 
 class WindowFrame {
 public:

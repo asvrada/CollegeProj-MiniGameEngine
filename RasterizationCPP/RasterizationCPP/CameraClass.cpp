@@ -1,36 +1,55 @@
-#include "CameraClass.h"
+ï»¿#include "CameraClass.h"
 
+//ä¸ºäº†ç”¨ static
 #include "WindowFrameClass.h"
-#include "InputClass.h"
-#include "TimeClass.h"
 
-Camera::Camera(float _screen_aspect,float _fov) {
+Camera::Camera() {
+	near_z = 0;
+	far_z = 0;
+	fov = 0;
+	move_speed = 0;
+	rotate_speed = 0;
+
+	screen_aspect = 0;
+
+	position.x = position.y = position.z = 0;
+	rotation.x = rotation.y = rotation.z = 0;
+}
+
+//æš‚æ—¶ç”¨ä¸ä¸Š
+Camera::~Camera()
+{
+}
+
+Camera& Camera::init(float _aspect, float _fov) {
 	near_z = 10.0f;
 	far_z = 1500.0f;
 	fov = _fov;
 	move_speed = 150.0f;
 	rotate_speed = 70.0f;
 
-	screen_aspect = _screen_aspect;
+	screen_aspect = _aspect;
 
 	position.x = position.y = position.z = 0.0f;
 	position.z = -250.0f;
 	rotation.x = rotation.y = rotation.z = 0.0f;
+
+	return *this;
 }
 
-//ÔİÊ±ÓÃ²»ÉÏ
-Camera::~Camera()
-{
-}
-
-void Camera::Update(float _screen_aspect, float _fov) {
+Camera& Camera::ChangeConfig(float _screen_aspect, float _fov) {
 	screen_aspect = _screen_aspect;
-	fov = _fov;
+	if (_fov > 1.0f)
+		fov = _fov;
 	m_UpdateViewToHomoMatrix4();
+
+	return *this;
 }
 
-void Camera::Update() {
+Camera& Camera::ChangeConfig() {
 	m_UpdateViewToHomoMatrix4();
+
+	return *this;
 }
 
 void Camera::CameraControl() {
@@ -39,7 +58,7 @@ void Camera::CameraControl() {
 		Input::is_center_snapped = !Input::is_center_snapped;
 		ShowCursor(!Input::is_center_snapped);
 		if (Input::is_center_snapped) {
-			//ÖØÖÃÊó±êµÄÎ»ÖÃ
+			//é‡ç½®é¼ æ ‡çš„ä½ç½®
 			Input::point_cursor_current = Input::point_cursor_last_frame = Input::point_cursor_center_snapped;
 			SetCursorPos(Input::point_cursor_center_snapped.x, Input::point_cursor_center_snapped.y);
 		}
@@ -50,18 +69,18 @@ void Camera::CameraControl() {
 			Input::point_cursor_current.y - Input::point_cursor_last_frame.y };
 		Input::point_cursor_last_frame = Input::point_cursor_current;
 
-		//³¬³ö·¶Î§²ÅÖØÖÃÎ»ÖÃ
-		//·¶Î§Îª´°¿ÚµÄÒ»°ë
-		//×óÒÆÓÒÒÆhack
+		//è¶…å‡ºèŒƒå›´æ‰é‡ç½®ä½ç½®
+		//èŒƒå›´ä¸ºçª—å£çš„ä¸€åŠ
+		//å·¦ç§»å³ç§»hack
 		if ((abs(Input::point_cursor_current.x - Input::point_cursor_center_snapped.x) > (WindowFrame::rect_client.right >> 2)) ||
 			(abs(Input::point_cursor_current.y - Input::point_cursor_center_snapped.y) > (WindowFrame::rect_client.bottom >> 2))) {
 			Input::point_cursor_current = Input::point_cursor_last_frame = Input::point_cursor_center_snapped;
 			SetCursorPos((int)Input::point_cursor_center_snapped.x, (int)Input::point_cursor_center_snapped.y);
 		}
 
-		//ÉãÏñÍ·ÉÏÏÂÊÓ½ÇÒÆ¶¯
+		//æ‘„åƒå¤´ä¸Šä¸‹è§†è§’ç§»åŠ¨
 		rotation.x += (float)pointCursorModify.y / 15.0f;
-		//ÉãÏñÍ·×óÓÒÊÓ½ÇÒÆ¶¯
+		//æ‘„åƒå¤´å·¦å³è§†è§’ç§»åŠ¨
 		rotation.y += (float)pointCursorModify.x / 15.0f;
 	}
 
@@ -75,7 +94,7 @@ void Camera::CameraControl() {
 	if (rotation.y < -180.0f) { rotation.y += 360.0f; }
 	if (rotation.y > 180.0f) { rotation.y -= 360.0f; }
 
-	//ÉãÏñ»ú¿Õ¼äÒÆ¶¯
+	//æ‘„åƒæœºç©ºé—´ç§»åŠ¨
 
 	if (Input::KeyPressed('W') || Input::KeyPressed('A') || Input::KeyPressed('S') || Input::KeyPressed('D') ||
 		Input::KeyPressed('Q') || Input::KeyPressed('E'))
@@ -114,9 +133,7 @@ void Camera::m_UpdateViewToHomoMatrix4() {
 	view_to_homo.var[3][2] = (near_z*far_z) / (near_z - far_z);
 }
 
-Matrix4 Camera::GetWorldToViewMatrix4()
-{
-	Matrix4 WTV;
-	WTV = Matrix4('A', rotation) * Matrix4(position);
-	return WTV.Invert();
+void Camera::update() {
+	CameraControl();
+	world_to_view = (Matrix4('A', rotation) * Matrix4(position)).Invert();
 }

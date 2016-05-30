@@ -1,10 +1,5 @@
 ﻿#include "WindowFrameClass.h"
 
-#include "InputClass.h"
-#include "SceneManagerClass.h"
-#include "RenderClass.h"
-#include "TimeClass.h"
-
 //////////////////
 // Static 初始化 //
 //////////////////
@@ -127,6 +122,8 @@ int WindowFrame::Run() {
 		m_ptr_time->ComputeTime();
 		GetCursorPos(&m_ptr_input->point_cursor_current);
 
+		//更新所有物体的数据
+		m_ptr_manager->update();
 		//进行一帧渲染
 		m_ptr_renderer->RenderAFrame();
 

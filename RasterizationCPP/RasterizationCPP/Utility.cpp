@@ -1,5 +1,6 @@
 #include "Utility.h"
 
+//н╙аксц static
 #include "WindowFrameClass.h"
 
 void ClippingAndBackCull(vector<Fragment> &rl) {

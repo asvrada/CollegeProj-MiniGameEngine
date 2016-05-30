@@ -3,8 +3,8 @@
 
 #include "ProjectHeader.h"
 
-class Camera;
-class SceneManager;
+#include "CameraClass.h"
+#include "SceneManagerClass.h"
 
 class Render
 {
@@ -24,9 +24,6 @@ private:
 	HDC m_hdc_buffer;
 	//储存背景图案的画刷
 	HBRUSH m_brush_background;
-	
-	//摄像机类
-	Camera *m_ptr_camera;
 
 //私有函数
 private:
