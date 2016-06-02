@@ -24,6 +24,9 @@ void Render::m_DrawObjects() {
 		//转换失败
 		if (object == NULL) { continue; }
 		//转换成功，读取模型
+#ifdef DEBUG
+		assert(object->model.empty());
+#endif
 		auto &model = m_ptr_manager->map_models[object->model];
 		if ((int)model.vertices.size() == 0) { continue; }
 

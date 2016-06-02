@@ -134,6 +134,8 @@ void Camera::m_UpdateViewToHomoMatrix4() {
 }
 
 void Camera::update() {
-	CameraControl();
+	if (active) {
+		CameraControl();
+	}
 	world_to_view = (Matrix4('A', rotation) * Matrix4(position)).Invert();
 }

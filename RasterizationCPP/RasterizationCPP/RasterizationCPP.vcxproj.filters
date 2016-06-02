@@ -92,6 +92,12 @@
     <ClInclude Include="ModelInfo.h">
       <Filter>头文件\辅助类</Filter>
     </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>头文件\Hierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="Hierarchy.h">
+      <Filter>头文件\Hierarchy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Rasterizer.rc">

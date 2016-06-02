@@ -3,15 +3,19 @@
 
 #include "ProjectHeader.h"
 
-#include "ObjectClass.h"
 #include "ModelInfo.h"
+#include "Hierarchy.h"
+
 //保存场景有什么物体
 class SceneManager {
 public:
 	vector<shared_ptr<Object>> objects_all;
 	map<string, ModelInfo> map_models;
 
+	Camera *main_camera;
 public:
+	SceneManager();
+
 	//对所有object初始化
 	SceneManager& init();
 
