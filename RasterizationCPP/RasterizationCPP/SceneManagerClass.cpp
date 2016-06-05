@@ -17,6 +17,7 @@ SceneManager & SceneManager::update() {
 SceneManager & SceneManager::init() {
 	map_models["teapot"].LoadModel("Resources\\Models\\teapot.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
 	map_models["cube"].LoadModel("Resources\\Models\\cube.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
+	map_models["plane"].LoadModel("Resources\\Models\\plane.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
 
 	//创建主相机
 	objects_all.push_back(make_shared<Camera>());
@@ -26,7 +27,20 @@ SceneManager & SceneManager::init() {
 
 
 	objects_all.push_back(make_shared<Cube>());
-	PTR_CONVERT(objects_all[1], Cube)->model = "cube";
+	
+
+	for (auto &item : objects_all) {
+		item.get()->init();
+	}
 
 	return *this;
+}
+
+Object* SceneManager::findElementByName(string target) {
+	for (auto &item : objects_all) {
+		if (item->name == target) {
+			return item.get();
+		}
+	}
+	return nullptr;
 }

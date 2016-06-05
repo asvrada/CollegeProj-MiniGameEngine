@@ -289,45 +289,45 @@ void Render::FillTriangles(vector<Fragment> &list)
 //////////////////////////
 void Render::FillTriangleTopFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1, Vector2<float> &uv_p1, Vector4& p2, Vector2<float>& uv_p2, HDC *texture) {
 	//左边这条线上的变化量
-	float dxdyl = (p2.x - p0.x) / (p2.y - p0.y);
-	float d_one_over_z_dyl = (1 / p2.w - 1 / p0.w) / (p2.y - p0.y);
-	float d_u_over_z_dyl = (uv_p2.x / p2.w - uv_p0.x / p0.w) / (p2.y - p0.y);
-	float d_v_over_z_dyl = (uv_p2.y / p2.w - uv_p0.y / p0.w) / (p2.y - p0.y);
+	double dxdyl = (p2.x - p0.x) / (p2.y - p0.y);
+	double d_one_over_z_dyl = (1 / p2.w - 1 / p0.w) / (p2.y - p0.y);
+	double d_u_over_z_dyl = (uv_p2.x / p2.w - uv_p0.x / p0.w) / (p2.y - p0.y);
+	double d_v_over_z_dyl = (uv_p2.y / p2.w - uv_p0.y / p0.w) / (p2.y - p0.y);
 
 	//右边这条线上的变化量
-	float dxdyr = (p2.x - p1.x) / (p2.y - p0.y);
-	float d_one_over_z_dyr = (1 / p2.w - 1 / p1.w) / (p2.y - p0.y);
-	float d_u_over_z_dyr = (uv_p2.x / p2.w - uv_p1.x / p1.w) / (p2.y - p0.y);
-	float d_v_over_z_dyr = (uv_p2.y / p2.w - uv_p1.y / p1.w) / (p2.y - p0.y);
+	double dxdyr = (p2.x - p1.x) / (p2.y - p0.y);
+	double d_one_over_z_dyr = (1 / p2.w - 1 / p1.w) / (p2.y - p0.y);
+	double d_u_over_z_dyr = (uv_p2.x / p2.w - uv_p1.x / p1.w) / (p2.y - p0.y);
+	double d_v_over_z_dyr = (uv_p2.y / p2.w - uv_p1.y / p1.w) / (p2.y - p0.y);
 
 	//扫描线的起终点
 	int ystart = (int)ceil(p0.y);
 	int yend = (int)ceil(p2.y) - 1;
 
 	//初始值
-	float x_left = p0.x + (ystart - p0.y) * dxdyl;
-	float one_over_z_left = 1 / p0.w;
-	float u_over_z_left = uv_p0.x / p0.w;
-	float v_over_z_left = uv_p0.y / p0.w;
-	float x_right = p1.x + (ystart - p0.y) * dxdyr;
-	float one_over_z_right = 1 / p1.w;
-	float u_over_z_right = uv_p1.x / p1.w;
-	float v_over_z_right = uv_p1.y / p1.w;
+	double x_left = p0.x + (ystart - p0.y) * dxdyl;
+	double one_over_z_left = 1 / p0.w;
+	double u_over_z_left = uv_p0.x / p0.w;
+	double v_over_z_left = uv_p0.y / p0.w;
+	double x_right = p1.x + (ystart - p0.y) * dxdyr;
+	double one_over_z_right = 1 / p1.w;
+	double u_over_z_right = uv_p1.x / p1.w;
+	double v_over_z_right = uv_p1.y / p1.w;
 
 	for (int y = ystart; y <= yend; y++) {
 		int xstart = (int)ceil(x_left);
 		int xend = (int)ceil(x_right) - 1;
 
-		float ddz_step = (one_over_z_right - one_over_z_left) / (float)(xend - xstart);
-		float ddu_step = (u_over_z_right - u_over_z_left) / (float)(xend - xstart);
-		float ddv_step = (v_over_z_right - v_over_z_left) / (float)(xend - xstart);
-		float ddz = one_over_z_left;
-		float ddu = u_over_z_left;
-		float ddv = v_over_z_left;
+		double ddz_step = (one_over_z_right - one_over_z_left) / (double)(xend - xstart);
+		double ddu_step = (u_over_z_right - u_over_z_left) / (double)(xend - xstart);
+		double ddv_step = (v_over_z_right - v_over_z_left) / (double)(xend - xstart);
+		double ddz = one_over_z_left;
+		double ddu = u_over_z_left;
+		double ddv = v_over_z_left;
 
 		for (int x = xstart; x <= xend; x++) {
-			float u = ddu / ddz;
-			float v = ddv / ddz;
+			double u = ddu / ddz;
+			double v = ddv / ddz;
 
 			int _index = (y - 1) * WindowFrame::rect_client.right + x;
 
@@ -335,7 +335,7 @@ void Render::FillTriangleTopFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1
 				float &_z = m_z_depth_buffer[_index];
 				if (ddz > _z) {
 					DrawPixel(x, y, GetPixel(*texture, (int)u, (int)v));
-					_z = ddz;
+					_z = (float)ddz;
 				}
 			}
 			ddz += ddz_step;
@@ -357,16 +357,16 @@ void Render::FillTriangleTopFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1
 void Render::FillTriangleBottomFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 &p1, Vector2<float> &uv_p1, Vector4& p2, Vector2<float>& uv_p2, HDC *texture) {
 	//左边这条线上的变化量
 	//float oneOVERp2ySUBp0y = 1 / (p2.y - p0.y);
-	float dxdyl = (p2.x - p0.x) / (p2.y - p0.y);
-	float d_one_over_z_dyl = (1.0f / p2.w - 1.0f / p0.w) / (p2.y - p0.y);
-	float d_u_over_z_dyl = (uv_p2.x / p2.w - uv_p0.x / p0.w) / (p2.y - p0.y);
-	float d_v_over_z_dyl = (uv_p2.y / p2.w - uv_p0.y / p0.w) / (p2.y - p0.y);
+	double dxdyl = (p2.x - p0.x) / (p2.y - p0.y);
+	double d_one_over_z_dyl = (1.0f / p2.w - 1.0f / p0.w) / (p2.y - p0.y);
+	double d_u_over_z_dyl = (uv_p2.x / p2.w - uv_p0.x / p0.w) / (p2.y - p0.y);
+	double d_v_over_z_dyl = (uv_p2.y / p2.w - uv_p0.y / p0.w) / (p2.y - p0.y);
 
 	//右边这条线上的变化量
-	float dxdyr = (p1.x - p0.x) / (p2.y - p0.y);
-	float d_one_over_z_dyr = (1.0f / p1.w - 1.0f / p0.w) / (p2.y - p0.y);
-	float d_u_over_z_dyr = (uv_p1.x / p1.w - uv_p0.x / p0.w) / (p2.y - p0.y);
-	float d_v_over_z_dyr = (uv_p1.y / p1.w - uv_p0.y / p0.w) / (p2.y - p0.y);
+	double dxdyr = (p1.x - p0.x) / (p2.y - p0.y);
+	double d_one_over_z_dyr = (1.0f / p1.w - 1.0f / p0.w) / (p2.y - p0.y);
+	double d_u_over_z_dyr = (uv_p1.x / p1.w - uv_p0.x / p0.w) / (p2.y - p0.y);
+	double d_v_over_z_dyr = (uv_p1.y / p1.w - uv_p0.y / p0.w) / (p2.y - p0.y);
 
 	//扫描线的范围
 	int ystart = (int)ceil(p0.y);
@@ -374,32 +374,32 @@ void Render::FillTriangleBottomFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 
 
 	//初始值
 	//左边线
-	float x_left = p0.x + (ystart - p0.y) * dxdyl;
-	float one_over_z_left = 1.0f / p0.w;
-	float u_over_z_left = uv_p0.x / p0.w;
-	float v_over_z_left = uv_p0.y / p0.w;
+	double x_left = p0.x + (ystart - p0.y) * dxdyl;
+	double one_over_z_left = 1.0f / p0.w;
+	double u_over_z_left = uv_p0.x / p0.w;
+	double v_over_z_left = uv_p0.y / p0.w;
 	//右边线
-	float x_right = p0.x + (ystart - p0.y) * dxdyr;
-	float one_over_z_right = 1.0f / p0.w;
-	float u_over_z_right = uv_p0.x / p0.w;
-	float v_over_z_right = uv_p0.y / p0.w;
+	double x_right = p0.x + (ystart - p0.y) * dxdyr;
+	double one_over_z_right = 1.0f / p0.w;
+	double u_over_z_right = uv_p0.x / p0.w;
+	double v_over_z_right = uv_p0.y / p0.w;
 
 	//绘制三角形
 	for (int y = ystart; y <= yend; y++) {
 		int xstart = (int)ceil(x_left);
 		int xend = (int)ceil(x_right) - 1;
 
-		float ddz_step = (one_over_z_right - one_over_z_left) / (float)(xend - xstart);
-		float ddu_step = (u_over_z_right - u_over_z_left) / (float)(xend - xstart);
-		float ddv_step = (v_over_z_right - v_over_z_left) / (float)(xend - xstart);
-		float ddz = one_over_z_left;
-		float ddu = u_over_z_left;
-		float ddv = v_over_z_left;
+		double ddz_step = (one_over_z_right - one_over_z_left) / (double)(xend - xstart);
+		double ddu_step = (u_over_z_right - u_over_z_left) / (double)(xend - xstart);
+		double ddv_step = (v_over_z_right - v_over_z_left) / (double)(xend - xstart);
+		double ddz = one_over_z_left;
+		double ddu = u_over_z_left;
+		double ddv = v_over_z_left;
 
 		//绘制一条扫描线
 		for (int x = xstart; x <= xend; x++) {
-			float u = ddu / ddz;
-			float v = ddv / ddz;
+			double u = ddu / ddz;
+			double v = ddv / ddz;
 
 			int _index = (y - 1) * WindowFrame::rect_client.right + x;
 
@@ -407,7 +407,7 @@ void Render::FillTriangleBottomFlat(Vector4 &p0, Vector2<float>& uv_p0, Vector4 
 				float &_z = m_z_depth_buffer[_index];
 				if (ddz > _z) {
 					DrawPixel(x, y, GetPixel(*texture, (int)u, (int)v));
-					_z = ddz;
+					_z = (float)ddz;
 				}
 			}
 			ddz += ddz_step;

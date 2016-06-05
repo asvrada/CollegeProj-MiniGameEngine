@@ -11,12 +11,17 @@
 class Cube : public GameObject {
 public:
 	void control() {
-		if (Input::KeyPressed(65)) {
+		if (Input::KeyPressed(VK_A)) {
 			rotation.y -= 100 * Time::GetDeltaTime();
 		}
-		if (Input::KeyPressed(68)) {
-			rotation.z += 100 * Time::GetDeltaTime();
+		if (Input::KeyPressed(VK_D)) {
+			rotation.x += 100 * Time::GetDeltaTime();
 		}
+	}
+
+	void init() {
+		rotation.y = 180.0f;
+		model = "plane";
 	}
 
 	void update() {

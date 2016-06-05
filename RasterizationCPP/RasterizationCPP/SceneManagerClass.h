@@ -22,6 +22,8 @@ public:
 	//每帧调用
 	//更新所有物体的情况
 	SceneManager& update();
+
+	Object* findElementByName(string name);
 };
 
 #endif
