@@ -187,7 +187,7 @@ Matrix4::Matrix4()
 
 //平移矩阵
 Matrix4::Matrix4(const Vector3& transition) {
-	SetZero();
+	Matrix4();
 
 	var[0][0] = 1.0f;
 	var[1][1] = 1.0f;
@@ -200,7 +200,7 @@ Matrix4::Matrix4(const Vector3& transition) {
 }
 
 Matrix4::Matrix4(float x, float y, float z) {
-	SetZero();
+	Matrix4();
 
 	var[0][0] = 1.0f;
 	var[1][1] = 1.0f;
@@ -259,30 +259,12 @@ Matrix4::Matrix4(char axis, float degree) {
 	}
 }
 
-Matrix4::Matrix4(char ThisUseless, const Vector3 &b) {
-	*this = Matrix4('x', b.x)*Matrix4('y', b.y)*Matrix4('z', b.z);
-}
-
-//全方向的旋转矩阵
-Matrix4::Matrix4(char useless, float x, float y, float z) {
-	*this = Matrix4('x', x)*Matrix4('y', y)*Matrix4('z', z);
-}
-
-Matrix4::Matrix4(float scale, Vector3 Rotation, Vector3 Position) {
-	*this = Matrix4(scale) * Matrix4('a', Rotation) * Matrix4(Position);
+Matrix4::Matrix4(Vector3 scale, Vector3 Rotation, Vector3 Position) {
+	*this = Matrix4().createScaleMatrix4(scale) * Matrix4().createRotationMatrix4(Rotation) * Matrix4().createTransitionMatrix4(Position);
 }
 
 Matrix4::Matrix4(Matrix4 &a, const Matrix4 &b) {
 	(*this) = a*b;
-}
-
-//对角线矩阵
-//缩放矩阵
-Matrix4::Matrix4(float input)
-{
-	SetZero();
-	var[0][0] = var[1][1] = var[2][2]  = input;
-	var[3][3] = 1.0f;
 }
 
 //复制构造函数
@@ -292,8 +274,8 @@ Matrix4::Matrix4(const Matrix4 &old)
 }
 
 //将当前矩阵设为平移矩阵
-void Matrix4::TransitionMatrix(const Vector3 &transition) {
-	//SetZero
+Matrix4& Matrix4::createTransitionMatrix4(const Vector3 &transition) {
+	SetZero();
 
 	var[0][0] = 1.0f;
 	var[1][1] = 1.0f;
@@ -303,8 +285,99 @@ void Matrix4::TransitionMatrix(const Vector3 &transition) {
 	var[3][0] = transition.x;
 	var[3][1] = transition.y;
 	var[3][2] = transition.z;
+
+	return *this;
 }
 
+Matrix4& Matrix4::createTransitionMatrix4(float x, float y, float z) {
+	SetZero();
+
+	var[0][0] = 1.0f;
+	var[1][1] = 1.0f;
+	var[2][2] = 1.0f;
+	var[3][3] = 1.0f;
+
+	var[3][0] = x;
+	var[3][1] = y;
+	var[3][2] = z;
+
+	return *this;
+}
+
+//给Vector3创造旋转矩阵
+Matrix4& Matrix4::createRotationMatrix4(const Vector3& b) {
+	*this = Matrix4('x', b.x) * Matrix4('y', b.y) * Matrix4('z', b.z);
+	return *this;
+}
+
+//给出3个轴的旋转角，创建旋转矩阵
+Matrix4& Matrix4::createRotationMatrix4(float x, float y, float z) {
+	*this = Matrix4('x', x)*Matrix4('y', y)*Matrix4('z', z);
+	return *this;
+}
+
+//缩放矩阵
+Matrix4& Matrix4::createScaleMatrix4(const Vector3 &factor) {
+	SetZero();
+
+	var[0][0] = factor.x;
+	var[1][1] = factor.y;
+	var[2][2] = factor.z;
+
+	var[3][3] = 1;
+	return *this;
+}
+Matrix4& Matrix4::createScaleMatrix4(float x, float y, float z) {
+	SetZero(); 
+	
+	var[0][0] = x;
+	var[1][1] = y;
+	var[2][2] = z;
+
+	var[3][3] = 1;
+	return *this;
+}
+
+//在当前矩阵基础上进行操作
+//平移
+Matrix4& Matrix4::changePosition(const Vector3& t) {
+	var[3][0] += t.x;
+	var[3][1] += t.y;
+	var[3][2] += t.z;
+	return *this;
+}
+Matrix4& Matrix4::changePosition(float x, float y, float z) {
+	var[3][0] += x;
+	var[3][1] += y;
+	var[3][2] += z;
+	return *this;
+}
+
+//旋转
+Matrix4& Matrix4::changeRotationSingleAxis(char axis, float degree) {
+	*this = *this * Matrix4(axis, degree);
+	return *this;
+}
+Matrix4& Matrix4::changeRotationMultiAxes(const Vector3& t) {
+	this->changeRotationSingleAxis('x', t.x).changeRotationSingleAxis('y', t.y).changeRotationSingleAxis('z', t.z);
+	return *this;
+}
+Matrix4& Matrix4::changeRotationMultiAxes(float x, float y, float z) {
+	this->changeRotationSingleAxis('x', x).changeRotationSingleAxis('y', y).changeRotationSingleAxis('z', z);
+	return *this;
+}
+
+//缩放
+Matrix4& Matrix4::changeScale(const Vector3& t) {
+	*this = *this * Matrix4().createScaleMatrix4(t);
+	return *this;
+}
+Matrix4& Matrix4::changeScale(float x, float y, float z) {
+	*this = *this * Matrix4().createScaleMatrix4(x, y, z);
+	return *this;
+}
+
+//求余子式
 float Matrix4::Determinant(const Matrix3 &input)
 {
 	return

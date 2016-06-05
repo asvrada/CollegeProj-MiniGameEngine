@@ -230,6 +230,7 @@ public:
 	Matrix4();
 	Matrix4(const Matrix4&);
 	~Matrix4() {}
+
 	void SetZero() {
 		memset(var, 0, 4 * 4 * sizeof(float));
 	}
@@ -238,10 +239,6 @@ public:
 	/////////////////////////
 	// 特殊用处的构造矩阵 //
 	/////////////////////////
-
-	//创建对角线元素为给定数值的矩阵
-	//用于缩放
-	Matrix4(float);
 
 	//创建平移矩阵
 	Matrix4(const Vector3&);
@@ -252,20 +249,43 @@ public:
 	//比如 正90 度
 	//绕单一轴的旋转
 	Matrix4(char axis, float degree);
-	//给定所有三个轴的旋转参数
-	Matrix4(char ThisUseless, const Vector3&);
-	Matrix4(char ThisUseless, float degreeX, float degreeY, float degreeZ);
 
 	//根据 缩放、旋转、平移 生成矩阵
-	Matrix4(float scale, Vector3 Rotation, Vector3 Position);
+	Matrix4(Vector3 scale, Vector3 Rotation, Vector3 Position);
 
 	//矩阵相乘
 	Matrix4(Matrix4&, const Matrix4&);
 
 	////////////////以上是构造函数////////////////
+	//todo
+	//inline
 
 	//根据向量生成平移矩阵
-	void TransitionMatrix(const Vector3 &);
+	Matrix4& createTransitionMatrix4(const Vector3&);
+	Matrix4& createTransitionMatrix4(float x = 0, float y = 0, float z = 0);
+
+	//旋转矩阵
+	Matrix4& createRotationMatrix4(const Vector3&);
+	Matrix4& createRotationMatrix4(float x = 0, float y = 0, float z = 0);
+
+	//缩放矩阵
+	Matrix4& createScaleMatrix4(const Vector3&);
+	Matrix4& createScaleMatrix4(float x = 0, float y = 0, float z = 0);
+
+	//在当前矩阵上进行操作
+	//进行平移
+	Matrix4& changePosition(const Vector3&);
+	Matrix4& changePosition(float x = 0, float y = 0, float z = 0);
+
+	//进行旋转
+	Matrix4& changeRotationSingleAxis(char axis, float degree);
+	Matrix4& changeRotationMultiAxes(const Vector3&);
+	Matrix4& changeRotationMultiAxes(float x = 0, float y = 0, float z = 0);
+
+	//进行缩放
+	Matrix4& changeScale(const Vector3&);
+	Matrix4& changeScale(float x = 0, float y = 0, float z = 0);
+
 
 	//求余子式
 	float Determinant(const Matrix3&);
@@ -287,7 +307,6 @@ public:
 	Matrix4 operator * (const  Matrix4&);
 	//矩阵 x 数字
 	Matrix4 operator * (const float&);
-
 };
 
 //存放一个将要渲染的三角形

@@ -40,7 +40,9 @@ public:
 
 	//继承
 	void update();
-	void init() {};
+	void init() {
+		active = true;
+	};
 
 	//不是继承的
 	Camera& init(float aspect, float fov);

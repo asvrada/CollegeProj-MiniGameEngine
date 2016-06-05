@@ -137,11 +137,7 @@ void Camera::update() {
 	if (active) {
 		CameraControl();
 	}
-	if (Input::KeyPressed('S')) {
-		position.z -= 50 * Time::GetDeltaTime();
-	}
-	if (Input::KeyPressed('W')) {
-		position.z += 50 * Time::GetDeltaTime();
-	}
-	world_to_view = (Matrix4('A', rotation) * Matrix4(position)).Invert();
+	
+	world_to_view.createRotationMatrix4(rotation).changePosition(position).Invert();
+	//world_to_view = (Matrix4('A', rotation) * Matrix4(position)).Invert();
 }

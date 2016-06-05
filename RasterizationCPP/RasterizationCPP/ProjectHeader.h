@@ -119,8 +119,8 @@ using std::shared_ptr;
 
 //角度转换
 #define DEGREE(x) (0.01745f*(x))
+
 //动态多态
-//#define PTR_CONVERT(shared_ptr, type) ((type*)shared_ptr.get())
 #define PTR_CONVERT(shared_ptr, type) (dynamic_cast<type*>(shared_ptr.get()))
 
 //#define ERROR 0

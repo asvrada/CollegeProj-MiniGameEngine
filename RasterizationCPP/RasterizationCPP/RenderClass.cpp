@@ -32,7 +32,9 @@ void Render::m_DrawObjects() {
 
 		//新建本地到齐次剪裁空间的矩阵，用于下面的计算
 		//依次乘以该模型的缩放参数、旋转参数、平移参数
-		Matrix4 LocalToHomo = Matrix4('A', object->rotation) * Matrix4(object->position);
+		//Matrix4 LocalToHomo = Matrix4('A', object->rotation) * Matrix4(object->position);
+		Matrix4 LocalToHomo;
+		LocalToHomo.createScaleMatrix4(object->scale).changeRotationMultiAxes(object->rotation).changePosition(object->position);
 		LocalToHomo = LocalToHomo * WorldToHomo;
 
 		//用于暂时保存该模型变换后的顶点

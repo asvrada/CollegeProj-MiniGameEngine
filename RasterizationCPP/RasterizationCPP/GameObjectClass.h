@@ -11,7 +11,9 @@ public:
 	Vector3 scale;
 	string model;
 public:
-	GameObject() {}
+	GameObject() {
+		scale = 1;
+	}
 
 	/////////
 	// ผฬณะ //

@@ -1,5 +1,7 @@
 #include "InputClass.h"
 
+#include "WindowFrameClass.h"
+
 //static 初始化
 KeyPressedList Input::m_key_pressed = KeyPressedList();
 POINT Input::point_cursor_center_snapped = POINT();
@@ -69,6 +71,12 @@ int Input::ReactToKeyPressed() {
 	//如果按下ESC
 	if (KeyPressed(VK_ESCAPE)) {
 		SendMessage(m_hwnd, WM_CLOSE, 0, 0);
+	}
+	if (KeyPressed(VK_1)) {
+		WindowFrame::STYLE_CHECKER = WindowFrame::STYLE_CHECKER & ~RENDER_MODE_MASK | RENDER_MODE_FILL;
+	}
+	if (KeyPressed(VK_2)) {
+		WindowFrame::STYLE_CHECKER = WindowFrame::STYLE_CHECKER & ~RENDER_MODE_MASK | RENDER_MODE_OUTLINE;
 	}
 	return OK;
 }
