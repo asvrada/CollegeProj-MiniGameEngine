@@ -51,6 +51,9 @@ using std::vector;
 #include <map>
 using std::map;
 
+#include <algorithm>
+using std::sort;
+
 #include <fstream>
 using std::ifstream;
 #include <string>

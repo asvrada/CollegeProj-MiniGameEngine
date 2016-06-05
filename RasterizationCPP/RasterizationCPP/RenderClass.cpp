@@ -220,7 +220,44 @@ void Render::FillTriangles(vector<Fragment> &list)
 		Vector2<float> &uv_b = item.uvList[1];
 		Vector2<float> &uv_c = item.uvList[2];
 
+		//将齐次剪裁空间的点转换到视口空间
+		//todo
+		HomoToScreenCoord(a);
+		HomoToScreenCoord(b);
+		HomoToScreenCoord(c);
 
+		//按照 a.y < b.y < c.y 的顺序排好
+		if (a.y < c.y && b.y < c.y) {
+			//C 最上面
+			if (a.y > b.y) {
+				swap<Vector4>(a, b);
+				swap<Vector2<float>>(uv_a, uv_b);
+			}
+		}
+		else if (b.y > a.y && b.y > c.y) {
+			//B 最上面
+			//B C 互换
+			swap<Vector4>(c, b);
+			swap<Vector2<float>>(uv_c, uv_b);
+
+			if (a.y > b.y) {
+				swap<Vector4>(a, b);
+				swap<Vector2<float>>(uv_a, uv_b);
+			}
+		}
+		else if (a.y > b.y && a.y > c.y) {
+			//A 最上面
+			//A C 互换
+			swap<Vector4>(a, c);
+			swap<Vector2<float>>(uv_a, uv_c);
+
+			if (b.y < a.y) {
+				swap<Vector4>(b, a);
+				swap<Vector2<float>>(uv_b, uv_a);
+			}
+		}
+
+		/*
 		//按照 a.y > b.y > c.y 的顺序排好
 		if (a.y > b.y && a.y > c.y) {
 			//A 最上面
@@ -251,12 +288,7 @@ void Render::FillTriangles(vector<Fragment> &list)
 				swap<Vector2<float>>(uv_b, uv_c);
 			}
 		}
-
-
-		//将齐次剪裁空间的点转换到视口空间
-		HomoToScreenCoord(a);
-		HomoToScreenCoord(b);
-		HomoToScreenCoord(c);
+		*/
 
 		//创建剪裁出的D点
 		Vector4 d;

@@ -27,6 +27,3 @@ public:
 };
 
 #endif
-
-//todo
-//添加专门存放模型的vector

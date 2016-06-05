@@ -20,7 +20,6 @@ public:
 	}
 
 	void init() {
-		scale = Vector3(1, 2, 3);
 		//rotation.y = 180.0f;
 		model = "teapot";
 	}

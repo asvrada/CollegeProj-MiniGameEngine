@@ -43,8 +43,7 @@ inline void Vector3::VectorUnify() {
 	z /= length;
 }
 
-inline Vector3 Vector3::CrossProduct(const Vector3& b)
-{
+inline Vector3 Vector3::CrossProduct(const Vector3& b) {
 	Vector3 output;
 	output.x = y*b.z - z*b.y;
 	output.y = z*b.x - x*b.z;
@@ -52,13 +51,11 @@ inline Vector3 Vector3::CrossProduct(const Vector3& b)
 	return output;
 }
 
-inline float Vector3::DotProduct(const Vector3& b)
-{
+inline float Vector3::DotProduct(const Vector3& b) {
 	return x*b.x + y*b.y + z*b.z;
 }
 
-Matrix4 Vector3::GetTransitonMatrix()
-{
+Matrix4 Vector3::GetTransitonMatrix() {
 	Matrix4 matrix_T;
 
 	matrix_T.var[0][0] = 1.0f;
@@ -73,26 +70,22 @@ Matrix4 Vector3::GetTransitonMatrix()
 	return matrix_T;
 }
 
-Vector3 Vector3::operator * (const Matrix3 &b)
-{
+Vector3 Vector3::operator * (const Matrix3 &b) {
 	return Vector3(
 		x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0],
 		x*b.var[0][1] + y*b.var[1][1] + z*b.var[2][1],
 		x*b.var[0][2] + y*b.var[1][2] + z*b.var[2][2]);
 }
 
-Vector4 Vector3::operator * (const Matrix4 &b)
-{
+Vector4 Vector3::operator * (const Matrix4 &b) {
 	return Vector4(*this,true) * b;
 }
 
-Vector3 Vector3::operator+(const Vector3 &b)
-{
+Vector3 Vector3::operator+(const Vector3 &b) {
 	return Vector3(x + b.x, y + b.y, z + b.z);
 }
 
-Vector3 Vector3::operator-(const Vector3 &b)
-{
+Vector3 Vector3::operator-(const Vector3 &b) {
 	return Vector3(x - b.x, y - b.y, z - b.z);
 }
 
@@ -105,8 +98,7 @@ wstringstream &operator << (wstringstream& ws, const Vector3& v) {
 Vector4
 *************************/
 
-Vector4 Vector4::operator*(const Matrix4 & b)
-{
+Vector4 Vector4::operator*(const Matrix4 & b) {
 	Vector4 tmp;
 	tmp.x = x*b.var[0][0] + y*b.var[1][0] + z*b.var[2][0] + w * b.var[3][0];
 	tmp.y = x*b.var[0][1] + y*b.var[1][1] + z*b.var[2][1] + w * b.var[3][1];
@@ -115,8 +107,7 @@ Vector4 Vector4::operator*(const Matrix4 & b)
 	return tmp;
 }
 
-void Vector4::VectorUnify()
-{
+void Vector4::VectorUnify() {
 	float length = x * x + y * y + z * z;
 	length = sqrtf(length);
 	x /= length;
@@ -138,18 +129,15 @@ Matrix3::Matrix3() {
 	memset(var, 0, 3 * 3 * sizeof(float));
 }
 
-Matrix3::Matrix3(const Matrix3 &old)
-{
+Matrix3::Matrix3(const Matrix3 &old) {
 	memcpy(var, old.var, 3 * 3 * sizeof(float));
 }
 
-void Matrix3::SetZero()
-{
+void Matrix3::SetZero() {
 	memset(var, 0, 3 * 3 * sizeof(float));
 }
 
-Matrix3 Matrix3::operator*(const Matrix3 &b)
-{
+Matrix3 Matrix3::operator*(const Matrix3 &b) {
 	Matrix3 martix;
 	for (int lop = 0; lop < 3; lop++)
 	{
@@ -164,8 +152,7 @@ Matrix3 Matrix3::operator*(const Matrix3 &b)
 	return martix;
 }
 
-Matrix3 Matrix3::operator*(const float &multi)
-{
+Matrix3 Matrix3::operator*(const float &multi) {
 	Matrix3 tmp = *this;
 	tmp.var[0][0] *= multi;
 	tmp.var[1][1] *= multi;
@@ -180,14 +167,13 @@ Martix
 4 x 4
 **********************/
 
-Matrix4::Matrix4()
-{
+Matrix4::Matrix4() {
 	SetZero();
 }
 
 //平移矩阵
 Matrix4::Matrix4(const Vector3& transition) {
-	Matrix4();
+	SetZero();
 
 	var[0][0] = 1.0f;
 	var[1][1] = 1.0f;
@@ -200,7 +186,7 @@ Matrix4::Matrix4(const Vector3& transition) {
 }
 
 Matrix4::Matrix4(float x, float y, float z) {
-	Matrix4();
+	SetZero();
 
 	var[0][0] = 1.0f;
 	var[1][1] = 1.0f;
@@ -264,12 +250,11 @@ Matrix4::Matrix4(Vector3 scale, Vector3 Rotation, Vector3 Position) {
 }
 
 Matrix4::Matrix4(Matrix4 &a, const Matrix4 &b) {
-	(*this) = a*b;
+	*this = a*b;
 }
 
 //复制构造函数
-Matrix4::Matrix4(const Matrix4 &old)
-{
+Matrix4::Matrix4(const Matrix4 &old) {
 	memcpy(var, old.var, 4 * 4 * sizeof(float));
 }
 
@@ -378,8 +363,7 @@ Matrix4& Matrix4::changeScale(float x, float y, float z) {
 }
 
 //求余子式
-float Matrix4::Determinant(const Matrix3 &input)
-{
+float Matrix4::Determinant(const Matrix3 &input) {
 	return
 		(input.var[0][0] * input.var[1][1] * input.var[2][2]) +
 		(input.var[0][1] * input.var[1][2] * input.var[2][0]) +
@@ -390,8 +374,7 @@ float Matrix4::Determinant(const Matrix3 &input)
 }
 
 //求逆矩阵
-Matrix4& Matrix4::Invert()
-{
+Matrix4& Matrix4::Invert() {
 	Matrix4 output;
 	//用于储存每次的余子式
 	Matrix3 tmp;
@@ -427,12 +410,15 @@ Matrix4& Matrix4::Invert()
 			x_tmp = 0;
 			y_tmp = 0;
 			//为output矩阵的元素求值
+			//一行行一列列的进行计算
 			for (x = 0; x < 4; x++) {
 				y_tmp = 0;
+				//跳过当前元素
 				if (x == lop) {
 					continue;
 				}
 				for (y = 0; y < 4; y++) {
+					//跳过当前元素
 					if (y == lop2) {
 						continue;
 					}

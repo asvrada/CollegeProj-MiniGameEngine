@@ -257,8 +257,6 @@ public:
 	Matrix4(Matrix4&, const Matrix4&);
 
 	////////////////以上是构造函数////////////////
-	//todo
-	//inline
 
 	//根据向量生成平移矩阵
 	Matrix4& createTransitionMatrix4(const Vector3&);
@@ -291,12 +289,6 @@ public:
 	float Determinant(const Matrix3&);
 	//求逆矩阵
 	Matrix4& Invert();
-
-	////////////////
-	// static 函数 //
-	///////////////
-
-	//todo
 
 	/////////////////////
 	//运算符重载部分  //
