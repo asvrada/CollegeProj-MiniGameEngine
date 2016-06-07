@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rasterizer", "RasterizationCPP\RasterizationCPP.vcxproj", "{A70B284D-CBB1-43FA-A33F-EC9131228BFB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XMLLoader", "XMLLoader\XMLLoader.vcxproj", "{7328F075-1755-49AD-893C-9CBDE597333B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{A70B284D-CBB1-43FA-A33F-EC9131228BFB}.Release|x64.Build.0 = Release|x64
 		{A70B284D-CBB1-43FA-A33F-EC9131228BFB}.Release|x86.ActiveCfg = Release|Win32
 		{A70B284D-CBB1-43FA-A33F-EC9131228BFB}.Release|x86.Build.0 = Release|Win32
+		{7328F075-1755-49AD-893C-9CBDE597333B}.Debug|x64.ActiveCfg = Debug|x64
+		{7328F075-1755-49AD-893C-9CBDE597333B}.Debug|x64.Build.0 = Debug|x64
+		{7328F075-1755-49AD-893C-9CBDE597333B}.Debug|x86.ActiveCfg = Debug|Win32
+		{7328F075-1755-49AD-893C-9CBDE597333B}.Debug|x86.Build.0 = Debug|Win32
+		{7328F075-1755-49AD-893C-9CBDE597333B}.Release|x64.ActiveCfg = Release|x64
+		{7328F075-1755-49AD-893C-9CBDE597333B}.Release|x64.Build.0 = Release|x64
+		{7328F075-1755-49AD-893C-9CBDE597333B}.Release|x86.ActiveCfg = Release|Win32
+		{7328F075-1755-49AD-893C-9CBDE597333B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

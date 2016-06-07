@@ -22,7 +22,7 @@ SceneManager & SceneManager::init() {
 	//创建主相机
 	objects_all.push_back(make_shared<Camera>());
 	main_camera = PTR_CONVERT(objects_all[0], Camera);
-	main_camera->init((float)(WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom), 70.0f).position.z = -70.0f;
+	main_camera->init((float)(WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom), 70.0f).position.z = -140.0f;
 	main_camera->ChangeConfig().active = false;
 
 

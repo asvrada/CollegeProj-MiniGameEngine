@@ -8,6 +8,7 @@ class Object {
 public:
 	bool active;
 	//物体名称
+	//必填
 	string name;
 	//物体位置
 	Vector3 position;

@@ -1,0 +1,22 @@
+<scene>
+  <object>
+    <class>
+      Camera
+    </class>
+    <name>
+      main_camera
+    </name>
+  </object>
+
+  <object>
+    <class>
+      GameObject
+    </class>
+    <name>
+      sample_object
+    </name>
+    <model>
+      teapot
+    </model>
+  </object>
+</scene>
