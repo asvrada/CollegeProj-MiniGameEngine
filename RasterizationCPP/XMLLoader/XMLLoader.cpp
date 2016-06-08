@@ -38,13 +38,57 @@ bool XMLLoader::loadFile(string fileName) {
 XMLLoader& XMLLoader::read() {
 	if (!is_open) {
 		std::cerr << "File not open" << endl;
-		return;
+		return *this;
 	}
 
 	//todo
 	return *this;
 }
 
-void XMLLoader::analyse() {
+void XMLLoader::clearSpace(string &str) {
+	if (str[0] != ' ') {
+		return;
+	}
+	int lop = 0;
+	for (; lop < str.size(); lop++) {
+		if (str[lop] != ' ') {
+			break;
+		}
+	}
+	str.erase(0, lop);
+}
 
+//是尖括号括起来的 开头 返回1 结尾 返回0
+//数据
+ANALYSE_RESULT XMLLoader::analyseString(string str) {
+	clearSpace(str);
+	cout << str << "           --Current Line" << endl;
+
+	ANALYSE_RESULT result;
+	//是标签
+	if (str[0] == '<') {
+		//是结束标签
+		if (str[1] == '/') {
+			result.type = ST_END;
+		}
+		else {
+			result.type = ST_START;
+		}
+	}
+	//是数据的话
+	else {
+		//todo
+		//regex 
+	}
+
+	return result;
+}
+
+void XMLLoader::analyse() {
+	while (!fileStream.eof()) {
+		string currentLine;
+		getline(fileStream, currentLine);
+
+		analyseString(currentLine);
+	}
 }
