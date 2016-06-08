@@ -1,4 +1,4 @@
-#ifndef XMLLOADER_H
+ï»¿#ifndef XMLLOADER_H
 #define XMLLOADER_H
 
 #include <assert.h>
@@ -34,13 +34,13 @@ using std::regex_match;
 using std::regex_search;
 
 /////////////
-// ¸¨ÖúÊı¾İ //
+// è¾…åŠ©æ•°æ® //
 /////////////
 
-//¶¯Ì¬¶àÌ¬
+//åŠ¨æ€å¤šæ€
 #define PTR_CONVERT(shared_ptr, type) (dynamic_cast<type*>(shared_ptr.get()))
 
-//½áµã»áÓĞ¼¸ÖÖÀàĞÍ
+//ç»“ç‚¹ä¼šæœ‰å‡ ç§ç±»å‹
 enum TYPE {
 	TYPE_EMPTY,
 	TYPE_BASE,
@@ -50,7 +50,7 @@ enum TYPE {
 	TYPE_OBJECT
 };
 
-//ÓÃÓÚ·ÖÎöµ±Ç°ĞĞÀïÊÇÊ²Ã´
+//ç”¨äºåˆ†æå½“å‰è¡Œé‡Œæ˜¯ä»€ä¹ˆ
 enum STRINGTYPE {
 	ST_EMPTY,
 	ST_START,
@@ -58,8 +58,8 @@ enum STRINGTYPE {
 	ST_VALUE
 };
 
-//»ùÀà
-//·½±ã´«µİÊı¾İ
+//åŸºç±»
+//æ–¹ä¾¿ä¼ é€’æ•°æ®
 class Base {
 public:
 	TYPE type;
@@ -72,15 +72,15 @@ public:
 		return TYPE_BASE;
 	}
 
-	//Ğéº¯Êı
-	//ÖØÔØÊä³öÁ÷
+	//è™šå‡½æ•°
+	//é‡è½½è¾“å‡ºæµ
 	friend ostream& operator << (ostream& os, Base& t) {
 		os << "TYPE_BASE";
 		return os;
 	}
 };
 
-//´¢´æÊı×Ö
+//å‚¨å­˜æ•°å­—
 class Number :public Base {
 public:
 	double val;
@@ -89,7 +89,7 @@ public:
 		type = TYPE_NUMBER;
 		val = 0;
 	}
-	//¹¹Ôìº¯Êı
+	//æ„é€ å‡½æ•°
 	Number(double _val) :Number() {
 		val = _val;
 	}
@@ -98,14 +98,14 @@ public:
 		return type;
 	}
 
-	//ÖØÔØÊä³öÁ÷
+	//é‡è½½è¾“å‡ºæµ
 	friend ostream& operator << (ostream& os, Number& t) {
 		os << "TYPE_NUMBER : " << t.val;
 		return os;
 	}
 };
 
-//´¢´æ×Ö·û´®
+//å‚¨å­˜å­—ç¬¦ä¸²
 class String :public Base {
 public:
 	string val;
@@ -113,7 +113,7 @@ public:
 	String() {
 		type = TYPE_STRING;
 	}
-	//¹¹Ôìº¯Êı
+	//æ„é€ å‡½æ•°
 	String(string _val) :String() {
 		val = _val;
 	}
@@ -122,7 +122,7 @@ public:
 		return type;
 	}
 
-	//ÖØÔØÊä³öÁ÷
+	//é‡è½½è¾“å‡ºæµ
 	friend ostream& operator << (ostream& os, String& t) {
 		os << "TYPE_STRING : " << t.val;
 		return os;
@@ -130,7 +130,7 @@ public:
 
 };
 
-//´¢´æÒ»¸öNumber»òÕßString
+//å‚¨å­˜ä¸€ä¸ªNumberæˆ–è€…String
 class Value : public Base {
 private:
 	shared_ptr<Base> val;
@@ -156,7 +156,7 @@ public:
 
 	//todo
 	//get set
-	//»ñÈ¡Êı¾İ
+	//è·å–æ•°æ®
 	Number* const getNumber() {
 		assert(type == TYPE_NUMBER);
 		return PTR_CONVERT(val, Number);
@@ -189,7 +189,7 @@ public:
 		}
 	}
 
-	//ÖØÔØÊä³öÁ÷
+	//é‡è½½è¾“å‡ºæµ
 	friend ostream& operator << (ostream& os, Value& t) {
 		switch (t.type) {
 		case TYPE_NUMBER:
@@ -208,40 +208,40 @@ public:
 	}
 };
 
-//Ã¿Ò»¶Ô¼âÀ¨ºÅ¾ÍÊÇÒ»¸öObject
-//¿ÉµÃÒ»¸öobjectÀïÃæ¿ÉÄÜÊÇ
-//A. Êı¸öobject
-//B. Êı¾İ
+//æ¯ä¸€å¯¹å°–æ‹¬å·å°±æ˜¯ä¸€ä¸ªObject
+//å¯å¾—ä¸€ä¸ªobjecté‡Œé¢å¯èƒ½æ˜¯
+//A. æ•°ä¸ªobject
+//B. æ•°æ®
 class Object : public Base {
 public:
 	string name;
 
 private:
-	//true±íÃ÷´¢´æÊı¾İ
-	//false±íÃ÷´¢´æÆäËûobject
+	//trueè¡¨æ˜å‚¨å­˜æ•°æ®
+	//falseè¡¨æ˜å‚¨å­˜å…¶ä»–object
 	TYPE storedType;
 	Value val;
 	vector<Object> list;
 
 public:
-	//¹¹Ôìº¯Êı
+	//æ„é€ å‡½æ•°
 	Object() {
 		type = TYPE_OBJECT;
 		storedType = TYPE_EMPTY;
 	}
 
-	//ÅĞ¶Ïµ±Ç°object´æ´¢µÄÀàĞÍ
+	//åˆ¤æ–­å½“å‰objectå­˜å‚¨çš„ç±»å‹
 	TYPE getType() {
 		return type;
 	}
 
-	//´æÖµ
+	//å­˜å€¼
 	void set(Value& t) {
 		storedType = TYPE_VALUE;
 		val = t;
 	}
 	void set(Object& t) {
-		//Èç¹ûÔ­ÏÈ´¢´æµÄ²»ÊÇobject
+		//å¦‚æœåŸå…ˆå‚¨å­˜çš„ä¸æ˜¯object
 		if (storedType != TYPE_OBJECT) {
 			storedType = TYPE_OBJECT;
 			list.clear();
@@ -249,7 +249,7 @@ public:
 		list.push_back(t);
 	}
 
-	//È¡Öµ
+	//å–å€¼
 	Value& getValue() {
 		assert(storedType == TYPE_VALUE);
 		return val;
@@ -259,15 +259,15 @@ public:
 		return list;
 	}
 
-	//ÖØÔØÊä³öÁ÷
+	//é‡è½½è¾“å‡ºæµ
 	friend ostream& operator << (ostream& os, Object &t) {
 		os << "Object";
 		return os;
 	}
 };
 
-//µ±Ç°ĞĞÒªÃ´ÊÇ±êÇ©£¨ÓÃ×Ö·û´®·µ»Ø
-//ÒªÃ´ÊÇÊı¾İ
+//å½“å‰è¡Œè¦ä¹ˆæ˜¯æ ‡ç­¾ï¼ˆç”¨å­—ç¬¦ä¸²è¿”å›
+//è¦ä¹ˆæ˜¯æ•°æ®
 struct ANALYSE_RESULT {
 	STRINGTYPE type;
 
@@ -295,7 +295,7 @@ struct ANALYSE_RESULT {
 
 class XMLLoader {
 ///////////
-//³ÉÔ±±äÁ¿//
+//æˆå‘˜å˜é‡//
 //////////
 public:
 	string fileName;
@@ -304,35 +304,35 @@ private:
 	bool is_open;
 	Object root;
 ///////////
-//³ÉÔ±º¯Êı//
+//æˆå‘˜å‡½æ•°//
 //////////
 public:
-	//¹¹Ôìº¯Êı
+	//æ„é€ å‡½æ•°
 	XMLLoader();
 	XMLLoader(string);
 
 	~XMLLoader();
 
-	//¶ÁÈ¡ÎÄ¼ş
-	//¶ÁÈ¡³É¹¦£¬·µ»Øtrue
-	//¶ÁÈ¡Ê§°Ü£¬·µ»Øfalse
+	//è¯»å–æ–‡ä»¶
+	//è¯»å–æˆåŠŸï¼Œè¿”å›true
+	//è¯»å–å¤±è´¥ï¼Œè¿”å›false
 	bool loadFile(string);
 
-	//Êä³ö¶ÁÈ¡µÄÎÄ¼şÄÚÈİ
+	//è¾“å‡ºè¯»å–çš„æ–‡ä»¶å†…å®¹
 	XMLLoader& read();
 
 private:
-	//¸¨Öúº¯Êı
+	//è¾…åŠ©å‡½æ•°
 
-	//Çå³ı×Ö·û´®¿ªÍ·µÄ¿Õ¸ñ
+	//æ¸…é™¤å­—ç¬¦ä¸²å¼€å¤´çš„ç©ºæ ¼
 	void clearSpace(string&);
 
-	//·ÖÎö¶ÁÈ¡µÄµ±Ç°ĞĞÊÇÊ²Ã´
+	//åˆ†æè¯»å–çš„å½“å‰è¡Œæ˜¯ä»€ä¹ˆ
 	ANALYSE_RESULT analyseString(string);
 
 
-	//Ö÷Òªº¯Êı
-	//·ÖÎöÎÄ¼ş
+	//ä¸»è¦å‡½æ•°
+	//åˆ†ææ–‡ä»¶
 	void analyse();
 };
 

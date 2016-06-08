@@ -1,4 +1,4 @@
-#include "XMLLoader.h"
+ï»¿#include "XMLLoader.h"
 
 XMLLoader::XMLLoader() {
 	is_open = false;
@@ -58,16 +58,16 @@ void XMLLoader::clearSpace(string &str) {
 	str.erase(0, lop);
 }
 
-//ÊÇ¼âÀ¨ºÅÀ¨ÆğÀ´µÄ ¿ªÍ· ·µ»Ø1 ½áÎ² ·µ»Ø0
-//Êı¾İ
+//æ˜¯å°–æ‹¬å·æ‹¬èµ·æ¥çš„ å¼€å¤´ è¿”å›1 ç»“å°¾ è¿”å›0
+//æ•°æ®
 ANALYSE_RESULT XMLLoader::analyseString(string str) {
 	clearSpace(str);
 	cout << str << "           --Current Line" << endl;
 
 	ANALYSE_RESULT result;
-	//ÊÇ±êÇ©
+	//æ˜¯æ ‡ç­¾
 	if (str[0] == '<') {
-		//ÊÇ½áÊø±êÇ©
+		//æ˜¯ç»“æŸæ ‡ç­¾
 		if (str[1] == '/') {
 			result.type = ST_END;
 		}
@@ -75,7 +75,7 @@ ANALYSE_RESULT XMLLoader::analyseString(string str) {
 			result.type = ST_START;
 		}
 	}
-	//ÊÇÊı¾İµÄ»°
+	//æ˜¯æ•°æ®çš„è¯
 	else {
 		//todo
 		//regex 
