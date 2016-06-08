@@ -62,9 +62,14 @@ void XMLLoader::clearSpace(string &str) {
 //数据
 ANALYSE_RESULT XMLLoader::analyseString(string str) {
 	clearSpace(str);
-	cout << str << "           --Current Line" << endl;
+	//cout << str << "           --Current Line" << endl;
 
 	ANALYSE_RESULT result;
+	if (str.size() == 0) {
+		result.type = ST_EMPTY;
+		return result;
+	}
+
 	//是标签
 	if (str[0] == '<') {
 		//是结束标签
@@ -77,18 +82,63 @@ ANALYSE_RESULT XMLLoader::analyseString(string str) {
 	}
 	//是数据的话
 	else {
+		result.type = ST_VALUE;
 		//todo
-		//regex 
+		//先假设全是字符串
+	}
+
+	switch (result.type) {
+		//</xxx>
+	case ST_END:
+		result.tag = str.substr(2, str.size() - 3);
+		break;
+		//<xxx>
+	case ST_START:
+		result.tag = str.substr(1, str.size() - 2);
+		break;
+	case ST_VALUE:
+		result.value.set(str);
+		break;
+	default:
+		break;
 	}
 
 	return result;
 }
 
 void XMLLoader::analyse() {
+	//用于储存数据的堆栈
+	stack<Object> s;
+
+	//跳过文件的第一行
+	bool skipFirstLine = false;
+
+	//读取到文件结束
 	while (!fileStream.eof()) {
 		string currentLine;
 		getline(fileStream, currentLine);
+		if (!skipFirstLine) {
+			skipFirstLine = true;
+			continue;
+		}
 
-		analyseString(currentLine);
+		//分析字符串
+		auto result = analyseString(currentLine);
+		cout << result << endl;
+
+
+		//todo
+		switch (result.type) {
+		case ST_START:
+			break;
+		case ST_END:
+			break;
+		case ST_VALUE:
+			break;
+		case ST_EMPTY:
+			break;
+		default:
+			break;
+		}
 	}
 }

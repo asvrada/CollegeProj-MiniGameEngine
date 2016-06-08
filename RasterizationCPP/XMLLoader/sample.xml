@@ -1,4 +1,5 @@
-﻿<scene>
+﻿<!--第一行一定不能放数据-->
+<scene>
   <object>
     <class>
       Camera

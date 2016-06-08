@@ -271,24 +271,26 @@ public:
 struct ANALYSE_RESULT {
 	STRINGTYPE type;
 
-	String str;
+	string tag;
 	Value value;
 
 	friend ostream& operator << (ostream& os, ANALYSE_RESULT& t) {
 		switch (t.type) {
 		case ST_START:
-			os << "ST_START " << t.str;
+			os << "ST_START  " << t.tag;
 			break;
 		case ST_END:
-			os << "ST_END " << t.str;
+			os << "ST_END  " << t.tag;
 			break;
 		case ST_VALUE:
-			os << "ST_VALUE " << t.value;
+			os << "ST_VALUE  " << t.value;
 			break;
 		case ST_EMPTY:
 			os << "ST_EMPTY";
 			break;
 		}
+
+		return os;
 	}
 };
 
