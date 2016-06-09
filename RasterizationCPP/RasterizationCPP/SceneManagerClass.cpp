@@ -38,7 +38,7 @@ SceneManager & SceneManager::init() {
 
 Object* SceneManager::findElementByName(string target) {
 	for (auto &item : objects_all) {
-		if (item->name == target) {
+		if (item->tag == target) {
 			return item.get();
 		}
 	}

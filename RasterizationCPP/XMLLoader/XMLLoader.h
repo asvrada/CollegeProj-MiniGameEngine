@@ -154,7 +154,6 @@ public:
 		return type;
 	}
 
-	//todo
 	//get set
 	//获取数据
 	Number* const getNumber() {
@@ -170,8 +169,7 @@ public:
 	void set(double _val) {
 		if (type != TYPE_NUMBER) {
 			type = TYPE_NUMBER;
-			auto newValue = new Number(_val);
-			val.reset(newValue);
+			val = make_shared<Number>(_val);
 		}
 		else {
 			PTR_CONVERT(val, Number)->val = _val;
@@ -181,8 +179,7 @@ public:
 	void set(string _val) {
 		if (type != TYPE_STRING) {
 			type = TYPE_STRING;
-			auto newValue = new String(_val);
-			val.reset(newValue);
+			val = make_shared<String>(_val);
 		}
 		else {
 			PTR_CONVERT(val, String)->val = _val;
@@ -214,7 +211,7 @@ public:
 //B. 数据
 class Object : public Base {
 public:
-	string name;
+	string tag;
 
 private:
 	//true表明储存数据
@@ -230,9 +227,17 @@ public:
 		storedType = TYPE_EMPTY;
 	}
 
+	Object(string _name) :Object() {
+		tag = _name;
+	}
+
 	//判断当前object存储的类型
 	TYPE getType() {
 		return type;
+	}
+
+	TYPE getStoreType() {
+		return storedType;
 	}
 
 	//存值
@@ -304,7 +309,10 @@ public:
 	ifstream fileStream;
 private:
 	bool is_open;
+	
+	//分析得到的树根
 	Object root;
+
 ///////////
 //成员函数//
 //////////
@@ -320,13 +328,16 @@ public:
 	//读取失败，返回false
 	bool loadFile(string);
 
+	//树的遍历
+	void read(Object root);
+
 	//输出读取的文件内容
 	XMLLoader& read();
 
 private:
 	//辅助函数
 
-	//清除字符串开头的空格
+	//清除字符串开头和结尾的空格
 	void clearSpace(string&);
 
 	//分析读取的当前行是什么

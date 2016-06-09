@@ -2,6 +2,7 @@
 
 XMLLoader::XMLLoader() {
 	is_open = false;
+	root.type = TYPE_EMPTY;
 }
 
 XMLLoader::XMLLoader(string _file) :XMLLoader() {
@@ -35,27 +36,62 @@ bool XMLLoader::loadFile(string fileName) {
 	return true;
 }
 
+void XMLLoader::read(Object root) {
+	//叶子结点
+	if (root.getStoreType() == TYPE_VALUE) {
+		cout << "<" << root.tag << ">" << "\n";
+		cout << root.getValue() << "\n";
+		cout << "</" << root.tag << ">" << endl;
+	}
+	//下面还有结点
+	else {
+		cout << "<" << root.tag << ">" << "\n";
+		for (auto &item : root.getList()) {
+			read(item);
+		}
+		cout << "</" << root.tag << ">" << "\n";
+	}
+}
+
 XMLLoader& XMLLoader::read() {
 	if (!is_open) {
 		std::cerr << "File not open" << endl;
 		return *this;
 	}
 
+	if (root.type == TYPE_EMPTY) {
+		std::cerr << "File is empty ?" << endl;
+	}
+
+	//树的遍历
+	read(root);
 	//todo
 	return *this;
 }
 
 void XMLLoader::clearSpace(string &str) {
-	if (str[0] != ' ') {
+	if (str.size() == 0) {
 		return;
 	}
-	int lop = 0;
-	for (; lop < str.size(); lop++) {
-		if (str[lop] != ' ') {
-			break;
-		}
+	//开头和结尾都没空格
+	if (str[0] != ' ' && str[str.size() - 1] != ' ') {
+		return;
 	}
-	str.erase(0, lop);
+
+	//清除开头的空格
+	auto cur = str.begin();
+	while (*cur == ' ') {
+		cur++;
+	}
+	str.erase(str.begin(), cur);
+
+	//清除结尾的空格
+	cur = str.end() - 1;
+	while (*cur == ' ') {
+		cur--;
+	}
+	cur++;
+	str.erase(cur, str.end());
 }
 
 //是尖括号括起来的 开头 返回1 结尾 返回0
@@ -107,11 +143,14 @@ ANALYSE_RESULT XMLLoader::analyseString(string str) {
 }
 
 void XMLLoader::analyse() {
+	//跳过文件的第一行
+	bool skipFirstLine = false;
+
 	//用于储存数据的堆栈
 	stack<Object> s;
 
-	//跳过文件的第一行
-	bool skipFirstLine = false;
+	Object lastPop;
+	lastPop.type = TYPE_EMPTY;
 
 	//读取到文件结束
 	while (!fileStream.eof()) {
@@ -124,16 +163,23 @@ void XMLLoader::analyse() {
 
 		//分析字符串
 		auto result = analyseString(currentLine);
-		cout << result << endl;
-
+		//cout << result << endl;
 
 		//todo
 		switch (result.type) {
 		case ST_START:
+			s.push(Object(result.tag));
 			break;
 		case ST_END:
+			lastPop = s.top();
+			s.pop();
+			//为空说明已经分析完了
+			if (!s.empty()) {
+				s.top().set(lastPop);
+			}
 			break;
 		case ST_VALUE:
+			s.top().set(result.value);
 			break;
 		case ST_EMPTY:
 			break;
@@ -141,4 +187,6 @@ void XMLLoader::analyse() {
 			break;
 		}
 	}
+	root = lastPop;
+	assert(s.empty());
 }

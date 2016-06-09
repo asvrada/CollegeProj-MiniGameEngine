@@ -18,6 +18,9 @@
     <Xml Include="sample.xml">
       <Filter>资源文件</Filter>
     </Xml>
+    <Xml Include="test.xml">
+      <Filter>资源文件</Filter>
+    </Xml>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

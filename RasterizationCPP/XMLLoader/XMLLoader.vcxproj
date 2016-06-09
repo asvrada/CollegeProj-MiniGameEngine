@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Xml Include="sample.xml" />
+    <Xml Include="test.xml" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
