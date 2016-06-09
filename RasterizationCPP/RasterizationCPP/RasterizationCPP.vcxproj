@@ -154,7 +154,6 @@
     <ClCompile Include="TimeClass.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="WindowFrameClass.cpp" />
-    <ClCompile Include="XMLParser\XMLLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
@@ -171,7 +170,6 @@
     <ClInclude Include="Utility.h" />
     <ClInclude Include="WindowFrameClass.h" />
     <ClInclude Include="Hierarchy.h" />
-    <ClInclude Include="XMLParser\XMLLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Rasterizer.rc" />

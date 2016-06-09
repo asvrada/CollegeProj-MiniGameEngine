@@ -28,9 +28,6 @@
     <Filter Include="源文件\物体基类">
       <UniqueIdentifier>{bb0a70c6-9540-4270-bfe8-b82caeaf4215}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XML">
-      <UniqueIdentifier>{18c6efa9-a6d2-4666-a763-73e4c0eddc2a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -59,9 +56,6 @@
     </ClCompile>
     <ClCompile Include="ModelInfo.cpp">
       <Filter>源文件\辅助类</Filter>
-    </ClCompile>
-    <ClCompile Include="XMLParser\XMLLoader.cpp">
-      <Filter>XML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,9 +100,6 @@
     </ClInclude>
     <ClInclude Include="CameraClass.h">
       <Filter>头文件\物体基类</Filter>
-    </ClInclude>
-    <ClInclude Include="XMLParser\XMLLoader.h">
-      <Filter>XML</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
