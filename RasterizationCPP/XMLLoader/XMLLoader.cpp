@@ -36,24 +36,29 @@ bool XMLLoader::loadFile(string fileName) {
 	return true;
 }
 
-void XMLLoader::read(Object root) {
+void XMLLoader::print(Object root, int indent) {
+	string str_indent;
+	for (int lop = 0; lop < indent; lop++) {
+		str_indent += "    ";
+	}
+
 	//叶子结点
 	if (root.getStoreType() == TYPE_VALUE) {
-		cout << "<" << root.tag << ">" << "\n";
-		cout << root.getValue() << "\n";
-		cout << "</" << root.tag << ">" << endl;
+		cout << str_indent << "<" << root.tag << ">" << "\n";
+		cout << str_indent << "    " << root.getValue() << "\n";
+		cout << str_indent << "</" << root.tag << ">" << endl;
 	}
 	//下面还有结点
 	else {
-		cout << "<" << root.tag << ">" << "\n";
+		cout << str_indent << "<" << root.tag << ">" << "\n";
 		for (auto &item : root.getList()) {
-			read(item);
+			print(item, indent + 1);
 		}
-		cout << "</" << root.tag << ">" << "\n";
+		cout << str_indent << "</" << root.tag << ">" << "\n";
 	}
 }
 
-XMLLoader& XMLLoader::read() {
+XMLLoader& XMLLoader::print() {
 	if (!is_open) {
 		std::cerr << "File not open" << endl;
 		return *this;
@@ -64,9 +69,15 @@ XMLLoader& XMLLoader::read() {
 	}
 
 	//树的遍历
-	read(root);
-	//todo
+	print(root, 0);
 	return *this;
+}
+
+const Object & XMLLoader::getRoot() {
+	if (root.getType() == TYPE_EMPTY) {
+		std::cerr << "Root is empty !" << endl;
+	}
+	return root;
 }
 
 void XMLLoader::clearSpace(string &str) {
@@ -98,9 +109,10 @@ void XMLLoader::clearSpace(string &str) {
 //数据
 ANALYSE_RESULT XMLLoader::analyseString(string str) {
 	clearSpace(str);
-	//cout << str << "           --Current Line" << endl;
 
 	ANALYSE_RESULT result;
+	double possibleNumber = 0;
+
 	if (str.size() == 0) {
 		result.type = ST_EMPTY;
 		return result;
@@ -118,9 +130,17 @@ ANALYSE_RESULT XMLLoader::analyseString(string str) {
 	}
 	//是数据的话
 	else {
-		result.type = ST_VALUE;
 		//todo
-		//先假设全是字符串
+		//匹配小数
+		regex r("((\\+|-)?[[:digit:]]+)(\\.(([[:digit:]]+)?))?");
+		if (regex_match(str, r)) {
+			result.type = ST_VALUE_NUMBER;
+			stringstream ss(str);
+			ss >> possibleNumber;
+		}
+		else {
+			result.type = ST_VALUE_STRING;
+		}
 	}
 
 	switch (result.type) {
@@ -132,8 +152,11 @@ ANALYSE_RESULT XMLLoader::analyseString(string str) {
 	case ST_START:
 		result.tag = str.substr(1, str.size() - 2);
 		break;
-	case ST_VALUE:
+	case ST_VALUE_STRING:
 		result.value.set(str);
+		break;
+	case ST_VALUE_NUMBER:
+		result.value.set(possibleNumber);
 		break;
 	default:
 		break;
@@ -165,7 +188,7 @@ void XMLLoader::analyse() {
 		auto result = analyseString(currentLine);
 		//cout << result << endl;
 
-		//todo
+		//栈操作
 		switch (result.type) {
 		case ST_START:
 			s.push(Object(result.tag));
@@ -178,7 +201,8 @@ void XMLLoader::analyse() {
 				s.top().set(lastPop);
 			}
 			break;
-		case ST_VALUE:
+		case ST_VALUE_NUMBER:
+		case ST_VALUE_STRING:
 			s.top().set(result.value);
 			break;
 		case ST_EMPTY:

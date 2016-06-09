@@ -3,6 +3,6 @@
 int main() {
 	XMLLoader loader;
 	loader.loadFile("sample.xml");
-	loader.read();
+	loader.print();
 	return 0;
 }

@@ -10,6 +10,9 @@ using std::getline;
 #include <fstream>
 using std::ifstream;
 
+#include <sstream>
+using std::stringstream;
+
 #include <iostream>
 using std::ostream;
 using std::cout;
@@ -55,7 +58,8 @@ enum STRINGTYPE {
 	ST_EMPTY,
 	ST_START,
 	ST_END,
-	ST_VALUE
+	ST_VALUE_STRING,
+	ST_VALUE_NUMBER
 };
 
 //基类
@@ -100,7 +104,7 @@ public:
 
 	//重载输出流
 	friend ostream& operator << (ostream& os, Number& t) {
-		os << "TYPE_NUMBER : " << t.val;
+		os << "[TYPE_NUMBER] " << t.val;
 		return os;
 	}
 };
@@ -124,7 +128,7 @@ public:
 
 	//重载输出流
 	friend ostream& operator << (ostream& os, String& t) {
-		os << "TYPE_STRING : " << t.val;
+		os << "[TYPE_STRING] " << t.val;
 		return os;
 	}
 
@@ -263,12 +267,6 @@ public:
 		assert(storedType == TYPE_OBJECT);
 		return list;
 	}
-
-	//重载输出流
-	friend ostream& operator << (ostream& os, Object &t) {
-		os << "Object";
-		return os;
-	}
 };
 
 //当前行要么是标签（用字符串返回
@@ -278,25 +276,6 @@ struct ANALYSE_RESULT {
 
 	string tag;
 	Value value;
-
-	friend ostream& operator << (ostream& os, ANALYSE_RESULT& t) {
-		switch (t.type) {
-		case ST_START:
-			os << "ST_START  " << t.tag;
-			break;
-		case ST_END:
-			os << "ST_END  " << t.tag;
-			break;
-		case ST_VALUE:
-			os << "ST_VALUE  " << t.value;
-			break;
-		case ST_EMPTY:
-			os << "ST_EMPTY";
-			break;
-		}
-
-		return os;
-	}
 };
 
 
@@ -329,10 +308,12 @@ public:
 	bool loadFile(string);
 
 	//树的遍历
-	void read(Object root);
+	void print(Object root, int indent);
 
 	//输出读取的文件内容
-	XMLLoader& read();
+	XMLLoader& print();
+
+	const Object& getRoot();
 
 private:
 	//辅助函数
@@ -342,7 +323,6 @@ private:
 
 	//分析读取的当前行是什么
 	ANALYSE_RESULT analyseString(string);
-
 
 	//主要函数
 	//分析文件
