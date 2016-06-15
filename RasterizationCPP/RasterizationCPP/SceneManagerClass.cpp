@@ -2,6 +2,8 @@
 
 #include "WindowFrameClass.h"
 
+#include "XML/XMLLoader.h"
+
 SceneManager::SceneManager() {
 	main_camera = nullptr;
 }
@@ -15,6 +17,8 @@ SceneManager & SceneManager::update() {
 
 //以后由文件载入自动生成
 SceneManager & SceneManager::init() {
+	jeff_XML::XMLLoader xml("Resources\\Scenes\\snake.xml");
+
 	map_models["teapot"].LoadModel("Resources\\Models\\teapot.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
 	map_models["cube"].LoadModel("Resources\\Models\\cube.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
 	map_models["plane"].LoadModel("Resources\\Models\\plane.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
@@ -25,9 +29,7 @@ SceneManager & SceneManager::init() {
 	main_camera->init((float)(WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom), 70.0f).position.z = -140.0f;
 	main_camera->ChangeConfig().active = false;
 
-
 	objects_all.push_back(make_shared<Cube>());
-	
 
 	for (auto &item : objects_all) {
 		item.get()->init();

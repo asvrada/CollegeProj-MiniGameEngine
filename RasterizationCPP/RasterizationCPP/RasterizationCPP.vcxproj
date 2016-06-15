@@ -154,6 +154,7 @@
     <ClCompile Include="TimeClass.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="WindowFrameClass.cpp" />
+    <ClCompile Include="XML\XMLLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
@@ -170,9 +171,15 @@
     <ClInclude Include="Utility.h" />
     <ClInclude Include="WindowFrameClass.h" />
     <ClInclude Include="Hierarchy.h" />
+    <ClInclude Include="XML\XMLLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Rasterizer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Resources\Scenes\snake.xml">
+      <SubType>Designer</SubType>
+    </Xml>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -61,6 +61,12 @@ using std::wstring;
 using std::string;
 #include <sstream>
 using std::wstringstream;
+using std::stringstream;
+using std::endl;
+
+#include <iostream>
+using std::ostream;
+using std::cout;
 using std::endl;
 
 #include <ctime>

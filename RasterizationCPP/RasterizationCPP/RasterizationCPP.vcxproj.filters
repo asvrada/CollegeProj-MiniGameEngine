@@ -28,6 +28,12 @@
     <Filter Include="源文件\物体基类">
       <UniqueIdentifier>{bb0a70c6-9540-4270-bfe8-b82caeaf4215}</UniqueIdentifier>
     </Filter>
+    <Filter Include="资源文件\地图">
+      <UniqueIdentifier>{d50f47f4-3ee6-4880-b7b0-cbecf52445e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\XMLLoader">
+      <UniqueIdentifier>{488f56a3-1f2b-42cc-bbd7-d863779ba39e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -56,6 +62,9 @@
     </ClCompile>
     <ClCompile Include="ModelInfo.cpp">
       <Filter>源文件\辅助类</Filter>
+    </ClCompile>
+    <ClCompile Include="XML\XMLLoader.cpp">
+      <Filter>头文件\XMLLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,10 +110,18 @@
     <ClInclude Include="CameraClass.h">
       <Filter>头文件\物体基类</Filter>
     </ClInclude>
+    <ClInclude Include="XML\XMLLoader.h">
+      <Filter>头文件\XMLLoader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Rasterizer.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Resources\Scenes\snake.xml">
+      <Filter>资源文件\地图</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

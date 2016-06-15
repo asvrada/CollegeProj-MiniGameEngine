@@ -257,39 +257,6 @@ void Render::FillTriangles(vector<Fragment> &list)
 			}
 		}
 
-		/*
-		//按照 a.y > b.y > c.y 的顺序排好
-		if (a.y > b.y && a.y > c.y) {
-			//A 最上面
-			if (b.y < c.y) {
-				swap<Vector4>(b, c);
-				swap<Vector2<float>>(uv_b, uv_c);
-			}
-		}
-		else if (b.y > a.y && b.y > c.y) {
-			//B 最上面
-			//A B 互换
-			swap<Vector4>(a, b);
-			swap<Vector2<float>>(uv_a, uv_b);
-
-			if (b.y < c.y) {
-				swap<Vector4>(b, c);
-				swap<Vector2<float>>(uv_b, uv_c);
-			}
-		}
-		else if (c.y > a.y && c.y > b.y) {
-			//C 最上面
-			//A C 互换
-			swap<Vector4>(a, c);
-			swap<Vector2<float>>(uv_a, uv_c);
-
-			if (b.y < c.y) {
-				swap<Vector4>(b, c);
-				swap<Vector2<float>>(uv_b, uv_c);
-			}
-		}
-		*/
-
 		//创建剪裁出的D点
 		Vector4 d;
 		Vector2<float> uv_d;

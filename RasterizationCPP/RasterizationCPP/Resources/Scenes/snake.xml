@@ -1,0 +1,6 @@
+<!--贪吃蛇场景布置-->
+<scene>
+  <object>
+    snake
+  </object>
+</scene>
