@@ -20,7 +20,7 @@ public:
 	ModelInfo() {};
 	~ModelInfo() {};
 
-	int LoadModel(char *fileName, LPCWSTR texturename);
+	int LoadModel(const char *fileName, LPCWSTR texturename);
 };
 
 #endif

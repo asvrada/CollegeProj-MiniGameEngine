@@ -9,6 +9,8 @@
 //保存场景有什么物体
 class SceneManager {
 public:
+	static SceneManager *s_ptr_scene_manager;
+
 	vector<shared_ptr<Object>> objects_all;
 	map<string, ModelInfo> map_models;
 
@@ -18,6 +20,8 @@ public:
 
 	//对所有object初始化
 	SceneManager& init();
+
+	shared_ptr<Object> createClass(string class_name);
 
 	//每帧调用
 	//更新所有物体的情况

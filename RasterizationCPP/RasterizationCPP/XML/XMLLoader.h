@@ -237,9 +237,25 @@ namespace jeff_XML {
 			return list;
 		}
 
-		friend ostream& operator << (ostream& os, Object &t) {
-			//todo
-			return os;
+		//递归查找tag
+		int findTag(string target_tag, jeff_XML::Object &out) {
+			if (!(storedType == TYPE_OBJECT || storedType == TYPE_VALUE)) {
+				return ERROR;
+			}
+
+			if (tag == target_tag) {
+				out = *this;
+				return OK;
+			}
+
+			//递归查找
+			for (auto &each : list) {
+				if (each.findTag(target_tag, out) == OK) {
+					return OK;
+				}
+			}
+
+			return ERROR;
 		}
 	};
 
@@ -289,9 +305,8 @@ namespace jeff_XML {
 
 		vector<Object> operator [] (string index);
 
+	//辅助函数
 	private:
-		//辅助函数
-
 		//树的遍历
 		void print(Object root, int indent);
 

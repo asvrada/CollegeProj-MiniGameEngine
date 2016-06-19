@@ -12,7 +12,7 @@ public:
 	string model;
 public:
 	GameObject() {
-		scale = 1;
+		scale.x = scale.y = scale.z = 1;
 	}
 
 	/////////

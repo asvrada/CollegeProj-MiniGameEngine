@@ -27,6 +27,11 @@ void Render::m_DrawObjects() {
 #ifdef DEBUG
 		assert(object->model.empty());
 #endif
+		//没有模型的话
+		if (object->model.empty()) {
+			continue;
+		}
+
 		auto &model = m_ptr_manager->map_models[object->model];
 		if ((int)model.vertices.size() == 0) { continue; }
 

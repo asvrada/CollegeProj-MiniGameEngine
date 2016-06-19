@@ -4,6 +4,6 @@
 #include "ObjectClass.h"
 #include "GameObjectClass.h"
 #include "CameraClass.h"
-#include "Cube.h"
+#include "CustomObjects.h"
 
 #endif

@@ -4,8 +4,19 @@
 
 #include "XML/XMLLoader.h"
 
+SceneManager * SceneManager::s_ptr_scene_manager = nullptr;
+
 SceneManager::SceneManager() {
 	main_camera = nullptr;
+	s_ptr_scene_manager = this;
+}
+
+//根据字符串创建相应的类
+shared_ptr<Object> SceneManager::createClass(string class_name) {
+	if (class_name == "Camera") {
+		objects_all.push_back(make_shared<Camera>());
+		return objects_all.back();
+	}
 }
 
 SceneManager & SceneManager::update() {
@@ -18,18 +29,46 @@ SceneManager & SceneManager::update() {
 //以后由文件载入自动生成
 SceneManager & SceneManager::init() {
 	jeff_XML::XMLLoader xml("Resources\\Scenes\\snake.xml");
+	auto models_to_load = xml["model"];
 
-	map_models["teapot"].LoadModel("Resources\\Models\\teapot.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
-	map_models["cube"].LoadModel("Resources\\Models\\cube.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
-	map_models["plane"].LoadModel("Resources\\Models\\plane.obj", TEXT("Resources\\Materials\\CheckerboardTexture.bmp"));
+	//先载入模型和纹理
+	auto tmp_texture = TEXT("Resources\\Materials\\CheckerboardTexture.bmp");
+	for (auto &each : models_to_load) {
+		auto &model_name = each.getValue().getString()->val;
+		auto model_direct = "Resources\\Models\\" + model_name + ".obj";
+		map_models[model_name].LoadModel(model_direct.c_str(), tmp_texture);
+	}
+
+	/////////////////
+	// XML 载入测试 //
+	/////////////////
+	/*
+	auto object_list = xml["object"];
+	for (auto &each : object_list) {
+		jeff_XML::Object tmp;
+		each.findTag("class", tmp);
+
+		auto smartptr_new_object = createClass(tmp.tag);
+
+		//摄像机特殊一点
+		if (tmp.tag == "Camera") {
+			auto ptr_camera = PTR_CONVERT(smartptr_new_object, Camera);
+			//todo
+			ptr_camera->init((float)(WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom), 70.0f);
+
+		}
+	}
+	*/
 
 	//创建主相机
-	objects_all.push_back(make_shared<Camera>());
-	main_camera = PTR_CONVERT(objects_all[0], Camera);
-	main_camera->init((float)(WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom), 70.0f).position.z = -140.0f;
-	main_camera->ChangeConfig().active = false;
+	auto ptr_camera = make_shared<Camera>();
+	
+	ptr_camera->init((float)(WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom), 70.0f).position.z = -140.0f;
+	ptr_camera->ChangeConfig().active = false;
 
-	objects_all.push_back(make_shared<Cube>());
+	objects_all.push_back(ptr_camera);
+
+	objects_all.push_back(make_shared<SnakeFrame>());
 
 	for (auto &item : objects_all) {
 		item.get()->init();

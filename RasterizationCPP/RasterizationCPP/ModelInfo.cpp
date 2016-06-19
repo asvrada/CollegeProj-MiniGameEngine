@@ -1,6 +1,6 @@
 #include "ModelInfo.h"
 
-int ModelInfo::LoadModel(char *fileName, LPCWSTR texturename) {
+int ModelInfo::LoadModel(const char *fileName, LPCWSTR texturename) {
 	HBITMAP bmp_texture = (HBITMAP)LoadImage(NULL, texturename, IMAGE_BITMAP, 512, 512, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	if (bmp_texture == NULL) {
 		return ERROR;

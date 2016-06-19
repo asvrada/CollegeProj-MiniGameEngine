@@ -95,9 +95,6 @@
     <ClInclude Include="ModelInfo.h">
       <Filter>头文件\辅助类</Filter>
     </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>头文件\Hierarchy</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectClass.h">
       <Filter>头文件\物体基类</Filter>
     </ClInclude>
@@ -112,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="XML\XMLLoader.h">
       <Filter>头文件\XMLLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomObjects.h">
+      <Filter>头文件\Hierarchy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

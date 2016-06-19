@@ -90,7 +90,6 @@ vector<Object> XMLLoader::operator[](string index) {
 	q.push(root);
 
 	while (!q.empty()) {
-
 		auto top = q.front();
 		q.pop();
 
@@ -115,6 +114,7 @@ void XMLLoader::clearSpace(string &str) {
 	if (str.size() == 0) {
 		return;
 	}
+
 	//开头和结尾都没空格
 	if (str[0] != ' ' && str[str.size() - 1] != ' ') {
 		return;
@@ -122,10 +122,15 @@ void XMLLoader::clearSpace(string &str) {
 
 	//清除开头的空格
 	auto cur = str.begin();
-	while (*cur == ' ') {
+	while (cur != str.end() && *cur == ' ') {
 		cur++;
 	}
 	str.erase(str.begin(), cur);
+
+	//如果清完了
+	if (str.size() == 0) {
+		return;
+	}
 
 	//清除结尾的空格
 	cur = str.end() - 1;

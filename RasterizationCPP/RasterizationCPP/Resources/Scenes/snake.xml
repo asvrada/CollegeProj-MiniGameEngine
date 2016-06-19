@@ -1,6 +1,28 @@
 <!--贪吃蛇场景布置-->
 <scene>
   <object>
-    snake
+    <class>
+      Camera
+    </class>
+    <name>
+      main_camera
+    </name>
+    <position>
+      <z>
+        -140
+      </z>
+    </position>
+  </object>
+  
+  <object>
+    <class>
+      Snake
+    </class>
+    <name>
+      object1
+    </name>
+    <model>
+      teapot
+    </model>
   </object>
 </scene>
