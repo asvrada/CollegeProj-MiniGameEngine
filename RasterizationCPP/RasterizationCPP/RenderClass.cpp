@@ -463,7 +463,7 @@ void Render::DrawTriangle(const Vector4 p0, const Vector4 p1, const Vector4 p2, 
 void Render::DrawLine(Vector2<float> p0, Vector2<float> p1, COLORREF color)
 {
 	//直线斜率是否大于1
-	BOOL steep = abs(p1.y - p0.y) > abs(p1.x - p0.x);
+	bool steep = abs(p1.y - p0.y) > abs(p1.x - p0.x);
 	//如果大于1
 	//将直线沿 y=x 翻转输出
 	if (steep) {
