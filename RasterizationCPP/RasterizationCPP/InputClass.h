@@ -33,6 +33,7 @@ public:
 	static bool is_center_snapped;
 	static bool is_rbutton_up;
 	static bool is_lbutton_up;
+	static int last_pressed_key;
 public:
 	Input();
 	~Input();

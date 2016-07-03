@@ -3,8 +3,8 @@
 
 #include "ProjectHeader.h"
 
+#include "CameraClass.h"
 #include "ModelInfo.h"
-#include "Hierarchy.h"
 
 //保存场景有什么物体
 class SceneManager {
@@ -21,6 +21,12 @@ public:
 	//对所有object初始化
 	SceneManager& init();
 
+	//创建固定类
+	shared_ptr<Object> createCube();
+	//销毁类
+	void destroyCube(shared_ptr<Object>);
+
+	//弃用
 	shared_ptr<Object> createClass(string class_name);
 
 	//每帧调用

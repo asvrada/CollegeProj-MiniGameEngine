@@ -158,7 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraClass.h" />
-    <ClInclude Include="CustomObjects.h" />
+    <ClInclude Include="demo.h" />
     <ClInclude Include="GameObjectClass.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="ModelInfo.h" />
@@ -170,7 +170,6 @@
     <ClInclude Include="TimeClass.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="WindowFrameClass.h" />
-    <ClInclude Include="Hierarchy.h" />
     <ClInclude Include="XML\XMLLoader.h" />
   </ItemGroup>
   <ItemGroup>

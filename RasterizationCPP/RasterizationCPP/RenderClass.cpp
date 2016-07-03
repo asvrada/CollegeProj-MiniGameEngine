@@ -4,6 +4,7 @@
 #include "WindowFrameClass.h"
 
 #include "GameObjectClass.h"
+#include "demo.h"
 
 void Render::m_DrawObjects() {
 	auto &vector_objects = m_ptr_manager->objects_all;
@@ -27,6 +28,10 @@ void Render::m_DrawObjects() {
 #ifdef DEBUG
 		assert(object->model.empty());
 #endif
+
+		if (!object->active) {
+			continue;
+		}
 		//没有模型的话
 		if (object->model.empty()) {
 			continue;
@@ -127,6 +132,30 @@ void Render::RenderAFrame() {
 	// <每帧必做 //
 	////////////////
 	OutputText(Time::GetFPSwstring(), 0);
+
+	auto scene = SceneManager::s_ptr_scene_manager;
+	if ((int)scene->objects_all.size() >= 2) {
+		auto cam = PTR_CONVERT(scene->objects_all[0], Camera);
+		auto dem = PTR_CONVERT(scene->objects_all[1], demo);
+		wstringstream ws;
+		if (cam->active) {
+			ws << "Camera Status : " << "ACTIVE";
+		}
+		else {
+			ws << "Camera Status : " << "DEACTIVE";
+		}
+
+		OutputText(ws.str(), 3);
+		//清除ws
+		ws.str(L"");
+		if (dem->active) {
+			ws << "Demo Status : " << "ACTIVE";
+		}
+		else {
+			ws << "Demo Status : " << "DEACTIVE";
+		}
+		OutputText(ws.str(), 4);
+	}
 
 	wstringstream ws;
 	ws << "Resolution : " << WindowFrame::rect_client.right << " * " << WindowFrame::rect_client.bottom;

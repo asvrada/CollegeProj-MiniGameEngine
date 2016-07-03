@@ -1,7 +1,7 @@
 ﻿#include "SceneManagerClass.h"
 
 #include "WindowFrameClass.h"
-
+#include "demo.h"
 #include "XML/XMLLoader.h"
 
 SceneManager * SceneManager::s_ptr_scene_manager = nullptr;
@@ -20,9 +20,15 @@ shared_ptr<Object> SceneManager::createClass(string class_name) {
 }
 
 SceneManager & SceneManager::update() {
+	int length = (int)objects_all.size();
+	for (int lop = 0; lop < length; lop++) {
+		objects_all[lop]->update();
+	}
+	/*
 	for (auto &item : objects_all) {
 		item->update();
 	}
+	*/
 	return *this;
 }
 
@@ -63,18 +69,38 @@ SceneManager & SceneManager::init() {
 	//创建主相机
 	auto ptr_camera = make_shared<Camera>();
 	
-	ptr_camera->init((float)(WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom), 70.0f).position.z = -140.0f;
-	ptr_camera->ChangeConfig().active = false;
+	ptr_camera->init((float)(WindowFrame::rect_client.right / (float)WindowFrame::rect_client.bottom), 70.0f);
+	ptr_camera->ChangeConfig();
 
 	objects_all.push_back(ptr_camera);
 
-	objects_all.push_back(make_shared<SnakeFrame>());
+	objects_all.push_back(make_shared<demo>());
 
 	for (auto &item : objects_all) {
 		item.get()->init();
 	}
 
 	return *this;
+}
+
+shared_ptr<Object> SceneManager::createCube() {
+	auto ptr = make_shared<cube>();
+	ptr->init();
+	objects_all.push_back(ptr);
+	return ptr;
+}
+
+void SceneManager::destroyCube(shared_ptr<Object> target) {
+	//暂时先这样做吧
+	target->active = false;
+	/*shared_ptr<Object> toDelete;
+	for (auto &item : objects_all) {
+		if (item.get() == target.get()) {
+			toDelete = item;
+			break;
+		}
+	}
+	objects_all.erase(toDelete);*/
 }
 
 Object* SceneManager::findElementByName(string target) {

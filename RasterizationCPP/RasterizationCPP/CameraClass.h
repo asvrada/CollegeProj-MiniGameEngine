@@ -41,7 +41,9 @@ public:
 	//继承
 	void update();
 	void init() {
-		active = true;
+		active = false;
+		position = Vector3(60, 250, 20);
+		rotation = Vector3(90, 0, 0);
 	};
 
 	//不是继承的

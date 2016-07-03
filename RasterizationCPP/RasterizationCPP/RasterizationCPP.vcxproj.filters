@@ -98,9 +98,6 @@
     <ClInclude Include="ObjectClass.h">
       <Filter>头文件\物体基类</Filter>
     </ClInclude>
-    <ClInclude Include="Hierarchy.h">
-      <Filter>头文件\物体基类</Filter>
-    </ClInclude>
     <ClInclude Include="GameObjectClass.h">
       <Filter>头文件\物体基类</Filter>
     </ClInclude>
@@ -110,7 +107,7 @@
     <ClInclude Include="XML\XMLLoader.h">
       <Filter>头文件\XMLLoader</Filter>
     </ClInclude>
-    <ClInclude Include="CustomObjects.h">
+    <ClInclude Include="demo.h">
       <Filter>头文件\Hierarchy</Filter>
     </ClInclude>
   </ItemGroup>

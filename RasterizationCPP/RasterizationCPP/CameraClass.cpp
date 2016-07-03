@@ -134,6 +134,9 @@ void Camera::m_UpdateViewToHomoMatrix4() {
 }
 
 void Camera::update() {
+	if (Input::KeyPressed(VK_4)) {
+		active = !active;
+	}
 	if (active) {
 		CameraControl();
 	}

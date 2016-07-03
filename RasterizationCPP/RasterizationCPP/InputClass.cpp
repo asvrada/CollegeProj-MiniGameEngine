@@ -10,6 +10,7 @@ POINT Input::point_cursor_last_frame = POINT();
 bool Input::is_center_snapped = false;
 bool Input::is_rbutton_up = false;
 bool Input::is_lbutton_up = false;
+int Input::last_pressed_key = VK_A;
 
 Input::Input() {
 	m_hwnd = 0;
@@ -24,6 +25,7 @@ void Input::Initialize(HWND hWnd) {
 }
 
 void Input::Press(int input) {
+	last_pressed_key = input;
 	m_key_pressed.key[input] = true;
 }
 
@@ -86,7 +88,7 @@ void Input::ClearFlag()
 	is_rbutton_up = is_lbutton_up = false;
 }
 
-inline bool Input::KeyPressed(int input) {
+bool Input::KeyPressed(int input) {
 	return m_key_pressed.key[input];
 }
 
