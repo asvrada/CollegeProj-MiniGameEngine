@@ -89,7 +89,9 @@ void Input::ClearFlag()
 }
 
 bool Input::KeyPressed(int input) {
-	return m_key_pressed.key[input];
+	auto result = m_key_pressed.key[input];
+	m_key_pressed.key[input] = 0;
+	return result;
 }
 
 bool Input::KeyPressed(char mouseButton)

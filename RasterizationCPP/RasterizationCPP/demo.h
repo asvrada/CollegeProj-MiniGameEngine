@@ -17,6 +17,7 @@ public:
 	}
 
 	void update() {
+		//rotation.x += 30 / Time::GetDeltaTime();
 		if (active) {
 			timeleft -= Time::GetDeltaTime();
 			if (timeleft < 0) {
