@@ -1,9 +1,9 @@
-# MiniRasterizer
+# Mini Game Engine
 The MiniRasterizer for personal study purpose, feel free to use in any way you want.  
 Student's work, terrible coding manner  
 Open for all feedback  
 
-## _Todo Lists:_
+## _Todo Lists:(DEAD PROJECT)_
 0. Switch to shared pointers
 1. Accuracy issues 
 2. Triangle Clipping (IMPORTANT)
@@ -14,11 +14,9 @@ Open for all feedback
 
 For detailed information please consult the __Documentation.md__
 
-A dull implement of the Rasterization method, which is widely used in almost all the modern game engines to generate image.
+A dull implement of the so-called "Rasterization" method, which is widely used in almost all the modern game engines to render image.
 
 ### -How to compile and run ?  
 __Make sure the Rasterizer.exe is placed under the same directory as the "Resources"" folder, or images will not be found or even worse__  
 
-I'm using Visual Studio 2015 Community to make this project, so Visual Studio is highly recommended for compile work.  
-
-Please note that this software runs on Windows Operating System ONLY, since its using Win API to create the GUI.
+I'm using Visual Studio 2015 Community, that's the only IDE which can compile these codes.  
