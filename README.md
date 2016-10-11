@@ -1,7 +1,6 @@
 # Mini Game Engine
-The MiniRasterizer for personal study purpose, feel free to use in any way you want.  
-Student's work, terrible coding manner  
-Open for all feedback  
+A toy project for the purpose of understanding the fixed render pipeline and event-driven software.  
+College final project, terrible coding manner    
 
 ## _Todo Lists:(DEAD PROJECT)_
 0. Switch to shared pointers
