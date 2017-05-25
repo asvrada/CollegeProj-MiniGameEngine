@@ -54,6 +54,7 @@ Camera& Camera::ChangeConfig() {
 
 void Camera::CameraControl() {
 	float delta_time = Time::GetDeltaTime();
+
 	if (Input::is_rbutton_up) {
 		Input::is_center_snapped = !Input::is_center_snapped;
 		ShowCursor(!Input::is_center_snapped);
