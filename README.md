@@ -1,20 +1,19 @@
 # Mini Game Engine
-A toy project for me to practice the fixed render pipeline and event-driven programming.  
-College project, terrible coding manner    
+A poor-written project that implements the fixed rendering pipeline and some(almost nothing) game engine's architecture like Unity.  
+Assginment for College Module, terrible coding manner.  
 
-## _Todo Lists:(DEAD PROJECT)_
-0. ~~Switch to shared pointers~~
-1. ~~Accuracy issues~~
-2. ~~Triangle Clipping (IMPORTANT)~~
-3. ~~Mutli-thread optimization~~
+### Features:
+1. Fixed rendering pipeline with Perspective Projection only
+2. Basic texture mapping with NO lighting
+3. Basic Input Manager
+4. Basic Scene Manager
 
-### -What is this ?
+### Bugs/drawbacks:
+0. Performance issue
+1. Precision issue
+2. Lack of view frustum culling
+3. No lighting
 
-For detailed information please consult the __Documentation.md__
+### To Compile and Run
+Please use Visual Studio (later that 2015) to compile, press W,A,S,D,R,F to move camera around.
 
-A dull implement of the so-called "rasterization" process, which is widely used in almost all the modern game engines to render image.
-
-### -How to compile and run ?  
-__Make sure the Rasterizer.exe is placed under the same directory as the "Resources"" folder, or images will not be found or even worse__  
-
-I'm using Visual Studio 2015 Community, that's the only IDE which can compile these codes.  
