@@ -1,6 +1,6 @@
 # Mini Game Engine
 
-A real time, interactive, single-threaded minial game engine.
+A real time, interactive, single-threaded minimal game engine.
 
 Due to the complexity of a "real" game engine and the fact that I was only a little more than one year into computer sciecne at the time coding this, this project, failed expectation. It's more like an **interative 3D model viewer** at the end.
 
@@ -20,4 +20,3 @@ Due to the complexity of a "real" game engine and the fact that I was only a lit
 Open this project with Visual Studio (2015 or newer), compile with the built-in compiler.
 
 Press W,A,S,D,R,F to move camera around.
-
