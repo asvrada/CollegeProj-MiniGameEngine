@@ -12,7 +12,8 @@ Due to the complexity of a "real" game engine and the fact that I was only a lit
 4. Basic scene management
 
 ## Issues/Todos:
-1. Texture mapping percision
+1. Texture mapping percision issue
+2. No view frustum culling
 2. Lack of lighting/shadows
 
 ## To Compile and Run
