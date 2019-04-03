@@ -1,19 +1,23 @@
 # Mini Game Engine
-A poor-written project that implements the fixed rendering pipeline and some(almost nothing) game engine's architecture like Unity.  
-Assginment for College Module, terrible coding manner.  
 
-### Features:
-1. Fixed rendering pipeline with Perspective Projection only
-2. Basic texture mapping with NO lighting
-3. Basic Input Manager
-4. Basic Scene Manager
+A real time, interactive, single-threaded minial game engine.
 
-### Bugs/drawbacks:
-0. Performance issue
-1. Precision issue
-2. Lack of view frustum culling
-3. No lighting
+Due to the complexity of a "real" game engine and the fact that I was only a little more than one year into computer sciecne at the time coding this, this project, failed expectation. It's more like an **interative 3D model viewer** at the end.
 
-### To Compile and Run
-Please use Visual Studio (later that 2015) to compile, press W,A,S,D,R,F to move camera around.
+## Features
+1. Custom fixed rendering pipeline with custom linear algebra library
+2. OBJ format model loader
+2. Texture mapping for models
+3. Basic input management
+4. Basic scene management
+
+## Issues/Todos:
+1. Texture mapping percision
+2. Lack of lighting/shadows
+
+## To Compile and Run
+
+Open this project with Visual Studio (2015 or newer), compile with the built-in compiler.
+
+Press W,A,S,D,R,F to move camera around.
 
